@@ -1,0 +1,49 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="Spruce.Site" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+	<link href="/Assets/CSS/site.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" language="javascript" src="/Assets/Scripts/jquery-1.4.1.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/Assets/Scripts/jquery.dataTables.min.js"></script>
+	<script type="text/javascript">
+		function toggleNewItem()
+		{
+			$("#newitem").toggle();
+			$("#newitem-textbox").toggle();
+			$("#newitembox").focus();
+		}
+
+		function highlightNavItem(id)
+		{
+			$(id).addClass("selected");
+		}
+    </script>
+    <asp:ContentPlaceHolder ID="head" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server">
+		<div id="header">
+			<div id="logocontainer">
+				<img src="/Assets/Images/logo.png" height="105px" />
+			</div>
+			<div id="navcontainer">
+				<ul id="nav">
+					<li id="navitem-index"><a href="/Home/Index">All bugs</a></li>
+					<li id="navitem-active"><a href="/Home/Active">Active bugs</a></li>
+					<li id="navitem-closed"><a href="/Home/Closed">Closed bugs</a></li>
+					<li id="navitem-tasks"><a href="/Home/Tasks">Tasks</a></li>
+					<li id="navitem-allitems"><a href="/Home/AllItem">All items</a></li>
+				</ul>
+			</div>
+		</div>
+		<br style="clear:both;"/>
+
+		<div id="container">
+			<br style="clear:both" /><br />
+
+			<asp:ContentPlaceHolder ID="MainContent" runat="server" />
+		</div>
+    </form>
+</body>
+</html>

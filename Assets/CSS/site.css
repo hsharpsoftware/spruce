@@ -1,0 +1,43 @@
+body { background-image: url('/Assets/Images/bg.png');margin:0px; }
+#container { margin-left: auto;margin-right: auto; width:750px;}
+#header { background-image: url('/Assets/Images/headerbg.png');overflow:auto; }
+#logocontainer { float:left; }
+    
+a { color:#333333; }
+
+#navcontainer { margin-top:45px;float:right;}    
+#nav ul { list-style :none; margin:0;padding:0;list-style-type:none;}
+#nav li { float:left;margin:5px;display:inline;list-style-type:none;width:120px; background-color:#333333;border: solid 1px #3671a1;border-radius: 5px;}
+#nav a { text-align:center;display:block;padding:5px; font-family:Arial,helvetica;font-weight:bold;font-size:12pt; color:#FFF;text-decoration:none;}
+#nav li:hover { background-color:#3671a1; }
+#nav .selected { background-color:#3671a1; }
+
+/* Tables */
+.dataTables_length { float:left;height:35px;margin-top:10px; }
+.dataTables_filter { float:right;height:35px;margin-top:15px; }
+#workitems { width:750px;border: solid 1px #3671a1;background-color: #FFF;border-collapse: collapse; }  
+#workitems thead th { background-color: #333333;font-family:Arial,helvetica;font-size:12pt;padding:10px;font-weight:bold;color: #FFF;text-align:left;}
+#workitems tbody td { color: #000;font-family:Calibri,helvetica;font-size:10pt;padding:10px;text-align:left; }
+    
+#newitem-container {font-family:Arial,helvetica;font-size:10pt;margin-top:10px;}
+#newitem-textbox {display:none;}
+
+/* View item */
+h1 { color: #333333; font-family:Calibri,helvetica;font-size:24pt; margin:0px; } 
+h2 { color: #4582b5;font-family:Calibri,helvetica;font-size:12pt;margin:0px; }
+p,div { color: #000;font-family:Calibri,helvetica;font-size:10pt; }
+    
+#itemcontainer { width:750px;border:solid 1px #3671a1;background-color: #FFF;}  
+#item { padding: 10px;}
+    
+#favouritebar { margin-left:10px;margin-right:10px;margin-bottom:5px; }     
+#date { color: #ABABAB;font-size:8pt;font-family:Calibri,helvetica;float:left; }
+    
+#actionbar {  background-color: #333333;padding:10px;color: #FFF; }   
+#actionbar a { font-family:Calibri,helvetica;font-size:10pt;font-weight:bold;color: #FFF; }  
+
+/* Edit item */
+.title { margin-top:10px; border: 1px solid #DEDEDE; color: #333333; font-family:Arial,helvetica;font-size:24pt; margin:0px;width:100%;  }
+.description { margin-top:10px; border: 1px solid #DEDEDE; color: #000;font-family:Arial,helvetica;font-size:10pt;width:100%;height:150px; }
+.button { font-family:Arial,helvetica;font-size:12pt; }    
+select { margin-top:10px; border: 1px solid #DEDEDE; }
