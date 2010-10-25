@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Spruce.Models;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce
 {
@@ -11,36 +12,48 @@ namespace Spruce
     {
         public ActionResult Index()
         {
-			WorkItemManager.Configure(User.Identity);
-
-			return View(WorkItemManager.AllBugs());
+			return View(WorkItemManager.AllBugs().ToList());
         }
 
 		public ActionResult AllItems()
 		{
-			return View(WorkItemManager.AllItems());
+			return View("Index", WorkItemManager.AllItems().ToList());
 		}
 
 		public ActionResult Active()
 		{
-			return View("Index", WorkItemManager.AllActiveBugs());
+			return View("Index", WorkItemManager.AllActiveBugs().ToList());
 		}
 
 		public ActionResult Closed()
 		{
-			return View("Index", WorkItemManager.AllClosedBugs());
+			return View("Index", WorkItemManager.AllClosedBugs().ToList());
 		}
 
 		public ActionResult Tasks()
 		{
-			return View("Index", WorkItemManager.AllTasks());
+			return View("AllTasks", WorkItemManager.AllTasks().ToList());
 		}
-
 
 		public ActionResult View(int id)
 		{
-			var x = WorkItemManager.ItemById(id);
-			return View(x);
+			WorkItemSummary item = WorkItemManager.ItemById(id);
+			return View(item);
+		}
+
+		[HttpGet]
+		public ActionResult Edit(int id)
+		{
+			ViewData["Users"] = WorkItemManager.Users();
+
+			WorkItemSummary item = WorkItemManager.ItemById(id);
+			return View(item);
+		}
+
+		[HttpPost]
+		public ActionResult Edit(WorkItemSummary item)
+		{
+			return View("Index");
 		}
     }
 }

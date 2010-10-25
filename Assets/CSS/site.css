@@ -1,7 +1,8 @@
-body { background-image: url('/Assets/Images/bg.png');margin:0px; }
+body { background-image: url('/Spruce/Assets/Images/bg.png');margin:0px; }
 #container { margin-left: auto;margin-right: auto; width:750px;}
-#header { background-image: url('/Assets/Images/headerbg.png');overflow:auto; }
-#logocontainer { float:left; }
+#header { background-image: url('/Spruce/Assets/Images/headerbg.png');overflow:auto; }
+#logocontainer { float:left;margin-top:44px;margin-left:0px }
+#loggedInAs { font-size:0.8em;font-family:Arial;color:#FFF;padding:5px;margin:2px;float:right; }
     
 a { color:#333333; }
 
@@ -12,15 +13,48 @@ a { color:#333333; }
 #nav li:hover { background-color:#3671a1; }
 #nav .selected { background-color:#3671a1; }
 
+/* Default dataTable plugin styles */
+.dataTables_wrapper 
+{
+	clear: both;
+	min-height: 302px;
+	position: relative;
+	zoom: 1;
+}
+.dataTables_length { float:left;width:40%;}
+.dataTables_filter { float:right;width:50%;text-align: right; }
+.paginate_disabled_previous, .paginate_enabled_previous, .paginate_disabled_next, .paginate_enabled_next {
+	float: left;
+	height: 19px;
+	margin-left: 3px;
+	width: 19px;
+}
+.dataTables_paginate {
+	float: right;
+	text-align: right;
+	width: 44px;
+}
+.paginate_disabled_previous { background-image: url('/Spruce/Assets/Images/back_disabled.jpg');}
+.paginate_enabled_previous { background-image: url('/Spruce/Assets/Images/back_enabled.jpg');}
+.paginate_disabled_next { background-image: url('/Spruce/Assets/Images/forward_disabled.jpg');}
+.paginate_enabled_next { background-image: url('/Spruce/Assets/Images/forward_enabled.jpg');}
+
 /* Tables */
-.dataTables_length { float:left;height:35px;margin-top:10px; }
-.dataTables_filter { float:right;height:35px;margin-top:15px; }
-#workitems { width:750px;border: solid 1px #3671a1;background-color: #FFF;border-collapse: collapse; }  
+#workitems { clear:both;width:750px;border: solid 1px #3671a1;background-color: #FFF;border-collapse: collapse;margin:10px 0; }  
 #workitems thead th { background-color: #333333;font-family:Arial,helvetica;font-size:12pt;padding:10px;font-weight:bold;color: #FFF;text-align:left;}
 #workitems tbody td { color: #000;font-family:Calibri,helvetica;font-size:10pt;padding:10px;text-align:left; }
     
 #newitem-container {font-family:Arial,helvetica;font-size:10pt;margin-top:10px;}
 #newitem-textbox {display:none;}
+
+/* Tasks */
+#taskscontainer { width:1000px;}
+#task { background-image: url('/Spruce/Assets/Images/stickynote-large.png');width:185px;height:188px;padding:20px;float:left; }
+#task h1 { font-size:1.2em; }
+#task a { text-decoration:none; }
+#task a:hover { color:#ABABAB; }
+#task h2 { font-size:1em; }
+#task h2 { font-size:1em; }
 
 /* View item */
 h1 { color: #333333; font-family:Calibri,helvetica;font-size:24pt; margin:0px; } 

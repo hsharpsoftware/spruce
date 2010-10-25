@@ -1,5 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<WorkItemCollection>" %>
-<%@ Import Namespace="Microsoft.TeamFoundation.WorkItemTracking.Client" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage<List<WorkItemSummary>>" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function ()
@@ -10,6 +9,20 @@ $(document).ready(function ()
 	highlightNavItem("#navitem-"+currentAction);
 });
 </script>
+
+<!--
+Active,closed,resolved
+Iterations
+Areas
+Assigned to
+Resolved by
+
+History
+Links
+Quick add
+Favourites
+-->
+
 <table id="workitems">
 	<thead>
 		<tr>
@@ -20,11 +33,11 @@ $(document).ready(function ()
 		</tr>
 	</thead>
 	<tbody>
-	<%foreach (WorkItem item in Model){ %>
+	<%foreach (WorkItemSummary item in Model){ %>
 		<tr>
-			<td><a href="/Home/View/<%=item.Id%>"><%=item.Id%></a></td>
+			<td><a href="/Spruce/Home/View/<%=item.Id%>"><%=item.Id%></a></td>
 			<td><%=item.Title %></td>
-			<td><%=item.Fields["Assigned To"].Value %></td>
+			<td><%=item.AssignedTo %></td>
 			<td><%=item.State %></td>
 		</tr>
 	<%} %>

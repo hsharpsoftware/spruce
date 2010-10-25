@@ -3,9 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-	<link href="/Assets/CSS/site.css" rel="stylesheet" type="text/css" />
-	<script type="text/javascript" language="javascript" src="/Assets/Scripts/jquery-1.4.1.min.js"></script>
-	<script type="text/javascript" language="javascript" src="/Assets/Scripts/jquery.dataTables.min.js"></script>
+	<link href="/Spruce/Assets/CSS/site.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery-1.4.1.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.dataTables.min.js"></script>
 	<script type="text/javascript">
 		function toggleNewItem()
 		{
@@ -24,20 +24,23 @@
 <body>
     <form id="form1" runat="server">
 		<div id="header">
+			<span id="loggedInAs">Logged in as <%=WorkItemManager.LoggedInUser() %></span>
 			<div id="logocontainer">
-				<img src="/Assets/Images/logo.png" height="105px" />
+				<img src="/Spruce/Assets/Images/logo.png" />
 			</div>
 			<div id="navcontainer">
 				<ul id="nav">
-					<li id="navitem-index"><a href="/Home/Index">All bugs</a></li>
-					<li id="navitem-active"><a href="/Home/Active">Active bugs</a></li>
-					<li id="navitem-closed"><a href="/Home/Closed">Closed bugs</a></li>
-					<li id="navitem-tasks"><a href="/Home/Tasks">Tasks</a></li>
-					<li id="navitem-allitems"><a href="/Home/AllItem">All items</a></li>
+					<li id="navitem-index"><a href="/Spruce/Home/Index">All bugs</a></li>
+					<li id="navitem-active"><a href="/Spruce/Home/Active">Active bugs</a></li>
+					<li id="navitem-closed"><a href="/Spruce/Home/Closed">Closed bugs</a></li>
+					<li id="navitem-tasks"><a href="/Spruce/Home/Tasks">Tasks</a></li>
+					<li id="navitem-allitems"><a href="/Spruce/Home/AllItems">All items</a></li>
 				</ul>
 			</div>
 		</div>
+		
 		<br style="clear:both;"/>
+		
 
 		<div id="container">
 			<br style="clear:both" /><br />

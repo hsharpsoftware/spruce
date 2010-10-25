@@ -15,5 +15,21 @@ namespace Spruce.Models
 				return ConfigurationManager.AppSettings["TfsServer"];
 			}
 		}
+
+		public static string TfsProject
+		{
+			get
+			{
+				return ConfigurationManager.AppSettings["TfsProject"];
+			}
+		}
+
+		public static string DescriptionField
+		{
+			get
+			{
+				return ConfigurationManager.AppSettings["DescriptionField"];
+			}
+		}
 	}
 }

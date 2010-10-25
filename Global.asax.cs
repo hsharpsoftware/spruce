@@ -30,6 +30,7 @@ namespace Spruce
 			AreaRegistration.RegisterAllAreas();
 
 			RegisterRoutes(RouteTable.Routes);
+			WorkItemManager.Configure();
 		}
 	}
 }
