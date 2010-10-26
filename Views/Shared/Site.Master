@@ -3,10 +3,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
     <title></title>
-	<link href="/Spruce/Assets/CSS/site.css" rel="stylesheet" type="text/css" />
+	<!-- Datatable -->
 	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery-1.4.1.min.js"></script>
 	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.dataTables.min.js"></script>
+
+	<!-- Tooltip + overlay -->
+	<script type="text/javascript" src="/Spruce/Assets/Scripts/jquery.tools.min.js"></script>
+
 	<script type="text/javascript">
+		$(document).ready(function () {
+			$("#menubutton").tooltip({ position: "bottom right", opacity: 0.7 });
+			$("#navitem-index a").tooltip({ position: "bottom center", opacity: 0.7 });
+			$("#menubutton[rel]").overlay();
+		});
+
+		function foo()
+		{
+			
+		}
+
 		function toggleNewItem()
 		{
 			$("#newitem").toggle();
@@ -19,18 +34,23 @@
 			$(id).addClass("selected");
 		}
     </script>
+	<link href="/Spruce/Assets/CSS/site.css" rel="stylesheet" type="text/css" />
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body>
     <form id="form1" runat="server">
 		<div id="header">
-			<span id="loggedInAs">Logged in as <%=WorkItemManager.LoggedInUser() %></span>
+			<div id="headertop">
+				<span id="loggedInAs">Logged in as <%=WorkItemManager.LoggedInUser() %></span>
+			</div>
+			<br style="clear:both" />
 			<div id="logocontainer">
 				<img src="/Spruce/Assets/Images/logo.png" />
 			</div>
 			<div id="navcontainer">
 				<ul id="nav">
-					<li id="navitem-index"><a href="/Spruce/Home/Index">All bugs</a></li>
+					<li><a href="javascript:;" id="menubutton" rel="#settingswindow" title="Display the settings and filters window">Settings</a></li>
+					<li id="navitem-index"><a href="/Spruce/Home/Index" title="All workitems for the current project">All bugs</a></li>
 					<li id="navitem-active"><a href="/Spruce/Home/Active">Active bugs</a></li>
 					<li id="navitem-closed"><a href="/Spruce/Home/Closed">Closed bugs</a></li>
 					<li id="navitem-tasks"><a href="/Spruce/Home/Tasks">Tasks</a></li>
@@ -39,14 +59,65 @@
 			</div>
 		</div>
 		
-		<br style="clear:both;"/>
-		
+		<br style="clear:both;"/>		
 
 		<div id="container">
 			<br style="clear:both" /><br />
-
 			<asp:ContentPlaceHolder ID="MainContent" runat="server" />
 		</div>
     </form>
+
+	<div id="settingswindow" class="simple_overlay">
+		<div id="settingscontainer">
+			<h1>Settings</h1>
+
+			<div class="settingsitem">
+				<div class="settingslabel">Project:</div>
+				<div class="settingsfield">
+					<select>
+						<option>Project1</option>
+						<option>Project2</option>
+					</select>
+				</div>
+			</div>
+
+			<br style="clear:both;" />
+			<h2>Filters</h2>
+
+			<div class="settingsitem">
+				<div class="settingslabel">Iteration:</div>
+				<div class="settingsfield">
+					<select>
+						<option>All</option>
+						<option>Iteration1</option>
+						<option>Iteration2</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="settingsitem">
+				<div class="settingslabel">Area:</div>
+				<div class="settingsfield">
+				<select>
+					<option>All</option>
+					<option>Area1</option>
+					<option>Iteration2</option>
+				</select>
+				</div>
+			</div>
+
+			<div class="settingsitem">		
+				<div class="settingslabel">State:</div>
+				<div class="settingsfield">
+					<input type="checkbox" value="" />Active
+					<input type="checkbox" value="" />Resolved
+					<input type="checkbox" value="" />Closed
+				</div>
+			</div>
+
+			<br style="clear:both;" />
+			<input type="button" value="Save" id="button-savesettings" />
+		</div>
+	</div>
 </body>
 </html>

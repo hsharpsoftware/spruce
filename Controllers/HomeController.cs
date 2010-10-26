@@ -12,11 +12,13 @@ namespace Spruce
     {
         public ActionResult Index()
         {
+			WorkItemManager.New();
 			return View(WorkItemManager.AllBugs().ToList());
         }
 
 		public ActionResult AllItems()
 		{
+			WorkItemManager.Areas();
 			return View("Index", WorkItemManager.AllItems().ToList());
 		}
 

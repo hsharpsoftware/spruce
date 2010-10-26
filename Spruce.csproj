@@ -79,9 +79,12 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AreaSummary.cs" />
     <Compile Include="Models\DisplayItem.cs" />
     <Compile Include="Models\DisplaySettings.cs" />
+    <Compile Include="Models\IterationSummary.cs" />
     <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\SpruceContext.cs" />
     <Compile Include="Models\WorkItemManager.cs" />
     <Compile Include="Models\WorkItemSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -95,17 +98,22 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\CSS\site.css" />
+    <Content Include="Assets\CSS\XMLFile1.xml" />
     <Content Include="Assets\Images\back_disabled.jpg" />
     <Content Include="Assets\Images\back_enabled.jpg" />
     <Content Include="Assets\Images\bg.png" />
+    <Content Include="Assets\Images\close.png" />
     <Content Include="Assets\Images\forward_disabled.jpg" />
     <Content Include="Assets\Images\forward_enabled.jpg" />
     <Content Include="Assets\Images\headerbg.png" />
     <Content Include="Assets\Images\logo.png" />
+    <Content Include="Assets\Images\settings.png" />
     <Content Include="Assets\Images\star_off.png" />
     <Content Include="Assets\Images\star_on.png" />
     <Content Include="Assets\Images\stickynote-large.png" />
     <Content Include="Assets\Images\stickynote-medium.png" />
+    <Content Include="Assets\Images\whitetooltipbg.png" />
+    <Content Include="Assets\Scripts\jquery.tools.min.js" />
     <Content Include="Global.asax" />
     <Content Include="Assets\Scripts\jquery.dataTables.min.js" />
     <Content Include="Views\Home\AllTasks.aspx" />
