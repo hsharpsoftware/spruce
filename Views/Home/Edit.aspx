@@ -8,18 +8,9 @@
         <div id="item">
             <input type="text" name="title" value="<%=Model.Title%>" class="title" />
             <h2>#<%=Model.Id%>
-			 Assigned to 
-			 <select>
-			<% foreach (string user in (List<string>)ViewData["Users"]){%>
-					<option value="<%=user %>"><%=user %></option>
-			<%} %>
-			</select>
-                Assigned to 
-                <select>
-                    <option>Chris</option>
-                    <option>Fred</option>
-                    <option>Gef</option>
-                </select>
+			<!-- Assigned to -->
+			Assigned to 
+			<%=Html.DropDownBoxFromList("assignedto",(List<string>)ViewData["Users"],Model.AssignedTo)%>
             </h2>
             <textarea name="description" class="description"><%=Model.Description%></textarea>
         </div>

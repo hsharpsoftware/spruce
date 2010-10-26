@@ -50,7 +50,7 @@ namespace Spruce.Models
 
 			foreach (var user in users)
 			{
-				list.Add(user.AccountName);
+				list.Add(user.DisplayName);
 			}
 
 			return list;
@@ -123,9 +123,11 @@ namespace Spruce.Models
 				Iteration = item.IterationPath,
 				ResolvedBy = GetFieldValue(item,"Resolved By"),
 				State = item.State,
-				Title = item.Title,
-				Priority = Convert.ToInt32(item.Fields["Priority"].Value)
+				Title = item.Title
 			};
+
+			if (item.Fields.Contains("Priority"))
+				summary.Priority = int.Parse(item.Fields["Priority"].Value.ToString());
 
 			// change to dynamic field for other install types: Model.Fields["Repro Steps"].Value
 			if (!string.IsNullOrEmpty(Settings.DescriptionField) && string.IsNullOrEmpty(item.Description))
@@ -134,6 +136,12 @@ namespace Spruce.Models
 			return summary;
 		}
 
+		/// <summary>
+		/// Accomodates fields that won't necessarily exist (such as resolved by) until a later stage of the work item.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="fieldName"></param>
+		/// <returns></returns>
 		private static string GetFieldValue(WorkItem item, string fieldName)
 		{
 			if (item.Fields.Contains(fieldName))
