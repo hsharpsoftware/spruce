@@ -12,13 +12,11 @@ namespace Spruce
     {
         public ActionResult Index()
         {
-			WorkItemManager.New();
 			return View(WorkItemManager.AllBugs().ToList());
         }
 
 		public ActionResult AllItems()
 		{
-			WorkItemManager.Areas();
 			return View("Index", WorkItemManager.AllItems().ToList());
 		}
 
@@ -44,18 +42,54 @@ namespace Spruce
 		}
 
 		[HttpGet]
+		public ActionResult New()
+		{
+			ViewData["States"] = SpruceContext.Current.CurrentProject.AllowedStates;
+			ViewData["Priorities"] = SpruceContext.Current.CurrentProject.AllowedPriorities;
+			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
+			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
+			ViewData["Users"] = SpruceContext.Current.Users;
+
+			WorkItemSummary item = new WorkItemSummary();
+			item.Priority = 1;
+			item.Title = "Enter your title";
+			item.Description = "Enter a brief description. See your project template for guidance";
+			item.IsNew = true;
+			return View("Edit",item);
+		}
+
+		[HttpPost]
+		public ActionResult New(WorkItemSummary item)
+		{
+			// TODO: Validation
+			item.CreatedBy = SpruceContext.Current.CurrentUser;
+			item.IsNew = true;
+			item.State = "Active";
+			WorkItemManager.SaveBug(item);
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpGet]
 		public ActionResult Edit(int id)
 		{
-			ViewData["Users"] = WorkItemManager.Users();
-
 			WorkItemSummary item = WorkItemManager.ItemById(id);
+			item.IsNew = false;
+
+			ViewData["States"] = item.ValidStates;
+			ViewData["Priorities"] = SpruceContext.Current.CurrentProject.AllowedPriorities;
+			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
+			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
+			ViewData["Users"] = SpruceContext.Current.Users;
+		
 			return View(item);
 		}
 
 		[HttpPost]
 		public ActionResult Edit(WorkItemSummary item)
 		{
-			return View("Index");
+			WorkItemManager.SaveBug(item);
+			return RedirectToAction("Index");
 		}
     }
 }

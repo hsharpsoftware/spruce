@@ -3,14 +3,33 @@
 <%using (new HtmlForm())
   { %>
 
-	<input type="hidden" value="<%=Model.Id %>" />
+	<input type="hidden" id="Id" value="<%=Model.Id %>" />
     <div id="itemcontainer">
         <div id="item">
-            <input type="text" name="title" value="<%=Model.Title%>" class="title" />
-            <h2>#<%=Model.Id%>
-			<!-- Assigned to -->
-			Assigned to 
-			<%=Html.DropDownBoxFromList("assignedto",(List<string>)ViewData["Users"],Model.AssignedTo)%>
+            <h1><span class="workitem-id">#<%=Model.Id%></span><input type="text" name="title" value="<%=Model.Title%>" class="title" /></h1>
+            <h2><!-- Assigned to -->
+				Assigned to: 
+				<%=Html.DropDownBoxFromList("AssignedTo",(List<string>)ViewData["Users"],Model.AssignedTo)%>
+
+				<!-- States -->
+				<%if (!Model.IsNew){ %>
+				State:
+				<%=Html.DropDownBoxFromList("State", (List<string>)ViewData["States"], Model.State)%>
+				<%} %>
+
+				<!-- Priorities -->
+				Priority:
+				<%=Html.DropDownBoxFromList("Priority", (List<string>)ViewData["Priorities"], Model.Priority.Value.ToString())%>
+
+				<br />
+
+				<!-- Area -->
+				Area:
+				<%=Html.DropDownBoxForAreas("Area", (List<AreaSummary>)ViewData["Areas"], Model.Area)%>
+
+				<!-- Iteration -->
+				Iteration:
+				<%=Html.DropDownBoxForIterations("Iteration", (List<IterationSummary>)ViewData["Iterations"], Model.Iteration)%>
             </h2>
             <textarea name="description" class="description"><%=Model.Description%></textarea>
         </div>

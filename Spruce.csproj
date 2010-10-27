@@ -79,14 +79,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AreaSummary.cs" />
-    <Compile Include="Models\DisplayItem.cs" />
-    <Compile Include="Models\DisplaySettings.cs" />
-    <Compile Include="Models\IterationSummary.cs" />
-    <Compile Include="Models\Settings.cs" />
-    <Compile Include="Models\SpruceContext.cs" />
+    <Compile Include="Models\Summaries\AreaSummary.cs" />
+    <Compile Include="Models\Context\FilterSettings.cs" />
+    <Compile Include="Models\HelperExtensions.cs" />
+    <Compile Include="Models\Summaries\IterationSummary.cs" />
+    <Compile Include="Models\Context\ProjectDetails.cs" />
+    <Compile Include="Models\Context\Settings.cs" />
+    <Compile Include="Models\Context\SpruceContext.cs" />
     <Compile Include="Models\WorkItemManager.cs" />
-    <Compile Include="Models\WorkItemSummary.cs" />
+    <Compile Include="Models\Summaries\WorkItemSummary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Shared\Site.Master.cs">
       <DependentUpon>Site.Master</DependentUpon>
@@ -98,7 +99,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\CSS\site.css" />
-    <Content Include="Assets\CSS\XMLFile1.xml" />
     <Content Include="Assets\Images\back_disabled.jpg" />
     <Content Include="Assets\Images\back_enabled.jpg" />
     <Content Include="Assets\Images\bg.png" />

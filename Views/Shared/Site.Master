@@ -41,7 +41,7 @@
     <form id="form1" runat="server">
 		<div id="header">
 			<div id="headertop">
-				<span id="loggedInAs">Logged in as <%=WorkItemManager.LoggedInUser() %></span>
+				<span id="loggedInAs">Logged in as <%=SpruceContext.Current.CurrentUser %></span>
 			</div>
 			<br style="clear:both" />
 			<div id="logocontainer">

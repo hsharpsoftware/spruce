@@ -3,7 +3,7 @@
 
     <div id="itemcontainer">
         <div id="item">
-            <h1>#<%=Model.Id%>&nbsp;<%=Model.Title%></h1>
+            <h1><span class="workitem-id">#<%=Model.Id%></span>&nbsp;<%=Model.Title%></h1>
             <h2><%=Model.State%> | Assigned to <%=Model.AssignedTo%></h2>
             <p>
 				<%=Model.Description%>

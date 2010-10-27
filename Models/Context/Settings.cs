@@ -16,11 +16,11 @@ namespace Spruce.Models
 			}
 		}
 
-		public static string TfsProject
+		public static string DefaultProjectName
 		{
 			get
 			{
-				return ConfigurationManager.AppSettings["TfsProject"];
+				return ConfigurationManager.AppSettings["DefaultProjectName"];
 			}
 		}
 
