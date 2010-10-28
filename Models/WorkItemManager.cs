@@ -15,12 +15,26 @@ namespace Spruce.Models
 	{
 		public static void SaveBug(WorkItemSummary summary)
 		{
+			Save(summary, SpruceContext.Current.CurrentProject.WorkItemTypeForBug);
+		}
+
+		public static void SaveTask(WorkItemSummary summary)
+		{
+			Save(summary, SpruceContext.Current.CurrentProject.WorkItemTypeForTask);
+		}
+
+		public static void SaveExisting(WorkItemSummary summary)
+		{
+			Save(summary, null);
+		}
+
+		public static void Save(WorkItemSummary summary, WorkItemType type)
+		{
 			WorkItem item;
 
 			if (summary.IsNew)
 			{
 				// This knows which project to save in using the WorkItemType.
-				WorkItemType type = SpruceContext.Current.CurrentProject.WorkItemTypeForBug;
 				item = new WorkItem(type);
 			}
 			else
@@ -35,8 +49,125 @@ namespace Spruce.Models
 			item.IterationPath = summary.Iteration;
 			item.Fields["Priority"].Value = summary.Priority.Value;
 			item.AreaPath = summary.Area;
-			
-			item.Save();
+
+			// For CMMI projects
+			if (item.Fields.Contains("Symptom"))
+				item.Fields["Symptom"].Value = summary.Description;
+
+			if (item.Fields.Contains("Reason") && item.Fields["Reason"].AllowedValues.Count > 0)
+				item.Fields["Reason"].Value = item.Fields["Reason"].AllowedValues[0];
+
+			try
+			{
+				item.Save();
+			}
+			catch (ValidationException e)
+			{
+				
+			}
+		}
+
+		public static void Resolve(int id)
+		{
+			try
+			{
+				WorkItemSummary summary = ItemById(id);
+				summary.ResolvedBy = SpruceContext.Current.CurrentUser;
+				summary.State = "Resolved";
+				SaveExisting(summary);
+			}
+			catch (Exception)
+			{
+				// TODO: log invalid state
+			}
+		}
+
+		public static void Close(int id)
+		{
+			try
+			{
+				WorkItemSummary summary = ItemById(id);
+				summary.ResolvedBy = SpruceContext.Current.CurrentUser;
+				summary.State = "Closed";
+				SaveExisting(summary);
+			}
+			catch (Exception)
+			{
+				// TODO: log invalid state
+			}
+		}
+
+		public static WorkItemSummary NewTask()
+		{
+			return NewItem(SpruceContext.Current.CurrentProject.WorkItemTypeForTask);
+		}
+
+		public static WorkItemSummary NewBug()
+		{
+			return NewItem(SpruceContext.Current.CurrentProject.WorkItemTypeForBug);
+		}
+
+		public static WorkItemSummary NewItem(WorkItemType type)
+		{
+			WorkItem item = new WorkItem(type);
+
+			WorkItemSummary summary = new WorkItemSummary();
+			summary.CreatedBy = SpruceContext.Current.CurrentUser;
+			summary.AssignedTo = SpruceContext.Current.CurrentUser;
+			summary.IsNew = true;
+
+			// TODO: useful error messages when there are no states or priorities
+
+			// Populate the valid states
+			summary.ValidStates = new List<string>();
+			foreach (string state in item.Fields["State"].AllowedValues)
+			{
+				summary.ValidStates.Add(state);
+			}
+			summary.State = summary.ValidStates[0];
+
+			// Populate the valid priorties
+			summary.ValidPriorities = new List<string>();
+			foreach (string state in item.Fields["Priority"].AllowedValues)
+			{
+				summary.ValidPriorities.Add(state);
+			}
+			summary.Priority = int.Parse(summary.ValidPriorities[0]);
+
+
+			return summary;
+		}
+
+		public static IList<IterationSummary> IterationsForProject(string projectName)
+		{
+			List<IterationSummary> list = new List<IterationSummary>();
+
+			foreach (Node areaNode in SpruceContext.Current.WorkItemStore.Projects[projectName].IterationRootNodes)
+			{
+				list.Add(new IterationSummary()
+				{
+					Name = areaNode.Name,
+					Path = areaNode.Path,
+				});
+			}
+
+			return list;
+		}
+
+		public static IList<AreaSummary> AreasForProject(string projectName)
+		{
+			List<AreaSummary> list = new List<AreaSummary>();
+
+			foreach (Node areaNode in SpruceContext.Current.WorkItemStore.Projects[projectName].AreaRootNodes)
+			{
+				list.Add(new AreaSummary()
+				{
+					Name = areaNode.Name,
+					Path = areaNode.Path,
+				});
+			}
+
+			return list;
 		}
 		
 		public static WorkItemSummary ItemById(int id)
@@ -44,10 +175,19 @@ namespace Spruce.Models
 			WorkItem item = SpruceContext.Current.WorkItemStore.GetWorkItem(id);
 			WorkItemSummary summary = ToWorkItemSummary(item);
 
+			// TODO: useful error messages when there are no states or priorities
+
+			// Populate the valid states, priorties
 			summary.ValidStates = new List<string>();
 			foreach (string state in item.Fields["State"].AllowedValues)
 			{
 				summary.ValidStates.Add(state);
+			}
+
+			summary.ValidPriorities = new List<string>();
+			foreach (string state in item.Fields["Priority"].AllowedValues)
+			{
+				summary.ValidPriorities.Add(state);
 			}
 
 			return summary;
@@ -113,9 +253,9 @@ namespace Spruce.Models
 			if (item.Fields.Contains("Priority"))
 				summary.Priority = int.Parse(item.Fields["Priority"].Value.ToString());
 
-			// change to dynamic field for other install types: Model.Fields["Repro Steps"].Value
-			if (!string.IsNullOrEmpty(Settings.DescriptionField) && string.IsNullOrEmpty(item.Description))
-				summary.Description = GetFieldValue(item,Settings.DescriptionField);
+			// For CMMI projects
+			if (!string.IsNullOrEmpty("Repro Steps") && string.IsNullOrEmpty(item.Description))
+				summary.Description = GetFieldValue(item, "Repro Steps");
 
 			return summary;
 		}

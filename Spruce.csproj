@@ -103,6 +103,7 @@
     <Content Include="Assets\Images\back_enabled.jpg" />
     <Content Include="Assets\Images\bg.png" />
     <Content Include="Assets\Images\close.png" />
+    <Content Include="Assets\Images\favicon.png" />
     <Content Include="Assets\Images\forward_disabled.jpg" />
     <Content Include="Assets\Images\forward_enabled.jpg" />
     <Content Include="Assets\Images\headerbg.png" />
@@ -113,7 +114,12 @@
     <Content Include="Assets\Images\stickynote-large.png" />
     <Content Include="Assets\Images\stickynote-medium.png" />
     <Content Include="Assets\Images\whitetooltipbg.png" />
+    <Content Include="Assets\Scripts\jquery.extensions.min.js" />
+    <Content Include="Assets\Scripts\jquery.form-extensions.min.js" />
+    <Content Include="Assets\Scripts\jquery.tipTip.minified.js" />
     <Content Include="Assets\Scripts\jquery.tools.min.js" />
+    <Content Include="Assets\Scripts\spruce.js" />
+    <Content Include="Assets\Scripts\tipTip.css" />
     <Content Include="Global.asax" />
     <Content Include="Assets\Scripts\jquery.dataTables.min.js" />
     <Content Include="Views\Home\AllTasks.aspx" />

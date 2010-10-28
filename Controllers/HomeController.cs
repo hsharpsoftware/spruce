@@ -30,7 +30,7 @@ namespace Spruce
 			return View("Index", WorkItemManager.AllClosedBugs().ToList());
 		}
 
-		public ActionResult Tasks()
+		public ActionResult AllTasks()
 		{
 			return View("AllTasks", WorkItemManager.AllTasks().ToList());
 		}
@@ -41,33 +41,89 @@ namespace Spruce
 			return View(item);
 		}
 
-		[HttpGet]
-		public ActionResult New()
+		public ActionResult SaveSettings(string project,string iteration,string area,string states)
 		{
-			ViewData["States"] = SpruceContext.Current.CurrentProject.AllowedStates;
-			ViewData["Priorities"] = SpruceContext.Current.CurrentProject.AllowedPriorities;
+			if (project != SpruceContext.Current.CurrentProject.Name)
+			{
+				SpruceContext.Current.SetProject(project);
+			}
+
+			FilterSettings settings = SpruceContext.Current.FilterSettings;
+			settings.AreaPath = area;
+			settings.IterationPath = iteration;
+			settings.States = states;
+
+			return RedirectToAction("Index");
+		}
+
+		public ActionResult Resolve(int id)
+		{
+			WorkItemManager.Resolve(id);
+			return RedirectToAction("View", new { id = id });
+		}
+
+		public ActionResult Close(int id)
+		{
+			WorkItemManager.Close(id);
+			return RedirectToAction("View", new { id = id });
+		}
+
+		public ActionResult GetIterationsForProject(string projectName)
+		{
+			return Json(WorkItemManager.IterationsForProject(projectName));
+		}
+
+		[HttpGet]
+		public ActionResult NewBug(string id)
+		{
+			WorkItemSummary item = WorkItemManager.NewBug();
+
+			if (!string.IsNullOrWhiteSpace(id))
+				item.Title = id;
+
+			ViewData["Message"] = "New bug";
+			ViewData["States"] = item.ValidStates;
+			ViewData["Priorities"] = item.ValidPriorities;
 			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
 			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
 			ViewData["Users"] = SpruceContext.Current.Users;
-
-			WorkItemSummary item = new WorkItemSummary();
-			item.Priority = 1;
-			item.Title = "Enter your title";
-			item.Description = "Enter a brief description. See your project template for guidance";
-			item.IsNew = true;
+			
 			return View("Edit",item);
 		}
 
 		[HttpPost]
-		public ActionResult New(WorkItemSummary item)
+		public ActionResult NewBug(WorkItemSummary item)
 		{
-			// TODO: Validation
 			item.CreatedBy = SpruceContext.Current.CurrentUser;
 			item.IsNew = true;
-			item.State = "Active";
 			WorkItemManager.SaveBug(item);
 
 			return RedirectToAction("Index");
+		}
+
+		[HttpGet]
+		public ActionResult NewTask()
+		{
+			WorkItemSummary item = WorkItemManager.NewTask();
+
+			ViewData["Message"] = "New task";
+			ViewData["States"] = item.ValidStates;
+			ViewData["Priorities"] = item.ValidPriorities;
+			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
+			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
+			ViewData["Users"] = SpruceContext.Current.Users;
+
+			return View("Edit", item);
+		}
+
+		[HttpPost]
+		public ActionResult NewTask(WorkItemSummary item)
+		{
+			item.CreatedBy = SpruceContext.Current.CurrentUser;
+			item.IsNew = true;
+			WorkItemManager.SaveTask(item);
+
+			return RedirectToAction("AllTasks");
 		}
 
 		[HttpGet]
@@ -77,7 +133,7 @@ namespace Spruce
 			item.IsNew = false;
 
 			ViewData["States"] = item.ValidStates;
-			ViewData["Priorities"] = SpruceContext.Current.CurrentProject.AllowedPriorities;
+			ViewData["Priorities"] = item.ValidPriorities;
 			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
 			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
 			ViewData["Users"] = SpruceContext.Current.Users;
@@ -88,7 +144,7 @@ namespace Spruce
 		[HttpPost]
 		public ActionResult Edit(WorkItemSummary item)
 		{
-			WorkItemManager.SaveBug(item);
+			WorkItemManager.SaveExisting(item);
 			return RedirectToAction("Index");
 		}
     }

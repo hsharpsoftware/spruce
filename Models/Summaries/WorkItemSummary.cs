@@ -19,9 +19,11 @@ namespace Spruce.Models
 		public int? Priority { get; set; }
 
 		public IList<string> ValidStates { get; set; }
+		public IList<string> ValidPriorities { get; set; }
 
 		public WorkItemSummary()
 		{
+			ValidStates = new List<string>();
 			ValidStates = new List<string>();
 		}
 	}

@@ -23,13 +23,5 @@ namespace Spruce.Models
 				return ConfigurationManager.AppSettings["DefaultProjectName"];
 			}
 		}
-
-		public static string DescriptionField
-		{
-			get
-			{
-				return ConfigurationManager.AppSettings["DescriptionField"];
-			}
-		}
 	}
 }

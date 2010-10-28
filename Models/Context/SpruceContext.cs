@@ -5,6 +5,7 @@ using System.Web;
 using Microsoft.TeamFoundation.Client;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.Server;
+using System.Xml;
 
 namespace Spruce.Models
 {

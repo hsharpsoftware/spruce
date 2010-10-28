@@ -3,33 +3,29 @@
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function ()
 {
-	$("#workitems").dataTable();
+	$("#workitems-table").dataTable();
 
 	var currentAction = "<%=ViewContext.Controller.ValueProvider.GetValue("action").RawValue%>".toLowerCase();
 	highlightNavItem("#navitem-"+currentAction);
+
+	// Add return key support for the new box
+	$("#newitem-textbox").bind("keypress", function(e)
+	{
+		var code = (e.keyCode ? e.keyCode : e.which);
+		 if(code == 13) { 
+			addBug();
+		 }
+	});
 });
 </script>
 
-<!--
-Active,closed,resolved
-Iterations
-Areas
-Assigned to
-Resolved by
-
-History
-Links
-Quick add
-Favourites
--->
-
-<table id="workitems">
+<table id="workitems-table">
 	<thead>
 		<tr>
-            <th style="width:5%">ID</th>
-            <th style="width:65%">Title</th>
-            <th style="width:15%">Assigned to</th>
-            <th style="width:15%">Status</th>
+			<th style="width:5%">ID</th>
+			<th style="width:60%">Title</th>
+			<th style="width:20%">Assigned to</th>
+			<th style="width:15%">Status</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -43,6 +39,16 @@ Favourites
 	<%} %>
 	</tbody>
 </table>
+<br style="clear:both" />
+
+<div id="newitem-container">
+    <div id="newitem">&gt;&nbsp;<a href="javascript:toggleNewItem()">New bug</a></div>
+    <div id="newitem-textbox">
+        <input type="text" id="textbox-newitem" style="width:350px;" />
+        <input type="button" value="Save" onclick="addBug()" />
+        <input type="button" value="Cancel" onclick="toggleNewItem()" />
+    </div>
+</div>
 </asp:Content>
 
 

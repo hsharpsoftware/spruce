@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Microsoft.TeamFoundation.Server;
 
 namespace Spruce.Models
 {
@@ -25,7 +26,7 @@ namespace Spruce.Models
 		public List<string> AllowedSeverities { get; private set; }
 		public List<string> AllowedStates { get; private set; }
 		public List<string> Users { get; private set; }
-		public IList<AreaSummary> Areas { get; private set; }
+		public IList<AreaSummary> Areas { get; internal set; }
 		public IList<IterationSummary> Iterations { get; private set; }
 
 		public WorkItemType WorkItemTypeForBug { get; private set; }
@@ -75,16 +76,36 @@ namespace Spruce.Models
 					Path = areaNode.Path,
 				});
 			}
+
+			// If there are no subnodes, use the project name
+			if (Areas.Count == 0)
+			{
+				Areas.Add(new AreaSummary()
+				{
+					Name = _project.Name,
+					Path = _project.Name,
+				});
+			}
 		}
 
 		private void AddIterations()
 		{
-			foreach (Node areaNode in _project.IterationRootNodes)
+			foreach (Node iterationNode in _project.IterationRootNodes)
 			{
 				Iterations.Add(new IterationSummary()
 				{
-					Name = areaNode.Name,
-					Path = areaNode.Path,
+					Name = iterationNode.Name,
+					Path = iterationNode.Path,
+				});
+			}
+
+			// If there are no subnodes, use the project name
+			if (Iterations.Count == 0)
+			{
+				Iterations.Add(new IterationSummary()
+				{
+					Name = _project.Name,
+					Path = _project.Name,
 				});
 			}
 		}

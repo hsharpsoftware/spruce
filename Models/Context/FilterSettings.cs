@@ -9,15 +9,11 @@ namespace Spruce.Models
 	{
 		public string AreaPath { get; set; }
 		public string IterationPath { get; set; }
-		public ItemState States { get; set; }
 
-		[Flags]
-		public enum ItemState
-		{
-			Closed = 0,
-			Resolved = 1,
-			Active = 2,
-			All = Closed | Resolved | Active
-		}
+		/// <summary>
+		/// A comma separated list of states, e.g. active,resolved. An empty value
+		/// denotes any states.
+		/// </summary>
+		public string States { get; set; }
 	}
 }

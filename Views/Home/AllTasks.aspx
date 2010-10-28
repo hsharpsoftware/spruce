@@ -11,11 +11,15 @@ $(document).ready(function ()
 <div id="taskscontainer">
 	<%foreach (WorkItemSummary item in Model){ %>
 	<div id="task">
-		<h1>#<%=item.Id%></h1>
-		<h1><a href="/Spruce/Home/View/<%=item.Id%>"><%=item.Title %></a></h1>
+		<h1>
+			<span class="workitem-id">#<%=item.Id%></span><br />
+			<a href="/Spruce/Home/View/<%=item.Id%>"><%=item.Title %></a>
+		</h1>
 		<p>
-		Assigned to <%=item.AssignedTo %> (<%=item.State %>)
+		Assigned to <%=item.AssignedTo %> (<%=item.State %>)<br />
+		<span style="font-size:0.6em"><%=item.CreatedDate.ToShortDateString()%></div>
 		</p>
+		
 	</div>
 	<%} %>
 </div>

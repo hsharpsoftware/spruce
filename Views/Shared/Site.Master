@@ -2,71 +2,61 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
-	<!-- Datatable -->
+    <title>Project <%=SpruceContext.Current.CurrentProject.Name %></title>
 	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery-1.4.1.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.extensions.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.form-extensions.min.js"></script>
 	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.dataTables.min.js"></script>
 
-	<!-- Tooltip + overlay -->
+	<!-- Tiptip -->
+	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.tipTip.minified.js"></script>
+	<link href="/Spruce/Assets/Scripts/tipTip.css" rel="stylesheet" type="text/css" />
+
 	<script type="text/javascript" src="/Spruce/Assets/Scripts/jquery.tools.min.js"></script>
+	<link rel="shortcut icon" href="/Spruce/Assets/Images/favicon.png"> 
 
-	<script type="text/javascript">
-		$(document).ready(function () {
-			$("#menubutton").tooltip({ position: "bottom right", opacity: 0.7 });
-			$("#navitem-index a").tooltip({ position: "bottom center", opacity: 0.7 });
-			$("#menubutton[rel]").overlay();
-		});
-
-		function foo()
-		{
-			
-		}
-
-		function toggleNewItem()
-		{
-			$("#newitem").toggle();
-			$("#newitem-textbox").toggle();
-			$("#newitembox").focus();
-		}
-
-		function highlightNavItem(id)
-		{
-			$(id).addClass("selected");
-		}
-    </script>
+	<script type="text/javascript" src="/Spruce/Assets/Scripts/spruce.js"></script>
 	<link href="/Spruce/Assets/CSS/site.css" rel="stylesheet" type="text/css" />
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body>
-    <form id="form1" runat="server">
-		<div id="header">
-			<div id="headertop">
-				<span id="loggedInAs">Logged in as <%=SpruceContext.Current.CurrentUser %></span>
-			</div>
-			<br style="clear:both" />
-			<div id="logocontainer">
-				<img src="/Spruce/Assets/Images/logo.png" />
-			</div>
-			<div id="navcontainer">
-				<ul id="nav">
-					<li><a href="javascript:;" id="menubutton" rel="#settingswindow" title="Display the settings and filters window">Settings</a></li>
-					<li id="navitem-index"><a href="/Spruce/Home/Index" title="All workitems for the current project">All bugs</a></li>
-					<li id="navitem-active"><a href="/Spruce/Home/Active">Active bugs</a></li>
-					<li id="navitem-closed"><a href="/Spruce/Home/Closed">Closed bugs</a></li>
-					<li id="navitem-tasks"><a href="/Spruce/Home/Tasks">Tasks</a></li>
-					<li id="navitem-allitems"><a href="/Spruce/Home/AllItems">All items</a></li>
-				</ul>
-			</div>
+	<!-- Header -->
+	<div id="header">
+		<div id="headertop">
+			<span id="loginname">Logged in as <%=SpruceContext.Current.CurrentUser %></span>
 		</div>
+		<br style="clear:both" />
+		<div id="logocontainer">
+			<img src="/Spruce/Assets/Images/logo.png" />
+		</div>
+		<div id="navcontainer">
+			<ul id="nav">
+				<li><a href="/Spruce/Home/NewBug" title="Add a new bug to the system">New bug</a></li>
+				<li><a href="/Spruce/Home/NewTask" title="Add a new task to the system">New task</a></li>
+				<li id="navitem-index"><a href="/Spruce/Home/Index" title="All bugs for the current project">All bugs</a></li>
+				<li id="navitem-active"><a href="/Spruce/Home/Active" title="All active bugs for the current project">Active bugs</a></li>
+				<li id="navitem-closed"><a href="/Spruce/Home/Closed" title="All closed bugs for the current project">Closed bugs</a></li>
+				<li id="navitem-tasks"><a href="/Spruce/Home/AllTasks" title="All tasks for the current project">Tasks</a></li>
+				<li id="navitem-allitems"><a href="/Spruce/Home/AllItems" title="Every type of work item for the current project">All items</a></li>
+				<li><a href="#" id="menubutton" rel="#settingswindow" title="Sets the current project and filter options">Settings</a></li>
+			</ul>
+		</div>
+	</div>
 		
-		<br style="clear:both;"/>		
+	<br style="clear:both;"/>		
 
-		<div id="container">
-			<br style="clear:both" /><br />
-			<asp:ContentPlaceHolder ID="MainContent" runat="server" />
-		</div>
-    </form>
+	<!-- Main content area -->
+	<div id="container">
+		<h1 id="projectname">Project <%=SpruceContext.Current.CurrentProject.Name %></h1>
+		<br style="clear:both" /><br />
+		<asp:ContentPlaceHolder ID="MainContent" runat="server" />
+	</div>
 
+	<br style="clear:both;"/>
+	<br />
+
+	<!-- Settings dialog -->
+	<%using(Html.BeginForm("SaveSettings","Home")){ %>
 	<div id="settingswindow" class="simple_overlay">
 		<div id="settingscontainer">
 			<h1>Settings</h1>
@@ -74,50 +64,40 @@
 			<div class="settingsitem">
 				<div class="settingslabel">Project:</div>
 				<div class="settingsfield">
-					<select>
-						<option>Project1</option>
-						<option>Project2</option>
-					</select>
+					<%=Html.DropDownBoxFromList("project", SpruceContext.Current.ProjectNames, SpruceContext.Current.CurrentProject.Name)%>
 				</div>
 			</div>
 
 			<br style="clear:both;" />
 			<h2>Filters</h2>
-
+			<p>These are default filters for the 'custom' list.</p>
 			<div class="settingsitem">
 				<div class="settingslabel">Iteration:</div>
 				<div class="settingsfield">
-					<select>
-						<option>All</option>
-						<option>Iteration1</option>
-						<option>Iteration2</option>
-					</select>
+					<%=Html.DropDownBoxForIterations("iteration", SpruceContext.Current.CurrentProject.Iterations, SpruceContext.Current.FilterSettings.IterationPath)%>
 				</div>
 			</div>
 
 			<div class="settingsitem">
 				<div class="settingslabel">Area:</div>
 				<div class="settingsfield">
-				<select>
-					<option>All</option>
-					<option>Area1</option>
-					<option>Iteration2</option>
-				</select>
+				<%=Html.DropDownBoxForAreas("area", SpruceContext.Current.CurrentProject.Areas, SpruceContext.Current.FilterSettings.AreaPath)%>
 				</div>
 			</div>
 
 			<div class="settingsitem">		
 				<div class="settingslabel">State:</div>
 				<div class="settingsfield">
-					<input type="checkbox" value="" />Active
-					<input type="checkbox" value="" />Resolved
-					<input type="checkbox" value="" />Closed
+					<input type="checkbox" id="settings-active" value="" />Active
+					<input type="checkbox" id="settings-resolved" value="" />Resolved
+					<input type="checkbox" id="settings-closed" value="" />Closed
 				</div>
 			</div>
 
 			<br style="clear:both;" />
-			<input type="button" value="Save" id="button-savesettings" />
+			<input type="submit" value="Save" id="settings-savebutton" />
 		</div>
 	</div>
+	<%} %>
 </body>
 </html>
