@@ -13,7 +13,7 @@ $(document).ready(function ()
 	<div id="task">
 		<h1>
 			<span class="workitem-id">#<%=item.Id%></span><br />
-			<a href="/Spruce/Home/View/<%=item.Id%>"><%=item.Title %></a>
+			<a href="/Tfs/Spruce/Home/View/<%=item.Id%>"><%=item.Title %></a>
 		</h1>
 		<p>
 		Assigned to <%=item.AssignedTo %> (<%=item.State %>)<br />

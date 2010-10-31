@@ -2,42 +2,42 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>Project <%=SpruceContext.Current.CurrentProject.Name %></title>
-	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery-1.4.1.min.js"></script>
-	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.extensions.min.js"></script>
-	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.form-extensions.min.js"></script>
-	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.dataTables.min.js"></script>
+    <title>Project <%=ViewData["CurrentProjectName"]%></title>
+	<script type="text/javascript" language="javascript" src="/Tfs/Spruce/Assets/Scripts/jquery-1.4.1.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/Tfs/Spruce/Assets/Scripts/jquery.extensions.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/Tfs/Spruce/Assets/Scripts/jquery.form-extensions.min.js"></script>
+	<script type="text/javascript" language="javascript" src="/Tfs/Spruce/Assets/Scripts/jquery.dataTables.min.js"></script>
 
 	<!-- Tiptip -->
-	<script type="text/javascript" language="javascript" src="/Spruce/Assets/Scripts/jquery.tipTip.minified.js"></script>
-	<link href="/Spruce/Assets/Scripts/tipTip.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" language="javascript" src="/Tfs/Spruce/Assets/Scripts/jquery.tipTip.minified.js"></script>
+	<link href="/Tfs/Spruce/Assets/Scripts/tipTip.css" rel="stylesheet" type="text/css" />
 
-	<script type="text/javascript" src="/Spruce/Assets/Scripts/jquery.tools.min.js"></script>
-	<link rel="shortcut icon" href="/Spruce/Assets/Images/favicon.png"> 
+	<script type="text/javascript" src="/Tfs/Spruce/Assets/Scripts/jquery.tools.min.js"></script>
+	<link rel="shortcut icon" href="/Tfs/Spruce/Assets/Images/favicon.png"> 
 
-	<script type="text/javascript" src="/Spruce/Assets/Scripts/spruce.js"></script>
-	<link href="/Spruce/Assets/CSS/site.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="/Tfs/Spruce/Assets/Scripts/spruce.js"></script>
+	<link href="/Tfs/Spruce/Assets/CSS/site.css" rel="stylesheet" type="text/css" />
     <asp:ContentPlaceHolder ID="head" runat="server" />
 </head>
 <body>
 	<!-- Header -->
 	<div id="header">
 		<div id="headertop">
-			<span id="loginname">Logged in as <%=SpruceContext.Current.CurrentUser %></span>
+			<span id="loginname">Logged in as <%=ViewData["CurrentUser"] %></span>
 		</div>
 		<br style="clear:both" />
 		<div id="logocontainer">
-			<img src="/Spruce/Assets/Images/logo.png" />
+			<img src="/Tfs/Spruce/Assets/Images/logo.png" />
 		</div>
 		<div id="navcontainer">
 			<ul id="nav">
-				<li><a href="/Spruce/Home/NewBug" title="Add a new bug to the system">New bug</a></li>
-				<li><a href="/Spruce/Home/NewTask" title="Add a new task to the system">New task</a></li>
-				<li id="navitem-index"><a href="/Spruce/Home/Index" title="All bugs for the current project">All bugs</a></li>
-				<li id="navitem-active"><a href="/Spruce/Home/Active" title="All active bugs for the current project">Active bugs</a></li>
-				<li id="navitem-closed"><a href="/Spruce/Home/Closed" title="All closed bugs for the current project">Closed bugs</a></li>
-				<li id="navitem-tasks"><a href="/Spruce/Home/AllTasks" title="All tasks for the current project">Tasks</a></li>
-				<li id="navitem-allitems"><a href="/Spruce/Home/AllItems" title="Every type of work item for the current project">All items</a></li>
+				<li><a href="/Tfs/Spruce/Home/NewBug" title="Add a new bug to the system">New bug</a></li>
+				<li><a href="/Tfs/Spruce/Home/NewTask" title="Add a new task to the system">New task</a></li>
+				<li id="navitem-index"><a href="/Tfs/Spruce/Home/Index" title="All bugs for the current project">All bugs</a></li>
+				<li id="navitem-active"><a href="/Tfs/Spruce/Home/Active" title="All active bugs for the current project">Active bugs</a></li>
+				<li id="navitem-closed"><a href="/Tfs/Spruce/Home/Closed" title="All closed bugs for the current project">Closed bugs</a></li>
+				<li id="navitem-tasks"><a href="/Tfs/Spruce/Home/AllTasks" title="All tasks for the current project">Tasks</a></li>
+				<li id="navitem-allitems"><a href="/Tfs/Spruce/Home/AllItems" title="Every type of work item for the current project">All items</a></li>
 				<li><a href="#" id="menubutton" rel="#settingswindow" title="Sets the current project and filter options">Settings</a></li>
 			</ul>
 		</div>
@@ -47,7 +47,25 @@
 
 	<!-- Main content area -->
 	<div id="container">
-		<h1 id="projectname">Project <%=SpruceContext.Current.CurrentProject.Name %></h1>
+		<div id="filterdetails">
+		<h1 id="projectname">Project <%=ViewData["CurrentProjectName"]%></h1>
+		<%
+			if ((bool)ViewData["HasIterationData"])
+			{ 
+		%>	
+			<div style="float:left;margin-right:10px"><b>Iteration:&nbsp;</b><%=ViewData["IterationPath"]%></div>		
+		<%
+			} 
+		%>
+		<%
+			if ((bool)ViewData["HasAreaData"])
+			{ 
+		%>	
+			<div style="float:left;"><b>Area:&nbsp;</b><%=ViewData["AreaPath"]%></div>		
+		<%
+			} 
+		%>
+		</div>
 		<br style="clear:both" /><br />
 		<asp:ContentPlaceHolder ID="MainContent" runat="server" />
 	</div>
@@ -64,7 +82,7 @@
 			<div class="settingsitem">
 				<div class="settingslabel">Project:</div>
 				<div class="settingsfield">
-					<%=Html.DropDownBoxFromList("project", SpruceContext.Current.ProjectNames, SpruceContext.Current.CurrentProject.Name)%>
+					<%=Html.DropDownBoxForProjects("settingsProject")%>
 				</div>
 			</div>
 
@@ -74,14 +92,14 @@
 			<div class="settingsitem">
 				<div class="settingslabel">Iteration:</div>
 				<div class="settingsfield">
-					<%=Html.DropDownBoxForIterations("iteration", SpruceContext.Current.CurrentProject.Iterations, SpruceContext.Current.FilterSettings.IterationPath)%>
+					<%=Html.DropDownBoxForIterations("settingsIteration")%>
 				</div>
 			</div>
 
 			<div class="settingsitem">
 				<div class="settingslabel">Area:</div>
 				<div class="settingsfield">
-				<%=Html.DropDownBoxForAreas("area", SpruceContext.Current.CurrentProject.Areas, SpruceContext.Current.FilterSettings.AreaPath)%>
+				<%=Html.DropDownBoxForAreas("settingsArea")%>
 				</div>
 			</div>
 

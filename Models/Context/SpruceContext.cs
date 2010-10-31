@@ -60,6 +60,9 @@ namespace Spruce.Models
 
 		public void SetProject(string name)
 		{
+			if (string.IsNullOrWhiteSpace(name))
+				throw new ArgumentNullException("The project name was null or empty");
+
 			if (!WorkItemStore.Projects.Contains(name))
 				throw new InvalidOperationException(string.Format("The project {0} doesn't exist.", name));
 

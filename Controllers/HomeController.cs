@@ -20,6 +20,21 @@ namespace Spruce
 			return View("Index", WorkItemManager.AllItems().ToList());
 		}
 
+		public ActionResult Create1000()
+		{
+			for (int i = 0; i < 1000; i++)
+			{
+				WorkItemSummary summary = WorkItemManager.NewBug();
+				summary.Area = SpruceContext.Current.FilterSettings.AreaPath;
+				summary.Iteration = SpruceContext.Current.FilterSettings.IterationPath;
+				summary.Title = "Generated item " + i;
+				summary.Description = "Generated description " + i;
+				WorkItemManager.SaveBug(summary);
+			}
+
+			return View("Index", WorkItemManager.AllItems().ToList());
+		}
+
 		public ActionResult Active()
 		{
 			return View("Index", WorkItemManager.AllActiveBugs().ToList());
@@ -41,17 +56,17 @@ namespace Spruce
 			return View(item);
 		}
 
-		public ActionResult SaveSettings(string project,string iteration,string area,string states)
+		public ActionResult SaveSettings(string settingsProject,string settingsIteration,string settingsArea,string settingsStates)
 		{
-			if (project != SpruceContext.Current.CurrentProject.Name)
+			if (settingsProject != SpruceContext.Current.CurrentProject.Name)
 			{
-				SpruceContext.Current.SetProject(project);
+				SpruceContext.Current.SetProject(settingsProject);
 			}
 
 			FilterSettings settings = SpruceContext.Current.FilterSettings;
-			settings.AreaPath = area;
-			settings.IterationPath = iteration;
-			settings.States = states;
+			settings.AreaPath = settingsArea;
+			settings.IterationPath = settingsIteration;
+			settings.States = settingsStates;
 
 			return RedirectToAction("Index");
 		}
@@ -66,11 +81,6 @@ namespace Spruce
 		{
 			WorkItemManager.Close(id);
 			return RedirectToAction("View", new { id = id });
-		}
-
-		public ActionResult GetIterationsForProject(string projectName)
-		{
-			return Json(WorkItemManager.IterationsForProject(projectName));
 		}
 
 		[HttpGet]

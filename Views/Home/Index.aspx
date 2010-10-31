@@ -31,7 +31,7 @@ $(document).ready(function ()
 	<tbody>
 	<%foreach (WorkItemSummary item in Model){ %>
 		<tr>
-			<td><a href="/Spruce/Home/View/<%=item.Id%>"><%=item.Id%></a></td>
+			<td><a href="/Tfs/Spruce/Home/View/<%=item.Id%>"><%=item.Id%></a></td>
 			<td><%=item.Title %></td>
 			<td><%=item.AssignedTo %></td>
 			<td><%=item.State %></td>

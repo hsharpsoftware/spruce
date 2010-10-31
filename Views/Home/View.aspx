@@ -11,13 +11,13 @@
         </div>
         <div id="favouritebar">
             <div id="bottom-info"><%=Model.CreatedDate.ToString()%>&nbsp;|&nbsp;<b>Area:</b> <%=Model.Area%>&nbsp;|&nbsp;<b>Iteration:</b> <%=Model.Iteration%></div>
-            <div style="float:right;"><a href="javascript:;"><img src="/Spruce/Assets/Images/star_on.png" border="0" /></a></div>
+            <div style="float:right;"><a href="javascript:;"><img src="/Tfs/Spruce/Assets/Images/star_on.png" border="0" /></a></div>
         </div>
         <br style="clear:both"/>
         <div id="actionbar">
-            <a href="/Spruce/Home/Edit/<%=Model.Id %>">Edit</a>&nbsp;|&nbsp;
-            <a href="/Spruce/Home/Resolve/<%=Model.Id %>">Resolve</a>&nbsp;|&nbsp;
-            <a href="/Spruce/Home/Close/<%=Model.Id %>">Close</a>
+            <a href="/Tfs/Spruce/Home/Edit/<%=Model.Id %>">Edit</a>&nbsp;|&nbsp;
+            <a href="/Tfs/Spruce/Home/Resolve/<%=Model.Id %>">Resolve</a>&nbsp;|&nbsp;
+            <a href="/Tfs/Spruce/Home/Close/<%=Model.Id %>">Close</a>
         </div>
     </div>
 

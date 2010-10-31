@@ -1,11 +1,12 @@
-body { background-image: url('/Spruce/Assets/Images/bg.png');margin:0px; }
+body { background-image: url('/Tfs/Spruce/Assets/Images/bg.png');margin:0px; }
 #container { margin-left: auto;margin-right: auto; width:750px;}
-#header { background-image: url('/Spruce/Assets/Images/headerbg.png');overflow:auto; }
+#header { background-image: url('/Tfs/Spruce/Assets/Images/headerbg.png');overflow:auto; }
 #logocontainer { float:left;margin-top:15px;margin-left:0px }
 
 #headertop { color:White;width:100%;}
 #projectname { border-bottom:1px solid #AAA;}
 #loginname { font-size:0.7em;font-family:Arial;color:#FFF;padding:5px;margin:2px;float:right; }
+#filterdetails { font-size:0.7em;font-family:Arial;color:#3c3b3b;width:600px;}
     
 h1 { color: #333333; font-family:Calibri,helvetica;font-size:2em; margin:0px; } 
 h2 { color: #4582b5;font-family:Calibri,helvetica;font-size:1.1em;margin:0px; }
@@ -34,7 +35,7 @@ a { color:#333333; }
 
 /* Tables */
 #workitems-table { clear:both;margin: 10px 0;background-color: #FFF;border-collapse:collapse;width:750px;border:solid 1px #3671a1;-moz-box-shadow:0 0 10px 5px #AAA;-webkit-box-shadow: 0 0 10px #AAA; }  
-#workitems-table thead th { background-color: #333333;font-family:Arial,helvetica;font-size:1.1em;padding:10px;font-weight:bold;color: #FFF;text-align:left;}
+#workitems-table thead th { background-color: #333333;cursor:pointer;font-family:Arial,helvetica;font-size:1.1em;padding:10px;font-weight:bold;color: #FFF;text-align:left;}
 #workitems-table tbody td { color: #000;font-family:Calibri,helvetica;font-size:1.2em;padding:10px;text-align:left; }
     
 #newitem-container {font-family:Arial,helvetica;font-size:10pt;margin-top:10px;}
@@ -62,14 +63,14 @@ a { color:#333333; }
 	text-align: right;
 	width: 44px;
 }
-.paginate_disabled_previous { background-image: url('/Spruce/Assets/Images/back_disabled.jpg');}
-.paginate_enabled_previous { background-image: url('/Spruce/Assets/Images/back_enabled.jpg');}
-.paginate_disabled_next { background-image: url('/Spruce/Assets/Images/forward_disabled.jpg');}
-.paginate_enabled_next { background-image: url('/Spruce/Assets/Images/forward_enabled.jpg');}
+.paginate_disabled_previous { background-image: url('/Tfs/Spruce/Assets/Images/back_disabled.jpg');}
+.paginate_enabled_previous { background-image: url('/Tfs/Spruce/Assets/Images/back_enabled.jpg');}
+.paginate_disabled_next { background-image: url('/Tfs/Spruce/Assets/Images/forward_disabled.jpg');}
+.paginate_enabled_next { background-image: url('/Tfs/Spruce/Assets/Images/forward_enabled.jpg');}
 
 /* ===== Tasks ===== */
 #taskscontainer { width:1000px;}
-#task { background-image: url('/Spruce/Assets/Images/stickynote-large.png');width:185px;height:188px;padding:20px;float:left; }
+#task { background-image: url('/Tfs/Spruce/Assets/Images/stickynote-large.png');width:185px;height:188px;padding:20px;float:left; }
 #task h1 { font-size:1.2em; }
 #task a { text-decoration:none; }
 #task a:hover { color:#ABABAB; }
@@ -130,7 +131,7 @@ select { margin-top:10px; border: 1px solid #DEDEDE; }
 
 /* close button positioned on upper right corner */
 .simple_overlay .close {
-	background-image:url('/Spruce/Assets/Images/close.png');
+	background-image:url('/Tfs/Spruce/Assets/Images/close.png');
 	position:absolute;
 	right:-15px;
 	top:-15px;

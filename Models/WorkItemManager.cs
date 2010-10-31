@@ -195,7 +195,9 @@ namespace Spruce.Models
 
 		public static IList<WorkItemSummary> AllBugs()
 		{
-			string query = string.Format("SELECT ID, Title from Issue WHERE System.TeamProject = '{0}' AND [Work Item Type]='Bug' ORDER BY Id DESC", ProjectNameForSql());
+			string query = string.Format("SELECT ID, Title from Issue WHERE "+
+				"System.TeamProject = '{0}' AND [Work Item Type]='Bug' {1}" +
+				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
 
 			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
 
@@ -204,15 +206,21 @@ namespace Spruce.Models
 
 		public static IList<WorkItemSummary> AllItems()
 		{
-			string query = string.Format("SELECT ID, Title from Issue WHERE System.TeamProject = '{0}' ORDER BY Id DESC", ProjectNameForSql());
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = '{0}' {1}" +
+				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
+
 			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
 
 			return ToWorkItemSummaryList(collection);
 		}
 
 		public static IList<WorkItemSummary> AllClosedBugs()
-		{	
-			string query = string.Format("SELECT ID, Title from Issue WHERE System.TeamProject = '{0}' AND [Work Item Type]='Bug' AND State='Closed' ORDER BY Id DESC", ProjectNameForSql());
+		{
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = '{0}' AND [Work Item Type]='Bug' AND State='Closed' {1}" +
+				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
+			
 			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
 
 			return ToWorkItemSummaryList(collection);
@@ -220,18 +228,41 @@ namespace Spruce.Models
 
 		public static IList<WorkItemSummary> AllActiveBugs()
 		{
-			string query = string.Format("SELECT ID, Title from Issue WHERE System.TeamProject = '{0}' AND [Work Item Type]='Bug' AND State='Active' ORDER BY Id DESC", ProjectNameForSql());
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = '{0}' AND [Work Item Type]='Bug' AND State='Active' {1}" +
+				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
+
 			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
 
 			return ToWorkItemSummaryList(collection);
 		}
 
 		public static IList<WorkItemSummary> AllTasks()
-		{		
-			string query = string.Format("SELECT ID, Title from Issue WHERE System.TeamProject = '{0}' AND [Work Item Type]='Task' AND State='Active' ORDER BY Id", ProjectNameForSql());
+		{
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = '{0}' AND [Work Item Type]='Task' AND State='Active' {1}" +
+				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
+
 			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
 
 			return ToWorkItemSummaryList(collection);
+		}
+
+		private static string AddSqlForPaths()
+		{
+			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.FilterSettings.IterationPath))
+			{
+				return string.Format("AND [Iteration Path]='{0}'",
+					SpruceContext.Current.FilterSettings.IterationPath.Replace("'", "''"));
+			}
+
+			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.FilterSettings.AreaPath))
+			{
+				return string.Format("AND [Area Path]='{0}'",
+					SpruceContext.Current.FilterSettings.AreaPath.Replace("'", "''"));
+			}
+
+			return "";
 		}
 
 		private static WorkItemSummary ToWorkItemSummary(WorkItem item)
