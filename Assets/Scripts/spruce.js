@@ -2,6 +2,7 @@
 	$("#nav a").tipTip({ delay: 100 });
 	$("#menubutton").overlay(); // settings button click
 	chainSettingsOptions();
+	bindFormSubmit();
 });
 
 function highlightNavItem(id) {
@@ -33,25 +34,27 @@ function chainSettingsOptions() {
 //
 // Primitive form error handling for now.
 //
-$("#editform").submit(function () {
-	$("#Title").removeClass("textbox-error");
-	$("#Description").removeClass("textbox-error");
+function bindFormSubmit() {
+	$("#editform").submit(function () {
+		$("#Title").removeClass("textbox-error");
+		$("#Description").removeClass("textbox-error");
 
-	if ($("#Title").val().length < 1) {
-		$("#Title").addClass("textbox-error");
-		//$("#Title").expose();
-		$("#Title").focus();
-		return false;
-	}
-	if ($("#Description").val().length < 1) {
-		$("#Description").addClass("textbox-error");
-		//$("#Description").expose();
-		$("#Description").focus();
-		return false;
-	}
+		if ($("#Title").val().length < 1) {
+			$("#Title").addClass("textbox-error");
+			//$("#Title").expose();
+			$("#Title").focus();
+			return false;
+		}
+		if ($("#Description").val().length < 1) {
+			$("#Description").addClass("textbox-error");
+			//$("#Description").expose();
+			$("#Description").focus();
+			return false;
+		}
 
-	return true;
-});
+		return true;
+	});
+}
 
 
 function focusTextboxes() {
