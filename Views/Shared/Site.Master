@@ -29,15 +29,12 @@
 		<div id="logocontainer">
 			<img src="/Tfs/Spruce/Assets/Images/logo.png" />
 		</div>
+
 		<div id="navcontainer">
 			<ul id="nav">
 				<li><a href="/Tfs/Spruce/Home/NewBug" title="Add a new bug to the system">New bug</a></li>
 				<li><a href="/Tfs/Spruce/Home/NewTask" title="Add a new task to the system">New task</a></li>
-				<li id="navitem-index"><a href="/Tfs/Spruce/Home/Index" title="All bugs for the current project">All bugs</a></li>
-				<li id="navitem-active"><a href="/Tfs/Spruce/Home/Active" title="All active bugs for the current project">Active bugs</a></li>
-				<li id="navitem-closed"><a href="/Tfs/Spruce/Home/Closed" title="All closed bugs for the current project">Closed bugs</a></li>
-				<li id="navitem-tasks"><a href="/Tfs/Spruce/Home/AllTasks" title="All tasks for the current project">Tasks</a></li>
-				<li id="navitem-allitems"><a href="/Tfs/Spruce/Home/AllItems" title="Every type of work item for the current project">All items</a></li>
+				<li><a href="/Tfs/Spruce/Home/<%=Session["ListLink"] %>" title="Lists the current bugs to tasks">List</a></li>
 				<li><a href="#" id="menubutton" rel="#settingswindow" title="Sets the current project and filter options">Settings</a></li>
 			</ul>
 		</div>
@@ -47,25 +44,7 @@
 
 	<!-- Main content area -->
 	<div id="container">
-		<div id="filterdetails">
 		<h1 id="projectname">Project <%=ViewData["CurrentProjectName"]%></h1>
-		<%
-			if ((bool)ViewData["HasIterationData"])
-			{ 
-		%>	
-			<div style="float:left;margin-right:10px"><b>Iteration:&nbsp;</b><%=ViewData["IterationPath"]%></div>		
-		<%
-			} 
-		%>
-		<%
-			if ((bool)ViewData["HasAreaData"])
-			{ 
-		%>	
-			<div style="float:left;"><b>Area:&nbsp;</b><%=ViewData["AreaPath"]%></div>		
-		<%
-			} 
-		%>
-		</div>
 		<br style="clear:both" /><br />
 		<asp:ContentPlaceHolder ID="MainContent" runat="server" />
 	</div>
@@ -88,7 +67,7 @@
 
 			<br style="clear:both;" />
 			<h2>Filters</h2>
-			<p>These are default filters for the 'custom' list.</p>
+			<p>These are defaults for the list and new bugs/tasks.</p>
 			<div class="settingsitem">
 				<div class="settingslabel">Iteration:</div>
 				<div class="settingsfield">
@@ -103,12 +82,10 @@
 				</div>
 			</div>
 
-			<div class="settingsitem">		
-				<div class="settingslabel">State:</div>
+			<div class="settingsitem">
+				<div class="settingslabel">Maximum items:</div>
 				<div class="settingsfield">
-					<input type="checkbox" id="settings-active" value="" />Active
-					<input type="checkbox" id="settings-resolved" value="" />Resolved
-					<input type="checkbox" id="settings-closed" value="" />Closed
+				<%=Html.DropDownBoxForMaximumItems("settingsMaximumItems")%>
 				</div>
 			</div>
 

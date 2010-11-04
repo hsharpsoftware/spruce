@@ -12,41 +12,31 @@ namespace Spruce
     {
         public ActionResult Index()
         {
-			return View(WorkItemManager.AllBugs().ToList());
+			Session["ListLink"] = "Index";
+			return View("Index", WorkItemManager.AllBugs().ToList());
         }
 
 		public ActionResult AllItems()
 		{
-			return View("Index", WorkItemManager.AllItems().ToList());
-		}
-
-		public ActionResult Create1000()
-		{
-			for (int i = 0; i < 1000; i++)
-			{
-				WorkItemSummary summary = WorkItemManager.NewBug();
-				summary.Area = SpruceContext.Current.FilterSettings.AreaPath;
-				summary.Iteration = SpruceContext.Current.FilterSettings.IterationPath;
-				summary.Title = "Generated item " + i;
-				summary.Description = "Generated description " + i;
-				WorkItemManager.SaveBug(summary);
-			}
-
+			Session["ListLink"] = "AllItems";
 			return View("Index", WorkItemManager.AllItems().ToList());
 		}
 
 		public ActionResult Active()
 		{
+			Session["ListLink"] = "Active";
 			return View("Index", WorkItemManager.AllActiveBugs().ToList());
 		}
 
 		public ActionResult Closed()
 		{
+			Session["ListLink"] = "Closed";
 			return View("Index", WorkItemManager.AllClosedBugs().ToList());
 		}
 
 		public ActionResult AllTasks()
 		{
+			Session["ListLink"] = "AllTasks";
 			return View("AllTasks", WorkItemManager.AllTasks().ToList());
 		}
 
@@ -56,7 +46,7 @@ namespace Spruce
 			return View(item);
 		}
 
-		public ActionResult SaveSettings(string settingsProject,string settingsIteration,string settingsArea,string settingsStates)
+		public ActionResult SaveSettings(string settingsProject,string settingsIteration,string settingsArea,int settingsMaximumItems)
 		{
 			if (settingsProject != SpruceContext.Current.CurrentProject.Name)
 			{
@@ -66,7 +56,7 @@ namespace Spruce
 			FilterSettings settings = SpruceContext.Current.FilterSettings;
 			settings.AreaPath = settingsArea;
 			settings.IterationPath = settingsIteration;
-			settings.States = settingsStates;
+			settings.MaximumItems = settingsMaximumItems;
 
 			return RedirectToAction("Index");
 		}

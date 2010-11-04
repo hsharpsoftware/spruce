@@ -49,6 +49,39 @@ $(document).ready(function ()
         <input type="button" value="Cancel" onclick="toggleNewItem()" />
     </div>
 </div>
+
+<br />
+<div id="filterdetails">
+<%
+if ((bool)ViewData["HasIterationData"] || (bool)ViewData["HasAreaData"])
+{ 
+%>	
+	<%
+		if ((bool)ViewData["HasIterationData"])
+		{ 
+	%>	
+		<div style="float:left;margin-right:10px"><b>Iteration:&nbsp;</b><%=ViewData["IterationPath"]%></div>		
+	<%
+		} 
+	%>
+	<%
+		if ((bool)ViewData["HasAreaData"])
+		{ 
+	%>	
+		<div style="float:left;"><b>Area:&nbsp;</b><%=ViewData["AreaPath"]%></div>		
+	<%
+		}
+	%>
+<br style="clear:both"/>
+<%}%>
+
+	<%=Html.HtmlForListFilters("All bugs", "All bugs for the current project", "Index")%>
+	<%=Html.HtmlForListFilters("Active bugs","All active bugs for the current project","Active")%>
+	<%=Html.HtmlForListFilters("Closed bugs","All closed bugs for the current project","Closed")%>
+	<%=Html.HtmlForListFilters("Tasks","All tasks for the current project","AllTasks")%>
+	<%=Html.HtmlForListFilters("All items", "Every type of work item for the current project", "AllItems")%>
+</div>
+
 </asp:Content>
 
 

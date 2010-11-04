@@ -9,6 +9,35 @@ namespace Spruce.Models
 {
 	public static class HelperExtensions
 	{
+		public static string DropDownBoxForMaximumItems(this HtmlHelper helper, string name)
+		{
+			int selectedValue = SpruceContext.Current.FilterSettings.MaximumItems;
+			List<SelectListItem> selectList = new List<SelectListItem>();
+
+			// There's only 4 options so it's easier to hard code them
+			SelectListItem selectListItem = new SelectListItem() { Text = "All", Value = "0" };
+			if (selectedValue == 0)
+				selectListItem.Selected = true;
+			selectList.Add(selectListItem);
+
+			selectListItem = new SelectListItem() { Text = "25", Value = "25" };
+			if (selectedValue == 25)
+				selectListItem.Selected = true;
+			selectList.Add(selectListItem);
+
+			selectListItem = new SelectListItem() { Text = "50", Value = "50" };
+			if (selectedValue == 50)
+				selectListItem.Selected = true;
+			selectList.Add(selectListItem);
+
+			selectListItem = new SelectListItem() { Text = "100", Value = "100" };
+			if (selectedValue == 100)
+				selectListItem.Selected = true;
+			selectList.Add(selectListItem);
+
+			return helper.DropDownList(name, selectList).ToHtmlString();
+		}
+
 		public static string DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
@@ -99,6 +128,18 @@ namespace Spruce.Models
 			}
 
 			return helper.DropDownList(name, selectList).ToHtmlString();
+		}
+
+		public static string HtmlForListFilters(this HtmlHelper helper, string title,string description,string url)
+		{
+			string link = "<b>" +title+ "</b>";
+
+			if ((string) HttpContext.Current.Session["ListLink"] != url)
+				link = string.Format(@"<a href=""/Tfs/Spruce/Home/{0}"" title=""{1}"">{2}</a>",url,description,title);
+
+			link += "&nbsp;|&nbsp;";
+
+			return link;			
 		}
 	}
 }

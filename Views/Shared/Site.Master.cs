@@ -31,6 +31,10 @@ namespace Spruce
 			{
 				ViewData["AreaPath"] = SpruceContext.Current.FilterSettings.AreaPath.Replace(SpruceContext.Current.CurrentProject.Name + "\\", "");
 			}
+
+			string listLink = (string) Session["ListLink"];
+			if (string.IsNullOrEmpty(listLink))
+				Session["ListLink"] = "Index";
 		}
 	}
 }

@@ -130,15 +130,6 @@
     <Content Include="Assets\Scripts\jquery-1.4.1.js" />
     <Content Include="Assets\Scripts\jquery-1.4.1.min.js" />
     <Content Include="Assets\Scripts\jquery-1.4.1-vsdoc.js" />
-    <Content Include="Assets\Scripts\jquery.validate.js" />
-    <Content Include="Assets\Scripts\jquery.validate.min.js" />
-    <Content Include="Assets\Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Assets\Scripts\MicrosoftAjax.js" />
-    <Content Include="Assets\Scripts\MicrosoftAjax.debug.js" />
-    <Content Include="Assets\Scripts\MicrosoftMvcAjax.js" />
-    <Content Include="Assets\Scripts\MicrosoftMvcAjax.debug.js" />
-    <Content Include="Assets\Scripts\MicrosoftMvcValidation.js" />
-    <Content Include="Assets\Scripts\MicrosoftMvcValidation.debug.js" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\Site.Master" />

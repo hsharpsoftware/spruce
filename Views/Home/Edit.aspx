@@ -16,7 +16,7 @@
 			<%if (Model.Id > 0){ %>
 			<span class="workitem-id">#<%=Model.Id%></span><br />
 			<%} %>
-			<%=Html.TextBoxFor<WorkItemSummary, string>(i => i.Title, new { @class = "textbox-title defaulttext", title = "Enter your title" })%>
+			<%=Html.TextBoxFor<WorkItemSummary, string>(i => i.Title, new { @class = "textbox-title defaulttext", title = "Enter your title",placeholder="Enter your title" })%>
 		</h1>
 		<h2><!-- Assigned to -->
 			Assigned to: 
@@ -40,7 +40,7 @@
 			Iteration:
 			<%=Html.DropDownBoxForIterations("Iteration", (List<IterationSummary>)ViewData["Iterations"], Model.Iteration)%>
 		</h2>
-		<%=Html.TextAreaFor<WorkItemSummary, string>(i => i.Description, new { @class = "textbox-description defaulttext", title = "Enter a brief description. See your project template for guidance" })%>
+		<%=Html.TextAreaFor<WorkItemSummary, string>(i => i.Description, new { @class = "textbox-description defaulttext", title = "Enter a brief description. See your project template for guidance", placeholder = "Enter a brief description. See your project template for guidance" })%>
 	</div>
 	<div id="actionbar" style="text-align:right;">
 		<input type="submit" value="Save" class="button" />

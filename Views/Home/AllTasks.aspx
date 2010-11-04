@@ -8,6 +8,8 @@ $(document).ready(function ()
 });
 </script>
 
+<a href="/Tfs/Spruce/Home/Index" title="All bugs for the current project">&lt; Bugs</a>
+
 <div id="taskscontainer">
 	<%foreach (WorkItemSummary item in Model){ %>
 	<div id="task">

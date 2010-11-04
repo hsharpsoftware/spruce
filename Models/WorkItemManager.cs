@@ -195,74 +195,91 @@ namespace Spruce.Models
 
 		public static IList<WorkItemSummary> AllBugs()
 		{
-			string query = string.Format("SELECT ID, Title from Issue WHERE "+
-				"System.TeamProject = '{0}' AND [Work Item Type]='Bug' {1}" +
-				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
+			Dictionary<string,string> parameters = new Dictionary<string,string>();
+			parameters.Add("project",SpruceContext.Current.CurrentProject.Name);
 
-			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
+			string query = string.Format("SELECT ID, Title from Issue WHERE "+
+				"System.TeamProject = @project AND [Work Item Type]='Bug' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
 
 			return ToWorkItemSummaryList(collection);
 		}
 
 		public static IList<WorkItemSummary> AllItems()
 		{
-			string query = string.Format("SELECT ID, Title from Issue WHERE " +
-				"System.TeamProject = '{0}' {1}" +
-				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
 
-			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
 
 			return ToWorkItemSummaryList(collection);
 		}
 
 		public static IList<WorkItemSummary> AllClosedBugs()
 		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+
 			string query = string.Format("SELECT ID, Title from Issue WHERE " +
-				"System.TeamProject = '{0}' AND [Work Item Type]='Bug' AND State='Closed' {1}" +
-				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
-			
-			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
+				"System.TeamProject = @project AND [Work Item Type]='Bug' AND State='Closed' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
 
 			return ToWorkItemSummaryList(collection);
 		}
 
 		public static IList<WorkItemSummary> AllActiveBugs()
 		{
-			string query = string.Format("SELECT ID, Title from Issue WHERE " +
-				"System.TeamProject = '{0}' AND [Work Item Type]='Bug' AND State='Active' {1}" +
-				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
 
-			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Bug' AND State='Active' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
 
 			return ToWorkItemSummaryList(collection);
 		}
 
 		public static IList<WorkItemSummary> AllTasks()
 		{
-			string query = string.Format("SELECT ID, Title from Issue WHERE " +
-				"System.TeamProject = '{0}' AND [Work Item Type]='Task' AND State='Active' {1}" +
-				"ORDER BY Id DESC", ProjectNameForSql(), AddSqlForPaths());
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
 
-			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query);
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Task' AND State='Active' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
 
 			return ToWorkItemSummaryList(collection);
 		}
 
-		private static string AddSqlForPaths()
+		private static string AddSqlForPaths(Dictionary<string,string> parameters)
 		{
+			string result = "";
+
 			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.FilterSettings.IterationPath))
 			{
-				return string.Format("AND [Iteration Path]='{0}'",
-					SpruceContext.Current.FilterSettings.IterationPath.Replace("'", "''"));
+				parameters.Add("iteration", SpruceContext.Current.FilterSettings.IterationPath);
+				result = " AND [Iteration Path]=@iteration";
 			}
 
 			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.FilterSettings.AreaPath))
 			{
-				return string.Format("AND [Area Path]='{0}'",
-					SpruceContext.Current.FilterSettings.AreaPath.Replace("'", "''"));
+				parameters.Add("area", SpruceContext.Current.FilterSettings.AreaPath);
+				result += " AND [Area Path]=@area";
 			}
 
-			return "";
+			return result;
 		}
 
 		private static WorkItemSummary ToWorkItemSummary(WorkItem item)
@@ -314,7 +331,10 @@ namespace Spruce.Models
 				list.Add(ToWorkItemSummary(item));
 			}
 
-			return list;
+			if (SpruceContext.Current.FilterSettings.MaximumItems >0 )
+				return list.Take(SpruceContext.Current.FilterSettings.MaximumItems).ToList();
+			else
+				return list;
 		}
 
 		private static string ProjectNameForSql()

@@ -3,13 +3,18 @@ body { background-image: url('/Tfs/Spruce/Assets/Images/bg.png');margin:0px; }
 #header { background-image: url('/Tfs/Spruce/Assets/Images/headerbg.png');overflow:auto; }
 #logocontainer { float:left;margin-top:15px;margin-left:0px }
 
+#filterdetails { font-size:0.7em;font-family:Arial;color:#3c3b3b;background-color:#dadecc;width:735px;border:solid 1px #cbcfbe;margin-top:2px;padding:5px; }
+
 #headertop { color:White;width:100%;}
 #projectname { border-bottom:1px solid #AAA;}
 #loginname { font-size:0.7em;font-family:Arial;color:#FFF;padding:5px;margin:2px;float:right; }
-#filterdetails { font-size:0.7em;font-family:Arial;color:#3c3b3b;width:600px;}
+
+#listmenu ul { list-style :none; margin:0;padding:0;list-style-type:none;}
+#listmenu li { float:left;margin:5px;display:inline;list-style-type:none;width:100px;  border:solid 1px #3671a1;-moz-border-radius: 4px;border-radius:4px;}
+#listmenu a { text-align:center;display:block;padding:5px; font-family:Arial,helvetica;font-weight:bold;font-size:0.7em; color:#FFF;text-decoration:none;}
     
 h1 { color: #333333; font-family:Calibri,helvetica;font-size:2em; margin:0px; } 
-h2 { color: #4582b5;font-family:Calibri,helvetica;font-size:1.1em;margin:0px; }
+h2 { color: #6a6d61;font-family:Calibri,helvetica;font-size:1.1em;margin:0px; }
 p,div { color: #000;font-family:Calibri,helvetica;font-size:1em; }
 a { color:#333333; }
 
@@ -29,12 +34,12 @@ a { color:#333333; }
 
 #settings-savebutton{ width:150px;font-family:Arial,helvetica;font-weight:bold;font-size:1.5em;float:right;margin:10px; }
 .settingsitem { clear:both;overflow:auto; }
-.settingslabel { float:left;font-size:1.2em;color:#EFEFEF;width:80px;line-height:40px;}
+.settingslabel { float:left;font-size:1.2em;color:#EFEFEF;width:150px;line-height:40px;}
 .settingsfield { float:left;color:White;font-size:1.2em;line-height:40px;}
 .settingsfield select,.settingsfield option { color:black;line-height:0px;}
 
 /* Tables */
-#workitems-table { clear:both;margin: 10px 0;background-color: #FFF;border-collapse:collapse;width:750px;border:solid 1px #3671a1;-moz-box-shadow:0 0 10px 5px #AAA;-webkit-box-shadow: 0 0 10px #AAA; }  
+#workitems-table { clear:both;margin: 10px 0;background-color: #FFF;border-collapse:collapse;width:750px;border:solid 1px #b4b8a8;-moz-box-shadow:0 0 10px 5px #AAA;-webkit-box-shadow: 0 0 10px #AAA; }  
 #workitems-table thead th { background-color: #333333;cursor:pointer;font-family:Arial,helvetica;font-size:1.1em;padding:10px;font-weight:bold;color: #FFF;text-align:left;}
 #workitems-table tbody td { color: #000;font-family:Calibri,helvetica;font-size:1.2em;padding:10px;text-align:left; }
     
@@ -78,13 +83,13 @@ a { color:#333333; }
 #task h2 { font-size:1em; }
 
 /* ===== View item =====  */
-.workitem-id { color: #CCC; }
+.workitem-id { color: #cbcfbe; }
     
-#itemcontainer { width:750px;border:solid 1px #3671a1;background-color: #FFF;}  
+#itemcontainer { width:750px;border:solid 1px #b4b8a8;background-color: #FFF;}  
 #item { padding: 10px;}
     
 #favouritebar { margin-left:10px;margin-right:10px;margin-bottom:5px; }     
-#bottom-info { color: #5d5d5d;font-size:0.8em;font-family:Calibri,helvetica;float:left; }
+#bottom-info { color: #5d5d5d;font-size:0.8em;border-top: 1px solid #cbcfbe;width:90%;padding-top:3px;font-family:Calibri,helvetica;float:left; }
     
 #actionbar {  background-color: #333333;padding:10px;color: #FFF; }   
 #actionbar a { font-family:Calibri,helvetica;font-size:0.9em;font-weight:bold;color: #FFF; }  

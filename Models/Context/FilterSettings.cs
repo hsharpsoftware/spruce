@@ -7,13 +7,8 @@ namespace Spruce.Models
 {
 	public class FilterSettings
 	{
+		public int MaximumItems { get; set; }
 		public string AreaPath { get; set; }
 		public string IterationPath { get; set; }
-
-		/// <summary>
-		/// A comma separated list of states, e.g. active,resolved. An empty value
-		/// denotes any states.
-		/// </summary>
-		public string States { get; set; }
 	}
 }
