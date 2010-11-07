@@ -46,11 +46,22 @@ namespace Spruce.Models
 			item.Description = summary.Description; // TODO: change to appropriate Field
 			item.Fields["Assigned To"].Value = summary.AssignedTo;
 			item.Fields["State"].Value = summary.State;
-			item.IterationPath = summary.Iteration;
+			item.IterationPath = summary.IterationPath;	
+			item.AreaPath = summary.AreaPath;
 			item.Fields["Priority"].Value = summary.Priority.Value;
-			item.AreaPath = summary.Area;
+
+			// For tasks
+			if (item.Fields.Contains("Original Estimate"))
+			{
+				item.Fields["Original Estimate"].Value = summary.EstimatedHours;
+				item.Fields["Remaining Work"].Value = summary.RemainingHours;
+				item.Fields["Completed Work"].Value = summary.CompletedHours;
+			}
 
 			// For CMMI projects
+			if (item.Fields.Contains("Repro Steps"))
+				item.Fields["Repro Steps"].Value = summary.Description;
+
 			if (item.Fields.Contains("Symptom"))
 				item.Fields["Symptom"].Value = summary.Description;
 
@@ -63,7 +74,7 @@ namespace Spruce.Models
 			}
 			catch (ValidationException e)
 			{
-				
+				throw new SaveException(string.Format("Save failed for '{0}' ({1})", item.Title,e.Message), e);
 			}
 		}
 
@@ -116,7 +127,9 @@ namespace Spruce.Models
 			summary.AssignedTo = SpruceContext.Current.CurrentUser;
 			summary.IsNew = true;
 
-			// TODO: useful error messages when there are no states or priorities
+			// Default area + iteration
+			summary.AreaPath = SpruceContext.Current.FilterSettings.AreaPath;
+			summary.IterationPath = SpruceContext.Current.FilterSettings.IterationPath;
 
 			// Populate the valid states
 			summary.ValidStates = new List<string>();
@@ -126,14 +139,24 @@ namespace Spruce.Models
 			}
 			summary.State = summary.ValidStates[0];
 
-			// Populate the valid priorties
-			summary.ValidPriorities = new List<string>();
-			foreach (string state in item.Fields["Priority"].AllowedValues)
+			// For Bugs: populate the valid priorties
+			if (item.Fields.Contains("Priority"))
 			{
-				summary.ValidPriorities.Add(state);
+				summary.ValidPriorities = new List<string>();
+				foreach (string state in item.Fields["Priority"].AllowedValues)
+				{
+					summary.ValidPriorities.Add(state);
+				}
+				summary.Priority = int.Parse(summary.ValidPriorities[0]);
 			}
-			summary.Priority = int.Parse(summary.ValidPriorities[0]);
 
+			// For tasks: estimates
+			if (item.Fields.Contains("Original Estimate"))
+			{
+				summary.EstimatedHours = item.Fields["Original Estimate"].Value.ToIntOrDefault();
+				summary.EstimatedHours = item.Fields["Remaining Work"].Value.ToIntOrDefault();
+				summary.CompletedHours = item.Fields["Completed Work"].Value.ToIntOrDefault();
+			}
 
 			return summary;
 		}
@@ -290,16 +313,26 @@ namespace Spruce.Models
 				AssignedTo = item.Fields["Assigned To"].Value.ToString(),
 				CreatedDate = item.CreatedDate,
 				CreatedBy = item.CreatedBy,
-				Area = item.AreaPath,
+				AreaName = item.AreaPath.Replace(item.Project.Name+"\\",""),
+				AreaPath = item.AreaPath,
 				Description = item.Description,
-				Iteration = item.IterationPath,
+				IterationName = item.IterationPath.Replace(item.Project.Name+"\\",""),
+				IterationPath = item.IterationPath,
 				ResolvedBy = GetFieldValue(item,"Resolved By"),
 				State = item.State,
 				Title = item.Title
 			};
 
 			if (item.Fields.Contains("Priority"))
-				summary.Priority = int.Parse(item.Fields["Priority"].Value.ToString());
+				summary.Priority = item.Fields["Priority"].Value.ToIntOrDefault();
+
+			// For tasks: estimates
+			if (item.Fields.Contains("Original Estimate"))
+			{
+				summary.EstimatedHours = item.Fields["Original Estimate"].Value.ToIntOrDefault();
+				summary.EstimatedHours = item.Fields["Remaining Work"].Value.ToIntOrDefault();
+				summary.CompletedHours = item.Fields["Completed Work"].Value.ToIntOrDefault();
+			}
 
 			// For CMMI projects
 			if (!string.IsNullOrEmpty("Repro Steps") && string.IsNullOrEmpty(item.Description))
@@ -331,10 +364,7 @@ namespace Spruce.Models
 				list.Add(ToWorkItemSummary(item));
 			}
 
-			if (SpruceContext.Current.FilterSettings.MaximumItems >0 )
-				return list.Take(SpruceContext.Current.FilterSettings.MaximumItems).ToList();
-			else
-				return list;
+			return list;
 		}
 
 		private static string ProjectNameForSql()

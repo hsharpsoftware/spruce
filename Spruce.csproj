@@ -75,13 +75,17 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\AjaxController.cs" />
+    <Compile Include="Controllers\BugsController.cs" />
+    <Compile Include="Controllers\CsvController.cs" />
+    <Compile Include="Controllers\RssController.cs" />
+    <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\SaveException.cs" />
     <Compile Include="Models\Summaries\AreaSummary.cs" />
-    <Compile Include="Models\Context\FilterSettings.cs" />
+    <Compile Include="Models\Context\UserSettings.cs" />
     <Compile Include="Models\HelperExtensions.cs" />
     <Compile Include="Models\Summaries\IterationSummary.cs" />
     <Compile Include="Models\Context\ProjectDetails.cs" />
@@ -99,21 +103,29 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\CSS\common.css" />
+    <Content Include="Assets\CSS\list.css" />
+    <Content Include="Assets\CSS\view.css" />
+    <Content Include="Assets\CSS\edit.css" />
     <Content Include="Assets\CSS\site.css" />
     <Content Include="Assets\Images\back_disabled.jpg" />
     <Content Include="Assets\Images\back_enabled.jpg" />
-    <Content Include="Assets\Images\bg.png" />
-    <Content Include="Assets\Images\close.png" />
+    <Content Include="Assets\Images\csv_icon.png" />
+    <Content Include="Assets\Images\csv_icon_disabled.png" />
+    <Content Include="Assets\Images\excel_icon.png" />
+    <Content Include="Assets\Images\excel_icon_disabled.png" />
     <Content Include="Assets\Images\favicon.png" />
     <Content Include="Assets\Images\forward_disabled.jpg" />
     <Content Include="Assets\Images\forward_enabled.jpg" />
-    <Content Include="Assets\Images\headerbg.png" />
     <Content Include="Assets\Images\logo.png" />
-    <Content Include="Assets\Images\settings.png" />
+    <Content Include="Assets\Images\rss_icon.png" />
+    <Content Include="Assets\Images\rss_icon_disabled.png" />
     <Content Include="Assets\Images\star_off.png" />
     <Content Include="Assets\Images\star_on.png" />
     <Content Include="Assets\Images\stickynote-large.png" />
     <Content Include="Assets\Images\stickynote-medium.png" />
+    <Content Include="Assets\Images\toggle_minus.png" />
+    <Content Include="Assets\Images\toggle_plus.png" />
     <Content Include="Assets\Images\whitetooltipbg.png" />
     <Content Include="Assets\Scripts\jquery.extensions.min.js" />
     <Content Include="Assets\Scripts\jquery.form-extensions.min.js" />
@@ -123,10 +135,12 @@
     <Content Include="Assets\Scripts\tipTip.css" />
     <Content Include="Global.asax" />
     <Content Include="Assets\Scripts\jquery.dataTables.min.js" />
-    <Content Include="Views\Home\AllTasks.aspx" />
-    <Content Include="Views\Home\Edit.aspx" />
-    <Content Include="Views\Home\View.aspx" />
     <Content Include="Views\Home\Index.aspx" />
+    <Content Include="Views\Tasks\Edit.aspx" />
+    <Content Include="Views\Tasks\Index.aspx" />
+    <Content Include="Views\Bugs\Edit.aspx" />
+    <Content Include="Views\Bugs\View.aspx" />
+    <Content Include="Views\Bugs\Index.aspx" />
     <Content Include="Assets\Scripts\jquery-1.4.1.js" />
     <Content Include="Assets\Scripts\jquery-1.4.1.min.js" />
     <Content Include="Assets\Scripts\jquery-1.4.1-vsdoc.js" />
@@ -135,6 +149,7 @@
     <Content Include="Views\Shared\Site.Master" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Views\Tasks\View.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -146,6 +161,7 @@
   <ItemGroup>
     <Content Include="Views\Web.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

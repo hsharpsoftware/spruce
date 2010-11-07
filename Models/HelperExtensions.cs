@@ -4,38 +4,35 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
+using System.Text;
 
 namespace Spruce.Models
 {
 	public static class HelperExtensions
 	{
-		public static string DropDownBoxForMaximumItems(this HtmlHelper helper, string name)
+		/// <summary>
+		/// Attempts to parse the object as a string value and convert to an integer. If this fails, zero is returned.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
+		public static int ToIntOrDefault(this object value)
 		{
-			int selectedValue = SpruceContext.Current.FilterSettings.MaximumItems;
-			List<SelectListItem> selectList = new List<SelectListItem>();
+			if (value == null)
+				return 0;
 
-			// There's only 4 options so it's easier to hard code them
-			SelectListItem selectListItem = new SelectListItem() { Text = "All", Value = "0" };
-			if (selectedValue == 0)
-				selectListItem.Selected = true;
-			selectList.Add(selectListItem);
+			int i = 0;
+			if (int.TryParse(value.ToString(),out i))
+				return i;
+			else
+				return 0;
+		}
 
-			selectListItem = new SelectListItem() { Text = "25", Value = "25" };
-			if (selectedValue == 25)
-				selectListItem.Selected = true;
-			selectList.Add(selectListItem);
-
-			selectListItem = new SelectListItem() { Text = "50", Value = "50" };
-			if (selectedValue == 50)
-				selectListItem.Selected = true;
-			selectList.Add(selectListItem);
-
-			selectListItem = new SelectListItem() { Text = "100", Value = "100" };
-			if (selectedValue == 100)
-				selectListItem.Selected = true;
-			selectList.Add(selectListItem);
-
-			return helper.DropDownList(name, selectList).ToHtmlString();
+		public static string ToBase64(this string value)
+		{
+			if (!string.IsNullOrWhiteSpace(value))
+				return Convert.ToBase64String(Encoding.Default.GetBytes(value));
+			else
+				return "";
 		}
 
 		public static string DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue)
@@ -54,36 +51,6 @@ namespace Spruce.Models
 			return helper.DropDownList(name, selectList).ToHtmlString();
 		}
 
-		public static string DropDownBoxForProjects(this HtmlHelper helper, string name)
-		{
-			List<SelectListItem> selectList = new List<SelectListItem>();
-			IList<string> items = SpruceContext.Current.ProjectNames;
-			string selectedValue = SpruceContext.Current.CurrentProject.Name;//
-
-			foreach (string item in items)
-			{
-				SelectListItem selectListItem = new SelectListItem() { Text = item, Value = item };
-				if (item == selectedValue)
-					selectListItem.Selected = true;
-
-				selectList.Add(selectListItem);
-			}
-
-			return helper.DropDownList(name, selectList).ToHtmlString();
-		}
-
-		public static string DropDownBoxForAreas(this HtmlHelper helper, string name)
-		{
-			string selectedValue = SpruceContext.Current.FilterSettings.AreaPath;
-			List<SelectListItem> selectList = new List<SelectListItem>();
-			IList<AreaSummary> items = SpruceContext.Current.CurrentProject.Areas.ToList();
-
-			// Only one area usually indicates there are none (and TFS defaults to the project name)
-			if (items.Count > 1)
-				items.Insert(0, new AreaSummary() { Name = "Any", Path = "" });		
-
-			return DropDownBoxForAreas(helper, name, items, selectedValue);
-		}
 
 		public static string DropDownBoxForAreas(this HtmlHelper helper, string name, IList<AreaSummary> items, string selectedValue)
 		{
@@ -99,19 +66,6 @@ namespace Spruce.Models
 			}
 
 			return helper.DropDownList(name, selectList).ToHtmlString();
-		}
-
-		public static string DropDownBoxForIterations(this HtmlHelper helper, string name)
-		{
-			string selectedValue = SpruceContext.Current.FilterSettings.IterationPath;
-			List<SelectListItem> selectList = new List<SelectListItem>();
-			IList<IterationSummary> items = SpruceContext.Current.CurrentProject.Iterations.ToList();
-
-			// Only one iteration usually indicates there are none (and TFS defaults to the project name)
-			if (items.Count > 1)
-				items.Insert(0, new IterationSummary() { Name = "Any", Path = "" });		
-
-			return DropDownBoxForIterations(helper, name, items, selectedValue);
 		}
 
 		public static string DropDownBoxForIterations(this HtmlHelper helper, string name, IList<IterationSummary> items, string selectedValue)

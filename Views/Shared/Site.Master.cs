@@ -17,24 +17,14 @@ namespace Spruce
 			ViewData["CurrentUser"] = SpruceContext.Current.CurrentUser;
 			ViewData["CurrentProjectName"] = SpruceContext.Current.CurrentProject.Name;
 
-			bool hasIterationData = !string.IsNullOrWhiteSpace(SpruceContext.Current.FilterSettings.IterationPath);
-			bool hasAreaData = !string.IsNullOrWhiteSpace(SpruceContext.Current.FilterSettings.AreaPath);
-			ViewData["HasIterationData"] = hasIterationData;
-			ViewData["HasAreaData"] = hasAreaData;
+			ViewData["CurrentIterationName"] = SpruceContext.Current.FilterSettings.IterationName;
+			ViewData["CurrentIterationPath"] = SpruceContext.Current.FilterSettings.IterationPath;
+			ViewData["CurrentAreaName"] = SpruceContext.Current.FilterSettings.AreaName;
+			ViewData["CurrentAreaPath"] = SpruceContext.Current.FilterSettings.AreaPath;
 
-			if (hasIterationData)
-			{
-				ViewData["IterationPath"] = SpruceContext.Current.FilterSettings.IterationPath.Replace(SpruceContext.Current.CurrentProject.Name + "\\", "");
-			}
-
-			if (hasAreaData)
-			{
-				ViewData["AreaPath"] = SpruceContext.Current.FilterSettings.AreaPath.Replace(SpruceContext.Current.CurrentProject.Name + "\\", "");
-			}
-
-			string listLink = (string) Session["ListLink"];
-			if (string.IsNullOrEmpty(listLink))
-				Session["ListLink"] = "Index";
+			ViewData["Projects"] = SpruceContext.Current.ProjectNames;
+			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
+			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
 		}
 	}
 }

@@ -5,10 +5,11 @@ using System.Web;
 
 namespace Spruce.Models
 {
-	public class FilterSettings
+	public class UserSettings
 	{
-		public int MaximumItems { get; set; }
-		public string AreaPath { get; set; }
+		public string IterationName { get; set; }
 		public string IterationPath { get; set; }
+		public string AreaName { get; set; }
+		public string AreaPath { get; set; }
 	}
 }

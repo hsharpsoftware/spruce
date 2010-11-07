@@ -20,7 +20,7 @@ namespace Spruce.Models
 		public List<string> ProjectNames { get; private set; }
 		public string CurrentUser { get; private set; }
 		public List<string> Users { get; private set; }
-		public FilterSettings FilterSettings { get; set; }
+		public UserSettings FilterSettings { get; set; }
 
 		public static SpruceContext Current
 		{
@@ -40,7 +40,7 @@ namespace Spruce.Models
 
 		public SpruceContext()
 		{
-			FilterSettings = new FilterSettings(); // permanently store somewhere
+			FilterSettings = new UserSettings(); // permanently store somewhere
 
 			if (string.IsNullOrEmpty(Settings.TfsServer))
 				throw new ArgumentNullException("The TfsServer settings is empty, please set it in the web.config (full URL, including the port)");
@@ -68,6 +68,11 @@ namespace Spruce.Models
 
 			_projectName = name;
 			CurrentProject = new ProjectDetails(WorkItemStore.Projects[name]);
+
+			FilterSettings.IterationName = CurrentProject.Iterations[0].Name;
+			FilterSettings.IterationPath = CurrentProject.Iterations[0].Path;
+			FilterSettings.AreaName = CurrentProject.Areas[0].Name;
+			FilterSettings.AreaPath = CurrentProject.Areas[0].Path;
 		}
 
 		private void GetProjectNames()

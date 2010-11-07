@@ -5,147 +5,58 @@ using System.Web;
 using System.Web.Mvc;
 using Spruce.Models;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using System.Text;
 
-namespace Spruce
+namespace Spruce.Controllers
 {
     public class HomeController : Controller
     {
-        public ActionResult Index()
-        {
-			Session["ListLink"] = "Index";
+		public ActionResult Index()
+		{
+			// Dashboard
 			return View("Index", WorkItemManager.AllBugs().ToList());
-        }
-
-		public ActionResult AllItems()
-		{
-			Session["ListLink"] = "AllItems";
-			return View("Index", WorkItemManager.AllItems().ToList());
 		}
 
-		public ActionResult Active()
+		public ActionResult SetProject(string id)
 		{
-			Session["ListLink"] = "Active";
-			return View("Index", WorkItemManager.AllActiveBugs().ToList());
-		}
-
-		public ActionResult Closed()
-		{
-			Session["ListLink"] = "Closed";
-			return View("Index", WorkItemManager.AllClosedBugs().ToList());
-		}
-
-		public ActionResult AllTasks()
-		{
-			Session["ListLink"] = "AllTasks";
-			return View("AllTasks", WorkItemManager.AllTasks().ToList());
-		}
-
-		public ActionResult View(int id)
-		{
-			WorkItemSummary item = WorkItemManager.ItemById(id);
-			return View(item);
-		}
-
-		public ActionResult SaveSettings(string settingsProject,string settingsIteration,string settingsArea,int settingsMaximumItems)
-		{
-			if (settingsProject != SpruceContext.Current.CurrentProject.Name)
+			if (!string.IsNullOrEmpty(id))
 			{
-				SpruceContext.Current.SetProject(settingsProject);
+				id = Encoding.Default.GetString(Convert.FromBase64String(id));
+				if (id != SpruceContext.Current.CurrentProject.Name)
+				{
+					SpruceContext.Current.SetProject(id);
+				}
 			}
 
-			FilterSettings settings = SpruceContext.Current.FilterSettings;
-			settings.AreaPath = settingsArea;
-			settings.IterationPath = settingsIteration;
-			settings.MaximumItems = settingsMaximumItems;
+			return RedirectToAction("Index");
+		}
+
+		public ActionResult SetIteration(string id)
+		{
+			if (!string.IsNullOrEmpty(id))
+			{
+				id = Encoding.Default.GetString(Convert.FromBase64String(id));
+
+				IterationSummary summary = SpruceContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == id);
+				SpruceContext.Current.FilterSettings.IterationName = summary.Name;
+				SpruceContext.Current.FilterSettings.IterationPath = summary.Path;
+			}
 
 			return RedirectToAction("Index");
 		}
 
-		public ActionResult Resolve(int id)
+		public ActionResult SetArea(string id)
 		{
-			WorkItemManager.Resolve(id);
-			return RedirectToAction("View", new { id = id });
-		}
+			if (!string.IsNullOrEmpty(id))
+			{
+				id = Encoding.Default.GetString(Convert.FromBase64String(id));
 
-		public ActionResult Close(int id)
-		{
-			WorkItemManager.Close(id);
-			return RedirectToAction("View", new { id = id });
-		}
-
-		[HttpGet]
-		public ActionResult NewBug(string id)
-		{
-			WorkItemSummary item = WorkItemManager.NewBug();
-
-			if (!string.IsNullOrWhiteSpace(id))
-				item.Title = id;
-
-			ViewData["Message"] = "New bug";
-			ViewData["States"] = item.ValidStates;
-			ViewData["Priorities"] = item.ValidPriorities;
-			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
-			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
-			ViewData["Users"] = SpruceContext.Current.Users;
-			
-			return View("Edit",item);
-		}
-
-		[HttpPost]
-		public ActionResult NewBug(WorkItemSummary item)
-		{
-			item.CreatedBy = SpruceContext.Current.CurrentUser;
-			item.IsNew = true;
-			WorkItemManager.SaveBug(item);
+				AreaSummary summary = SpruceContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == id);
+				SpruceContext.Current.FilterSettings.AreaName = summary.Name;
+				SpruceContext.Current.FilterSettings.AreaPath = summary.Path;
+			}
 
 			return RedirectToAction("Index");
-		}
-
-		[HttpGet]
-		public ActionResult NewTask()
-		{
-			WorkItemSummary item = WorkItemManager.NewTask();
-
-			ViewData["Message"] = "New task";
-			ViewData["States"] = item.ValidStates;
-			ViewData["Priorities"] = item.ValidPriorities;
-			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
-			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
-			ViewData["Users"] = SpruceContext.Current.Users;
-
-			return View("Edit", item);
-		}
-
-		[HttpPost]
-		public ActionResult NewTask(WorkItemSummary item)
-		{
-			item.CreatedBy = SpruceContext.Current.CurrentUser;
-			item.IsNew = true;
-			WorkItemManager.SaveTask(item);
-
-			return RedirectToAction("AllTasks");
-		}
-
-		[HttpGet]
-		public ActionResult Edit(int id)
-		{
-			WorkItemSummary item = WorkItemManager.ItemById(id);
-			item.IsNew = false;
-
-			ViewData["States"] = item.ValidStates;
-			ViewData["Priorities"] = item.ValidPriorities;
-			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
-			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
-			ViewData["Users"] = SpruceContext.Current.Users;
-		
-			return View(item);
-		}
-
-		[HttpPost]
-		public ActionResult Edit(WorkItemSummary item)
-		{
-			WorkItemManager.SaveExisting(item);
-			return RedirectToAction("Index");
-		}
+		}		
     }
 }
