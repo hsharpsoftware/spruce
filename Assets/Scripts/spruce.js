@@ -1,10 +1,8 @@
-﻿$(document).ready(function () {
+$(document).ready(function () {
 	setupAllPages();	
 });
 
 function setupAllPages() {
-	$("#nav a").tipTip({ delay: 100 });
-
 	bindCollapsablePanels();
 }
 
