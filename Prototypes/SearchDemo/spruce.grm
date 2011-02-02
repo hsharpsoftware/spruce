@@ -1,0 +1,55 @@
+"Name"     = 'Enter the name of the grammar'
+"Author"   = 'Enter your name'
+"Version"  = 'The version of the grammar and/or language'
+"About"    = 'A short description of the grammar'
+
+"Start Symbol" = <Query>
+
+! -------------------------------------------------
+! Character Sets
+! -------------------------------------------------
+{Valid} = {All Valid} - ['-'] - ['OR'] - {Whitespace} - [':'] - ["] - ['']
+{Quoted} = {All Valid} - ["] - ['']
+
+! -------------------------------------------------
+! Terminals
+! -------------------------------------------------
+AnyChar    = {Valid}+
+Or = 'OR'
+Negate = ['-']
+SQ = ''
+DQ = '"'
+StringLiteral   = '' {Quoted}+ '' | '"' {Quoted}+ '"'
+Project = ('project' ':')
+ 
+! -------------------------------------------------
+! Rules
+! -------------------------------------------------
+
+! The grammar starts below
+<Query> ::= <Query> <Keywords> | <Keywords>
+<SingleWord> ::= AnyChar
+
+<Keywords> ::= <SingleWord>
+              | <QuotedString> 
+              | <Or> 
+              | <Negate> 
+              | <Project>
+
+<Or> ::= <Or> <SingleWord> 
+        | Or Negate
+        | Or <SingleWord>
+        | Or <QuotedString>
+
+<Negate> ::= <Negate> Negate <SingleWord>
+            | <Negate> Negate <QuotedString>
+            | Negate <SingleWord>
+            | Negate <QuotedString>
+
+<Project> ::= Project <SingleWord>
+<QuotedString> ::= StringLiteral
+
+
+
+
+
