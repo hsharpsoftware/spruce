@@ -17,10 +17,17 @@
 AnyChar    = {Valid}+
 Or = 'OR'
 Negate = ['-']
-SQ = ''
-DQ = '"'
 StringLiteral   = '' {Quoted}+ '' | '"' {Quoted}+ '"'
-Project = ('project' ':')
+
+! -- Field-specific terms
+Project     = 'project' ':'
+Description = 'description' ':'
+State       = 'state' ':'
+Type        = 'type' ':' !-- bug|task
+Area        = 'area' ':'
+Iteration   = 'iteration' ':'
+CreatedBy   = 'created-by' ':'
+ResolvedBy  = 'resolved-by' ':'
  
 ! -------------------------------------------------
 ! Rules
@@ -34,7 +41,7 @@ Project = ('project' ':')
               | <QuotedString> 
               | <Or> 
               | <Negate> 
-              | <Project>
+              | <FieldTerms>
 
 <Or> ::= <Or> <SingleWord> 
         | Or Negate
@@ -46,10 +53,19 @@ Project = ('project' ':')
             | Negate <SingleWord>
             | Negate <QuotedString>
 
-<Project> ::= Project <SingleWord>
 <QuotedString> ::= StringLiteral
 
-
-
-
+<FieldTerms> ::= <FieldTerms> Project | <FieldTerms> Description | <FieldTerms> State 
+                | <FieldTerms> Type | <FieldTerms> Area | <FieldTerms> Iteration 
+                | <FieldTerms> CreatedBy | <FieldTerms> ResolvedBy
+                | Project 
+                | <Description>
+                | State 
+                | Type 
+                | Area 
+                | Iteration 
+                | CreatedBy 
+                | ResolvedBy
+<Description> ::= <Description> Description | <Description> Description StringLiteral
+                | Description | Description StringLiteral
 

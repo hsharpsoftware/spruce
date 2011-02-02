@@ -13,6 +13,7 @@ namespace ConsoleApplication1
 		{
 			string compiledFile = "spruce.cgt";
 			string searchTerm = "-cheddar OR -brie \"red leicester\" OR -\"chutney\" project:foo";
+			searchTerm = "project:foobar resolved-by:chris description:\"yes said fred\" hello world";
 			
 			Console.WriteLine("[Searching for:]");
 			Console.WriteLine(searchTerm);
