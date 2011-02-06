@@ -28,6 +28,8 @@ Area        = 'area' ':'
 Iteration   = 'iteration' ':'
 CreatedBy   = 'created-by' ':'
 ResolvedBy  = 'resolved-by' ':'
+CreatedOn   = 'created-on' ':'
+ResolvedOn  = 'resolved-on' ':'
  
 ! -------------------------------------------------
 ! Rules
@@ -57,7 +59,8 @@ ResolvedBy  = 'resolved-by' ':'
 
 <FieldTerms> ::= <FieldTerms> Project | <FieldTerms> Description | <FieldTerms> State 
                 | <FieldTerms> Type | <FieldTerms> Area | <FieldTerms> Iteration 
-                | <FieldTerms> CreatedBy | <FieldTerms> ResolvedBy
+                | <FieldTerms> CreatedBy | <FieldTerms> ResolvedBy 
+                | <FieldTerms> ResolvedOn | <FieldTerms> CreatedOn
                 | Project 
                 | <Description>
                 | State 
@@ -66,6 +69,9 @@ ResolvedBy  = 'resolved-by' ':'
                 | Iteration 
                 | CreatedBy 
                 | ResolvedBy
+                | CreatedOn
+                | ResolvedOn
+
 <Description> ::= <Description> Description | <Description> Description StringLiteral
                 | Description | Description StringLiteral
 

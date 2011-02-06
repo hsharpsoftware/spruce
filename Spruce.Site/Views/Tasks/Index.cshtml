@@ -1,0 +1,18 @@
+﻿@inherits WebViewPage<List<WorkItemSummary>>
+
+<div id="tasks-container">
+	@foreach (WorkItemSummary item in Model)
+	{
+	<div class="task">
+		<h1>
+			<span class="workitem-id">#@item.Id</span><br />
+			@Html.ActionLink(item.Title,"View",new { id = item.Id})
+		</h1>
+		<p>
+			Assigned to @item.AssignedTo (@item.State)<br />
+			<span style="font-size:0.6em">@item.CreatedDate.ToShortDateString()</span>
+		</p>
+		
+	</div>
+	}
+</div>

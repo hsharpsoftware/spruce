@@ -1,0 +1,20 @@
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\bin\Spruce.dll
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\bin\Spruce.pdb
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\bin\Microsoft.TeamFoundation.Client.dll
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\bin\Microsoft.TeamFoundation.Common.dll
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\bin\Microsoft.TeamFoundation.Common.Library.dll
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\bin\Microsoft.TeamFoundation.dll
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\bin\Microsoft.TeamFoundation.WorkItemTracking.Client.dll
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\obj\Debug\Spruce.dll
+C:\Users\csmall\Documents\Visual Studio 2010\Projects\Spruce\obj\Debug\Spruce.pdb
+C:\projects\spruce\obj\Debug\ResolveAssemblyReference.cache
+C:\projects\spruce\obj\Debug\Spruce.dll
+C:\projects\spruce\obj\Debug\Spruce.pdb
+C:\projects\spruce\bin\Spruce.dll
+C:\projects\spruce\bin\Spruce.pdb
+C:\projects\spruce\bin\Microsoft.TeamFoundation.Client.dll
+C:\projects\spruce\bin\Microsoft.TeamFoundation.Common.dll
+C:\projects\spruce\bin\Microsoft.TeamFoundation.Common.Library.dll
+C:\projects\spruce\bin\Microsoft.TeamFoundation.dll
+C:\projects\spruce\bin\Microsoft.TeamFoundation.WorkItemTracking.Client.dll

@@ -1,0 +1,7 @@
+C:\projects\spruce\Spruce.Site\bin\Spruce.Site.dll
+C:\projects\spruce\Spruce.Site\bin\Spruce.Site.pdb
+C:\projects\spruce\Spruce.Site\bin\Spruce.Core.dll
+C:\projects\spruce\Spruce.Site\bin\Spruce.Core.pdb
+C:\projects\spruce\Spruce.Site\obj\Debug\ResolveAssemblyReference.cache
+C:\projects\spruce\Spruce.Site\obj\Debug\Spruce.Site.dll
+C:\projects\spruce\Spruce.Site\obj\Debug\Spruce.Site.pdb
