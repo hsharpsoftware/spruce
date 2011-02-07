@@ -31,6 +31,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CalithaLib">
+      <HintPath>..\lib\CalithaLib.dll</HintPath>
+    </Reference>
+    <Reference Include="GoldParserEngine">
+      <HintPath>..\lib\GoldParserEngine.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.TeamFoundation, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.TeamFoundation.Client, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.TeamFoundation.Common, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -55,6 +61,10 @@
   <ItemGroup>
     <Compile Include="Controllers\ControllerHelper.cs" />
     <Compile Include="Domain\Context\ProjectDetails.cs" />
+    <Compile Include="Search\OrTerm.cs" />
+    <Compile Include="Search\SearchParser.cs" />
+    <Compile Include="Search\Term.cs" />
+    <Compile Include="Search\WiqlBuilder.cs" />
     <Compile Include="SpruceSettings.cs" />
     <Compile Include="SpruceContext.cs" />
     <Compile Include="Domain\Context\UserSettings.cs" />
@@ -72,6 +82,10 @@
     <Compile Include="Domain\Summaries\WorkItemSummary.cs" />
     <Compile Include="Domain\Managers\WorkItemManager.cs" />
     <Compile Include="SpruceApplication.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Search\spruce.cgt" />
+    <None Include="Search\spruce.grm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

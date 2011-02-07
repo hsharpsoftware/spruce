@@ -3,3 +3,5 @@ C:\projects\spruce\Spruce.Core\bin\Debug\Spruce.Core.pdb
 C:\projects\spruce\Spruce.Core\obj\Debug\ResolveAssemblyReference.cache
 C:\projects\spruce\Spruce.Core\obj\Debug\Spruce.Core.dll
 C:\projects\spruce\Spruce.Core\obj\Debug\Spruce.Core.pdb
+C:\projects\spruce\Spruce.Core\bin\Debug\CalithaLib.dll
+C:\projects\spruce\Spruce.Core\bin\Debug\GoldParserEngine.dll
