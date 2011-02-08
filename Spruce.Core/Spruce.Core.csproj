@@ -61,9 +61,7 @@
   <ItemGroup>
     <Compile Include="Controllers\ControllerHelper.cs" />
     <Compile Include="Domain\Context\ProjectDetails.cs" />
-    <Compile Include="Search\OrTerm.cs" />
     <Compile Include="Search\SearchParser.cs" />
-    <Compile Include="Search\Term.cs" />
     <Compile Include="Search\WiqlBuilder.cs" />
     <Compile Include="SpruceSettings.cs" />
     <Compile Include="SpruceContext.cs" />

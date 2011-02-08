@@ -40,20 +40,73 @@ namespace Spruce.Core.Search
 			LALRParser lalrParser = GrammarReader.CreateNewParser();
 			_wiqlBuilder = new WiqlBuilder();
 
-			// Register for events
 			lalrParser.OnTokenRead += new LALRParser.TokenReadHandler(lalrParser_OnTokenRead);
 			lalrParser.Parse(searchTerm);
 		}
 
-		private void lalrParser_OnTokenRead(LALRParser parser, TokenReadEventArgs args)
+		private void lalrParser_OnTokenRead(LALRParser parser, TokenReadEventArgs e)
 		{
-			// Huge switch statement
+			// Pass these names to the WIQLBuilder. It can translate them using its own lookup table
+			// in to the appropriate field name.
 
-			// Pop a Term onto the queue
+			string fieldName = "";
 
-			// Peek top queue item
+			// Huge switch statement for each token type. Originally this was going to be transformed
+			// into a type per symbol, however leaving the WiqlBuilder to deal with it seems a lot simpler.
+			switch (e.Token.Symbol.Name)
+			{
+				//
+				// Matched field identifiers
+				//
+				case "Project":
+				case "Description":
+				case "State":
+				case "Type":
+				case "Area":
+				case "Iteration":
+				case "CreatedBy":
+				case "ResolvedBy":
+				case "CreatedOn":
+				case "ResolvedOn":
+					_wiqlBuilder.And();
+					fieldName = e.Token.Symbol.Name;
+					break;
 
-			// 
+				//
+				// OR/NOT
+				//
+				case "OR":
+					fieldName = "";
+					_wiqlBuilder.Or();
+					break;
+
+				case "Negate":
+					_wiqlBuilder.And();
+					_wiqlBuilder.Not();
+					fieldName = e.Token.Symbol.Name;
+					break;
+
+				//
+				// Strings
+				//
+				case "StringLiteral":
+					_wiqlBuilder.AppendField(fieldName, e.Token.Text.Replace("\"",""));
+					break;
+
+				case "AnyChar":
+					_wiqlBuilder.AppendField(fieldName, e.Token.Text);
+					break;
+
+				// End of parsing
+				case "(EOF)":
+					if (ParseComplete != null)
+						ParseComplete(this, EventArgs.Empty);
+					break;
+
+				default:
+					// Exception?
+					throw new NotImplementedException(string.Format("{0} is not supported",e.Token.Symbol.Name));
+			}
 		}
 	}
 }
