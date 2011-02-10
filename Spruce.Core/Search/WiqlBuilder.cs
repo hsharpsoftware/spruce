@@ -2,56 +2,79 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Diagnostics;
 
 namespace Spruce.Core.Search
 {
 	public class WiqlBuilder
 	{
-		private StringBuilder _builder;
-		private Stack<object> _stack;
+		/// <summary>
+		/// The field/operators are stored in LIFO list, as the order of the search query is parsed in operator/field order. So when
+		/// we peek the stack, we want the last item added, and not a FIFO peek (Queue) where the item at the beginning is given.
+		/// </summary>
+		private Stack<object> _queryStack;
+		
+		/// <summary>
+		/// NOT operators are given before the field, so keep track of them for the next Field.
+		/// </summary>
+		private bool _nextFieldIsNot;
 
+		/// <summary>
+		/// This allows repeated field searches (which is usually another keyword)
+		/// to be combined into one string, instead of lots of title="x" AND title="y"
+		/// </summary>
+		private IDictionary<string, Field> _fieldLookup;
+
+		/// <summary>
+		/// 
+		/// </summary>
 		public WiqlBuilder()
 		{
-			_builder = new StringBuilder();
-			_stack = new Stack<object>();
+			_queryStack = new Stack<object>();
+			_fieldLookup = new Dictionary<string, Field>();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public void And()
 		{
-			// Check if an AND/OR isn't already in the stack
-			if (_stack.Count > 0)
+			if (_queryStack.Count > 0)
 			{
-				string last = _stack.Peek().ToString();
-				if (last.StartsWith("[Field]")) // not a very intelligent way of doing it, but faster than using typeofs
+				// Only add an AND if there's a field previously in the stack
+				Field field = _queryStack.Peek() as Field;
+				if (field != null)
 				{
-					_stack.Push("AND");
+					_queryStack.Push("AND");
 				}
 			}
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public void Or()
 		{
-			// Check if an AND/OR isn't already in the stack
-			if (_stack.Count > 0)
+			if (_queryStack.Count > 0)
 			{
-				string last = _stack.Peek().ToString();
-				if (last.StartsWith("[Field]"))
+				// Only add an OR if there's a field previously in the stack
+				Field field = _queryStack.Peek() as Field;
+				if (field != null)
 				{
-					_stack.Push("OR");
+					_queryStack.Push("OR");
 				}
 			}
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public void Not()
 		{
 			// Check if Field is in the stack.
-			if (_stack.Count > 0)
+			if (_queryStack.Count > 0)
 			{
-				Field field = _stack.Peek() as Field;
-				if (field != null)
-				{
-					field.Not = true;
-				}
+				_nextFieldIsNot = true;
 			}
 		}
 
@@ -62,25 +85,71 @@ namespace Spruce.Core.Search
 		/// <param name="value"></param>
 		/// <returns></returns>
 		public void AppendField(string fieldName,string value)
-		{
-			// If any field is added again, it needs to be AND'd
-			// e.g. "richtextbox bugs spelling" should search the title
-			// WHERE title="richtextbox" AND title="bugs" AND title="spelling"
+		{			
+			if (string.IsNullOrEmpty(fieldName))
+				fieldName = "title";
 
-			// It will need to be smart and look for an OR. With a Stack for the various
-			// operators: OR, AND this is not difficult. Simply push an AND by default 
-			// if the last token was a Field and not an operator.
+			Field field;
+			string key = fieldName + _nextFieldIsNot;
 
-			if (_stack.Count > 0)
+			if (_queryStack.Count > 0)
 			{
-				Field field = _stack.Peek() as Field;
+				field = _queryStack.Peek() as Field;
 				if (field != null)
 				{
-					_stack.Push("AND");
+					if (!_fieldLookup.ContainsKey(key))
+					{
+						_queryStack.Push("AND");
+					}
 				}
 			}
 
-			_stack.Push(new Field() { Name = fieldName, Value = value });
+			if (_fieldLookup.ContainsKey(key))
+			{
+				// Combine repeated field definitions into a single = (instead of repeating them with ANDs)
+				_fieldLookup[key].Value += " " + value;
+			}
+			else
+			{
+
+				field = new Field()
+				{
+					Name = fieldName,
+					Value = value,
+					Not = _nextFieldIsNot
+				};
+
+				_queryStack.Push(field);
+				_fieldLookup.Add(key, field);
+			}
+
+			// reset for future fields
+			_nextFieldIsNot = false; 
+		}
+
+		public override string ToString()
+		{
+			StringBuilder builder = new StringBuilder();
+
+			IList<object> stackList = _queryStack.ToList();
+			stackList = stackList.Reverse().ToList(); // turn our LIFO into a FIFO to preserve the query order
+
+			for (int i = 0; i < stackList.Count; i++)
+			{
+				Field field = stackList[i] as Field;
+				if (field != null)
+				{
+					builder.Append(field);
+				}
+				else
+				{
+					// Avoid adding AND/OR at the end of the query
+					if (i < stackList.Count -1)
+						builder.AppendFormat(" {0} ", stackList[i].ToString());
+				}
+			}
+
+			return builder.ToString();
 		}
 
 		private class Field
@@ -91,7 +160,7 @@ namespace Spruce.Core.Search
 
 			public override string ToString()
 			{
-				return string.Format("[Field] {0} {1} {2}", Name, (Not) ? "!=" : "=", Value);
+				return string.Format("{0} {1} '{2}'", Name, (Not) ? "!=" : "=", Value.Replace("'","''"));
 			}
 		}
 	}

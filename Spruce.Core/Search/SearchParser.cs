@@ -9,7 +9,6 @@ namespace Spruce.Core.Search
 {
 	public class SearchParser
 	{
-		// Passes a WIQL string
 		public event EventHandler<EventArgs> ParseComplete;
 
 		public static CGTReader GrammarReader
@@ -23,12 +22,18 @@ namespace Spruce.Core.Search
 			}
 		}
 
+		public WiqlBuilder WiqlBuilder
+		{
+			get { return _wiqlBuilder; }
+		}
+
 		private static CGTReader _grammarReader;
 		private WiqlBuilder _wiqlBuilder;
+		private string _fieldName;
 
 		public static void InitializeReader()
 		{
-			using (Stream stream = typeof(SearchParser).Assembly.GetManifestResourceStream("Spruce.Core.Search.Spruce.cgt"))
+			using (Stream stream = typeof(SearchParser).Assembly.GetManifestResourceStream("Spruce.Core.Search.spruce.cgt"))
 			{
 				// Parse the compiled grammar file
 				_grammarReader = new CGTReader(stream);
@@ -39,6 +44,7 @@ namespace Spruce.Core.Search
 		{
 			LALRParser lalrParser = GrammarReader.CreateNewParser();
 			_wiqlBuilder = new WiqlBuilder();
+			_fieldName = "";
 
 			lalrParser.OnTokenRead += new LALRParser.TokenReadHandler(lalrParser_OnTokenRead);
 			lalrParser.Parse(searchTerm);
@@ -48,8 +54,6 @@ namespace Spruce.Core.Search
 		{
 			// Pass these names to the WIQLBuilder. It can translate them using its own lookup table
 			// in to the appropriate field name.
-
-			string fieldName = "";
 
 			// Huge switch statement for each token type. Originally this was going to be transformed
 			// into a type per symbol, however leaving the WiqlBuilder to deal with it seems a lot simpler.
@@ -68,45 +72,50 @@ namespace Spruce.Core.Search
 				case "ResolvedBy":
 				case "CreatedOn":
 				case "ResolvedOn":
-					_wiqlBuilder.And();
-					fieldName = e.Token.Symbol.Name;
+					_fieldName = e.Token.Symbol.Name;
 					break;
 
 				//
 				// OR/NOT
 				//
-				case "OR":
-					fieldName = "";
+				case "Or":
+					_fieldName = "";
 					_wiqlBuilder.Or();
 					break;
 
 				case "Negate":
-					_wiqlBuilder.And();
 					_wiqlBuilder.Not();
-					fieldName = e.Token.Symbol.Name;
 					break;
 
 				//
 				// Strings
 				//
 				case "StringLiteral":
-					_wiqlBuilder.AppendField(fieldName, e.Token.Text.Replace("\"",""));
+					_wiqlBuilder.AppendField(_fieldName, e.Token.Text.Replace("\"",""));
+					_fieldName = "";
 					break;
 
 				case "AnyChar":
-					_wiqlBuilder.AppendField(fieldName, e.Token.Text);
+					_wiqlBuilder.AppendField(_fieldName, e.Token.Text);
+					_fieldName = "";
 					break;
 
 				// End of parsing
 				case "(EOF)":
-					if (ParseComplete != null)
-						ParseComplete(this, EventArgs.Empty);
+					OnParseComplete(EventArgs.Empty);
 					break;
 
 				default:
 					// Exception?
 					throw new NotImplementedException(string.Format("{0} is not supported",e.Token.Symbol.Name));
 			}
+		}
+
+		protected void OnParseComplete(EventArgs e)
+		{
+			// TODO: make this thread safe?
+			if (ParseComplete != null)
+				ParseComplete(this, e);
 		}
 	}
 }
