@@ -22,21 +22,38 @@ namespace Spruce.Core
 		public string CurrentUser { get; private set; }
 		public List<string> Users { get; private set; }
 		public UserSettings FilterSettings { get; set; }
+		public static bool IsWeb { get; set; }
+		private static SpruceContext _contextForNoneWeb;
 
 		public static SpruceContext Current
 		{
 			get
 			{
-				// Use a session instead of HttpContext.Items as Items doesn't survive redirects
-				SpruceContext context = HttpContext.Current.Session[CONTEXT_KEY] as SpruceContext;
-				if (context == null)
+				if (IsWeb)
 				{
-					context = new SpruceContext();
-					HttpContext.Current.Session[CONTEXT_KEY] = context;
-				}
+					// Use a session instead of HttpContext.Items as Items doesn't survive redirects
+					SpruceContext context = HttpContext.Current.Session[CONTEXT_KEY] as SpruceContext;
+					if (context == null)
+					{
+						context = new SpruceContext();
+						HttpContext.Current.Session[CONTEXT_KEY] = context;
+					}
 
-				return context;
+					return context;
+				}
+				else
+				{
+					if (_contextForNoneWeb == null)
+						_contextForNoneWeb = new SpruceContext();
+
+					return _contextForNoneWeb;
+				}
 			}
+		}
+
+		static SpruceContext()
+		{
+			IsWeb = true;
 		}
 
 		public SpruceContext()

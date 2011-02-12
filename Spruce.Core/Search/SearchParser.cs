@@ -24,7 +24,7 @@ namespace Spruce.Core.Search
 
 		public WiqlBuilder WiqlBuilder
 		{
-			get { return _wiqlBuilder; }
+			get { System.Threading.Thread.Sleep(5000); return _wiqlBuilder; }
 		}
 
 		private static CGTReader _grammarReader;

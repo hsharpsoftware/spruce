@@ -127,9 +127,19 @@ namespace Spruce.Core.Search
 			_nextFieldIsNot = false; 
 		}
 
-		public override string ToString()
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="parameters">This dictionary is filled with name/value pairs for each field's name and value,
+		/// for the WIQL query. Can be null.</param>
+		/// <returns></returns>
+		public string BuildQuery(Dictionary<string, string> parameters)
 		{
 			StringBuilder builder = new StringBuilder();
+			builder.Append("SELECT * FROM Issue WHERE ");
+
+			if (parameters == null)
+				parameters = new Dictionary<string, string>();
 
 			IList<object> stackList = _queryStack.ToList();
 			stackList = stackList.Reverse().ToList(); // turn our LIFO into a FIFO to preserve the query order
@@ -139,6 +149,11 @@ namespace Spruce.Core.Search
 				Field field = stackList[i] as Field;
 				if (field != null)
 				{
+					if (parameters.ContainsKey(field.Name))
+						parameters[field.Name] = field.Value;
+					else
+						parameters.Add(field.Name, field.Value);
+
 					builder.Append(field);
 				}
 				else
@@ -160,7 +175,9 @@ namespace Spruce.Core.Search
 
 			public override string ToString()
 			{
-				return string.Format("{0} {1} '{2}'", Name, (Not) ? "!=" : "=", Value.Replace("'","''"));
+				// TODO: replace with special names like System.ProjectName (in another class).
+				// Check if project:* and then simply don't add.
+				return string.Format("{0} {1} @{0}", Name, (Not) ? "!=" : "=");
 			}
 		}
 	}

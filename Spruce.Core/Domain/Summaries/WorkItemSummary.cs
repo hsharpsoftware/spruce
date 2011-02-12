@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Spruce.Core
 {
+	[DebuggerDisplay("{Title}")]
 	public class WorkItemSummary
 	{
 		public int Id { get; set; }

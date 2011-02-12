@@ -272,6 +272,21 @@ namespace Spruce.Core
 			return ToWorkItemSummaryList(collection);
 		}
 
+		public static IList<WorkItemSummary> ExecuteWiqlQuery(string query, Dictionary<string, string> parameters)
+		{
+			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
+
+			if (query.IndexOf("TeamProject") == -1)
+			{
+				if (parameters.ContainsKey("Project") || parameters.ContainsKey("project"))
+					parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+
+				query += " AND System.TeamProject = @project";
+			}
+
+			return ToWorkItemSummaryList(collection);
+		}
+
 		public static IList<WorkItemSummary> AllTasks()
 		{
 			Dictionary<string, string> parameters = new Dictionary<string, string>();
