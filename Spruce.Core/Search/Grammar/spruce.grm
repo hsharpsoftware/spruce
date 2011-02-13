@@ -26,7 +26,7 @@ State       = 'state' ':'
 Type        = 'type' ':' !-- bug|task
 Area        = 'area' ':'
 Iteration   = 'iteration' ':'
-CreatedBy   = 'created-by' ':'
+AssignedTo  = 'assigned-to' ':'
 ResolvedBy  = 'resolved-by' ':'
 CreatedOn   = 'created-on' ':'
 ResolvedOn  = 'resolved-on' ':'
@@ -59,7 +59,7 @@ ResolvedOn  = 'resolved-on' ':'
 
 <FieldTerms> ::= <FieldTerms> Project | <FieldTerms> Description | <FieldTerms> State 
                 | <FieldTerms> Type | <FieldTerms> Area | <FieldTerms> Iteration 
-                | <FieldTerms> CreatedBy | <FieldTerms> ResolvedBy 
+                | <FieldTerms> AssignedTo | <FieldTerms> ResolvedBy 
                 | <FieldTerms> ResolvedOn | <FieldTerms> CreatedOn
                 | Project 
                 | <Description>
@@ -67,7 +67,7 @@ ResolvedOn  = 'resolved-on' ':'
                 | Type 
                 | Area 
                 | Iteration 
-                | CreatedBy 
+                | AssignedTo 
                 | ResolvedBy
                 | CreatedOn
                 | ResolvedOn

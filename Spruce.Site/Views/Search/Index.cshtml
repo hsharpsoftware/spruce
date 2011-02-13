@@ -1,0 +1,40 @@
+﻿@model List<WorkItemSummary>
+
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function () {
+		setupListPage();
+	});
+</script>
+
+<span class="searchresults">Search result(s) for <b>@ViewData["search"]</b></span>
+
+@using (Html.BeginForm("Index", "Search", FormMethod.Post))
+{
+	<div>
+		@Html.TextBox("id", ViewData["search"], new { @class = "searchbox" })
+		<input type="submit" value="search" />
+	</div>
+}
+<br /><br />
+
+<table id="workitems-table">
+	<thead>
+		<tr class="midbg">
+			<th style="width:5%">ID</th>
+			<th style="width:60%">Title</th>
+			<th style="width:20%">Assigned to</th>
+			<th style="width:15%">Status</th>
+		</tr>
+	</thead>
+	<tbody>
+	@foreach (WorkItemSummary item in Model)
+	{
+		<tr>
+			<td>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</td>
+			<td>@item.Title</td>
+			<td>@item.AssignedTo</td>
+			<td>@item.State</td>
+		</tr>
+	}
+	</tbody>
+</table>

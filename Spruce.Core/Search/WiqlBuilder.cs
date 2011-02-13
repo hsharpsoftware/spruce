@@ -26,7 +26,7 @@ namespace Spruce.Core.Search
 		private IDictionary<string, Field> _fieldLookup;
 
 		/// <summary>
-		/// 
+		/// Initializes a new instance of the <see cref="WiqlBuilder"/> class.
 		/// </summary>
 		public WiqlBuilder()
 		{
@@ -84,12 +84,12 @@ namespace Spruce.Core.Search
 		/// <param name="field">If this is blank, then the title field is used as the default.</param>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public void AppendField(string fieldName,string value)
+		public void AppendField(string fieldName,string value,FieldComparison fieldType)
 		{			
 			if (string.IsNullOrEmpty(fieldName))
-				fieldName = "title";
+				fieldName = "Title";
 
-			Field field;
+			Field field = null;
 			string key = fieldName + _nextFieldIsNot;
 
 			if (_queryStack.Count > 0)
@@ -97,7 +97,7 @@ namespace Spruce.Core.Search
 				field = _queryStack.Peek() as Field;
 				if (field != null)
 				{
-					if (!_fieldLookup.ContainsKey(key))
+					if (!_fieldLookup.ContainsKey(key) && field.ToString() != "")
 					{
 						_queryStack.Push("AND");
 					}
@@ -111,13 +111,34 @@ namespace Spruce.Core.Search
 			}
 			else
 			{
-
-				field = new Field()
+				switch (fieldType)
 				{
-					Name = fieldName,
-					Value = value,
-					Not = _nextFieldIsNot
-				};
+					case FieldComparison.User:
+						field = new UserField();
+						break;
+
+					case FieldComparison.Date:
+						field = new DateField();
+						break;
+
+					case FieldComparison.Project:
+						field = new ProjectField();
+						break;
+
+					case FieldComparison.Contains:
+						field = new ContainsField();
+						break;
+
+					case FieldComparison.ExactMatch:
+					default:
+						field = new Field();
+						break;
+				}
+
+				field.ColumnName = ToColumnName(fieldName);
+				field.ParameterName = fieldName;
+				field.Value = value;
+				field.IsNot = _nextFieldIsNot;
 
 				_queryStack.Push(field);
 				_fieldLookup.Add(key, field);
@@ -133,33 +154,43 @@ namespace Spruce.Core.Search
 		/// <param name="parameters">This dictionary is filled with name/value pairs for each field's name and value,
 		/// for the WIQL query. Can be null.</param>
 		/// <returns></returns>
-		public string BuildQuery(Dictionary<string, string> parameters)
+		public string BuildQuery(Dictionary<string, object> parameters)
 		{
 			StringBuilder builder = new StringBuilder();
 			builder.Append("SELECT * FROM Issue WHERE ");
 
 			if (parameters == null)
-				parameters = new Dictionary<string, string>();
+				parameters = new Dictionary<string, object>();
 
 			IList<object> stackList = _queryStack.ToList();
 			stackList = stackList.Reverse().ToList(); // turn our LIFO into a FIFO to preserve the query order
+			Dictionary<string, int> nameClashLookup = new Dictionary<string, int>();
 
 			for (int i = 0; i < stackList.Count; i++)
 			{
 				Field field = stackList[i] as Field;
 				if (field != null)
 				{
-					if (parameters.ContainsKey(field.Name))
-						parameters[field.Name] = field.Value;
-					else
-						parameters.Add(field.Name, field.Value);
+					// Check for more than one field check (for OR queries)
+					if (parameters.ContainsKey(field.ParameterName))
+					{
+						int uniqueId = 1;
+						if (nameClashLookup.ContainsKey(field.ParameterName))
+							uniqueId = ++nameClashLookup[field.ParameterName];
+						else
+							nameClashLookup.Add(field.ParameterName,uniqueId);
 
+						field.ParameterName += uniqueId;
+					}
+						
+					parameters.Add(field.ParameterName, field.Value);
 					builder.Append(field);
 				}
 				else
 				{
-					// Avoid adding AND/OR at the end of the query
-					if (i < stackList.Count -1)
+					// This avoids AND/OR being erronously added to the start or end of the query.
+					// TODO: The And() and Or() methods should really deal with this
+					if (i > 0 && i < stackList.Count -1)
 						builder.AppendFormat(" {0} ", stackList[i].ToString());
 				}
 			}
@@ -167,17 +198,44 @@ namespace Spruce.Core.Search
 			return builder.ToString();
 		}
 
-		private class Field
+		private string ToColumnName(string name)
 		{
-			public string Name { get; set; }
-			public string Value { get; set; }
-			public bool Not { get; set; }
-
-			public override string ToString()
+			switch (name.ToLower())
 			{
-				// TODO: replace with special names like System.ProjectName (in another class).
-				// Check if project:* and then simply don't add.
-				return string.Format("{0} {1} @{0}", Name, (Not) ? "!=" : "=");
+				case "project":
+					return "[System.TeamProject]";
+
+				case "description":
+					return "[System.Description]";
+
+				case "type":
+					return "[Work Item Type]";
+
+				case "state":
+					return "State";
+
+				case "iteration":
+					return "[System.IterationPath]";
+
+				case "area":
+					return "[System.AreaPath]";
+
+				case "assignedto":
+					return "[Assigned To]";
+
+				case "resolvedby":
+					return "[Resolved By]";
+
+				case "resolvedon":
+					return "[Resolved Date]";
+
+				case "createdon":
+					return "[Created Date]";
+
+				case "title":
+				case "":
+				default:
+					return "[System.Title]";
 			}
 		}
 	}

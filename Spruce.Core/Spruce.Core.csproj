@@ -59,10 +59,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\DateTimeExtensions.cs" />
     <Compile Include="Controllers\ControllerHelper.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Domain\Context\ProjectDetails.cs" />
+    <Compile Include="Search\Fields\ContainsField.cs" />
+    <Compile Include="Search\Fields\ProjectField.cs" />
+    <Compile Include="Search\Fields\DateField.cs" />
+    <Compile Include="Search\Fields\UserField.cs" />
+    <Compile Include="Search\Fields\Field.cs" />
+    <Compile Include="Search\FieldComparison.cs" />
     <Compile Include="Search\SearchManager.cs" />
-    <Compile Include="Search\SearchParser.cs" />
+    <Compile Include="Search\QueryParser.cs" />
     <Compile Include="Search\WiqlBuilder.cs" />
     <Compile Include="SpruceSettings.cs" />
     <Compile Include="SpruceContext.cs" />
@@ -83,8 +91,8 @@
     <Compile Include="SpruceApplication.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Search\spruce.cgt" />
-    <None Include="Search\spruce.grm" />
+    <EmbeddedResource Include="Search\Grammar\spruce.cgt" />
+    <None Include="Search\Grammar\spruce.grm" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

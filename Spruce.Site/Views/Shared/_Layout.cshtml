@@ -16,6 +16,8 @@
 </head>
 
 <body>
+@using (Html.BeginForm("Index","Search", FormMethod.Post))
+{
 	<div id="header">
 		<div class="left">Logged in as @ViewData["CurrentUser"]</div>
 		<div class="right">
@@ -24,9 +26,10 @@
 			&nbsp;|&nbsp;@Html.ActionLink("New task","New","Tasks")
 			&nbsp;|&nbsp;@Html.ActionLink("Bugs", "Index", "Bugs")
 			&nbsp;|&nbsp;@Html.ActionLink("Tasks", "Index", "Tasks")
-			&nbsp;|&nbsp;Search: <input type="text" name="search" placeholder="Enter text to search" />
+			&nbsp;|&nbsp;Search: <input type="text" name="id" placeholder="Enter text to search" />
 		</div>
 	</div>
+}
 
 	<div id="export-buttons" class="right">
 		<a href="#csv"><img src="@Url.Content("~/Assets/Images/csv_icon_disabled.png")" border="0" alt="CSV export" /></a>

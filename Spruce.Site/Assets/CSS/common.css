@@ -57,6 +57,9 @@ a:hover		{ color:#babfb5; }
 
 .errorbox h1 { font-size:1em;}
 
+.searchresults { color:Green;font-size:1.1em; }
+.searchbox { width:400px; }
+
 /* Color scheme:
 
 #42622a - green header bg

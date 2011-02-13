@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchTest.cs" />
+    <Compile Include="SearchTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Spruce.Core\Spruce.Core.csproj">

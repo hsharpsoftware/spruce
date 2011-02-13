@@ -7,10 +7,19 @@ using System.IO;
 
 namespace Spruce.Core.Search
 {
-	public class SearchParser
+	/// <summary>
+	/// 
+	/// </summary>
+	public class QueryParser
 	{
+		/// <summary>
+		/// 
+		/// </summary>
 		public event EventHandler<EventArgs> ParseComplete;
 
+		/// <summary>
+		/// Gets the grammar reader.
+		/// </summary>
 		public static CGTReader GrammarReader
 		{
 			get
@@ -22,18 +31,22 @@ namespace Spruce.Core.Search
 			}
 		}
 
+		/// <summary>
+		/// Gets the wiql builder.
+		/// </summary>
 		public WiqlBuilder WiqlBuilder
 		{
-			get { System.Threading.Thread.Sleep(5000); return _wiqlBuilder; }
+			get { return _wiqlBuilder; }
 		}
 
 		private static CGTReader _grammarReader;
 		private WiqlBuilder _wiqlBuilder;
 		private string _fieldName;
+		private FieldComparison _comparisonType;
 
 		public static void InitializeReader()
 		{
-			using (Stream stream = typeof(SearchParser).Assembly.GetManifestResourceStream("Spruce.Core.Search.spruce.cgt"))
+			using (Stream stream = typeof(QueryParser).Assembly.GetManifestResourceStream("Spruce.Core.Search.Grammar.spruce.cgt"))
 			{
 				// Parse the compiled grammar file
 				_grammarReader = new CGTReader(stream);
@@ -45,9 +58,22 @@ namespace Spruce.Core.Search
 			LALRParser lalrParser = GrammarReader.CreateNewParser();
 			_wiqlBuilder = new WiqlBuilder();
 			_fieldName = "";
+			_comparisonType = FieldComparison.Contains;
 
 			lalrParser.OnTokenRead += new LALRParser.TokenReadHandler(lalrParser_OnTokenRead);
+			lalrParser.OnParseError += new LALRParser.ParseErrorHandler(lalrParser_OnParseError);
+			lalrParser.OnTokenError += new LALRParser.TokenErrorHandler(lalrParser_OnTokenError);
 			lalrParser.Parse(searchTerm);
+		}
+
+		private void lalrParser_OnTokenError(LALRParser parser, TokenErrorEventArgs args)
+		{
+			OnParseComplete(EventArgs.Empty);
+		}
+
+		private void lalrParser_OnParseError(LALRParser parser, ParseErrorEventArgs args)
+		{
+			OnParseComplete(EventArgs.Empty);
 		}
 
 		private void lalrParser_OnTokenRead(LALRParser parser, TokenReadEventArgs e)
@@ -63,15 +89,28 @@ namespace Spruce.Core.Search
 				// Matched field identifiers
 				//
 				case "Project":
+					_comparisonType = FieldComparison.Project;
+					_fieldName = e.Token.Symbol.Name;
+					break;
+
+				case "AssignedTo":
+				case "ResolvedBy":
+					_comparisonType = FieldComparison.User;
+					_fieldName = e.Token.Symbol.Name;
+					break;
+
+				case "CreatedOn":
+				case "ResolvedOn":
+					_comparisonType = FieldComparison.Date;
+					_fieldName = e.Token.Symbol.Name;
+					break;
+
 				case "Description":
 				case "State":
 				case "Type":
 				case "Area":
 				case "Iteration":
-				case "CreatedBy":
-				case "ResolvedBy":
-				case "CreatedOn":
-				case "ResolvedOn":
+					_comparisonType = FieldComparison.ExactMatch;
 					_fieldName = e.Token.Symbol.Name;
 					break;
 
@@ -91,13 +130,15 @@ namespace Spruce.Core.Search
 				// Strings
 				//
 				case "StringLiteral":
-					_wiqlBuilder.AppendField(_fieldName, e.Token.Text.Replace("\"",""));
+					_wiqlBuilder.AppendField(_fieldName, e.Token.Text.Replace("\"",""),FieldComparison.ExactMatch);
 					_fieldName = "";
+					_comparisonType = FieldComparison.Contains;
 					break;
 
 				case "AnyChar":
-					_wiqlBuilder.AppendField(_fieldName, e.Token.Text);
+					_wiqlBuilder.AppendField(_fieldName, e.Token.Text,_comparisonType);
 					_fieldName = "";
+					_comparisonType = FieldComparison.Contains;
 					break;
 
 				// End of parsing

@@ -16,7 +16,6 @@
 
 /* ===== Tasks ===== */
 #tasks-container {}
-.task			{ background-image: url('/Tfs/Spruce/Assets/Images/stickynote-large.png');width:185px;height:188px;padding:20px;float:left; }
 .task h1		{ font-size:1.2em; }
 .task a			{ text-decoration:none; }
 .task a:hover	{ color:#ABABAB; }
