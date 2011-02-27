@@ -11,7 +11,7 @@ namespace Spruce.Core
 {
 	public static class HtmlExtensions
 	{
-		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue)
+		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue,int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
 
@@ -24,11 +24,11 @@ namespace Spruce.Core
 				selectList.Add(selectListItem);
 			}
 
-			return helper.DropDownList(name, selectList);
+			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
 
-		public static MvcHtmlString DropDownBoxForAreas(this HtmlHelper helper, string name, IList<AreaSummary> items, string selectedValue)
+		public static MvcHtmlString DropDownBoxForAreas(this HtmlHelper helper, string name, IList<AreaSummary> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
 
@@ -41,10 +41,10 @@ namespace Spruce.Core
 				selectList.Add(selectListItem);
 			}
 
-			return helper.DropDownList(name, selectList);
+			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
-		public static MvcHtmlString DropDownBoxForIterations(this HtmlHelper helper, string name, IList<IterationSummary> items, string selectedValue)
+		public static MvcHtmlString DropDownBoxForIterations(this HtmlHelper helper, string name, IList<IterationSummary> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
 
@@ -57,7 +57,7 @@ namespace Spruce.Core
 				selectList.Add(selectListItem);
 			}
 
-			return helper.DropDownList(name, selectList);
+			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
 		public static MvcHtmlString HtmlForListFilters(this HtmlHelper helper, string title, string description, string url)
@@ -72,6 +72,20 @@ namespace Spruce.Core
 			link += "&nbsp;|&nbsp;";
 
 			return new MvcHtmlString(link);			
+		}
+
+		/// <summary>
+		/// Limits the length of string by the provided maximum length, returning the string with "..." if it's longer.
+		/// </summary>
+		/// <param name="input"></param>
+		/// <param name="maxLength"></param>
+		/// <returns></returns>
+		public static string Shorten(this string input, int maxLength)
+		{
+			if (input.Length > maxLength)
+				return input.Substring(0, maxLength) + "...";
+			else
+				return input;
 		}
 	}
 }

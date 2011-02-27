@@ -30,7 +30,14 @@
 	@foreach (WorkItemSummary item in Model)
 	{
 		<tr>
-			<td>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</td>
+			@if (item.IsBug)
+			{
+				<td>@Html.ActionLink(item.Id.ToString(), "View","Bugs", new { id = item.Id },null)</td>
+			}
+			else
+			{
+				<td>@Html.ActionLink(item.Id.ToString(), "View", "Tasks", new { id = item.Id }, null)</td>
+			}
 			<td>@item.Title</td>
 			<td>@item.AssignedTo</td>
 			<td>@item.State</td>

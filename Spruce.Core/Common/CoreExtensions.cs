@@ -24,6 +24,18 @@ namespace Spruce.Core
 				return 0;
 		}
 
+		public static double ToDoubleOrDefault(this object value)
+		{
+			if (value == null)
+				return 0;
+
+			double i = 0;
+			if (double.TryParse(value.ToString(), out i))
+				return i;
+			else
+				return 0;
+		}
+
 		public static string ToBase64(this string value)
 		{
 			if (!string.IsNullOrWhiteSpace(value))

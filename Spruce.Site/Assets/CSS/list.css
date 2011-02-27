@@ -18,6 +18,12 @@
 #newitem-container { font-size:10pt;margin-top:10px; }
 #newitem-textbox { display:none; }
 
+/* ===== General ===== */
+.workitem-id
+{
+	color: #6E6E6E;
+}
+
 /* ===== Default dataTable plugin styles ===== */
 .dataTables_wrapper {clear: both;min-height: 100px;	position: relative;	zoom: 1;}
 .dataTables_length { font-family:Arial,helvetica;float:left;width:40%;}

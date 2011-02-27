@@ -19,6 +19,15 @@ namespace Spruce.Core.Controllers
 		public ActionResult View(int id)
 		{
 			WorkItemSummary item = WorkItemManager.ItemById(id);
+
+			if (TempData["RedirectedFromHomeController"] == null)
+			{
+				// Only set these if the user hasn't previously just clicked the right side area/iteration/project
+				SetHighlightedProject(item.ProjectName);
+				SetHighlightedArea(item.AreaPath);
+				SetHighlightedIteration(item.IterationPath);
+			}
+
 			return View(item);
 		}
 
@@ -35,6 +44,12 @@ namespace Spruce.Core.Controllers
 			ViewData["Users"] = SpruceContext.Current.Users;
 
 			return View("Edit", item);
+		}
+
+		public ActionResult Close(int id)
+		{
+			WorkItemManager.Close(id);
+			return RedirectToAction("Index");
 		}
 
 		[HttpPost]

@@ -58,7 +58,7 @@
 				 {
 					if (projectName != (string) ViewData["CurrentProjectName"])
 					{
-						@Html.ActionLink(projectName, "SetProject","Home", new { id = projectName.ToBase64() },null) <br />
+						@Html.ActionLink(projectName, "SetProject", "Home", new { id = projectName.ToBase64(), fromUrl = Request.Url }, null) <br />
 					}
 					else
 					{
@@ -78,7 +78,7 @@
 				{
 					if (summary.Path != (string) ViewData["CurrentIterationPath"])
 					{
-						@Html.ActionLink(summary.Name, "SetIteration", "Home", new { id = summary.Path.ToBase64() }, null)<br />
+						@Html.ActionLink(summary.Name, "SetIteration", "Home", new { id = summary.Path.ToBase64(), fromUrl = Request.Url }, null)<br />
 					}
 					else
 					{
@@ -98,7 +98,7 @@
 				{
 					if (area.Path != (string) ViewData["CurrentAreaPath"])
 					{
-						@Html.ActionLink(area.Name, "SetArea", "Home", new { id = area.Path.ToBase64() })<br />
+						@Html.ActionLink(area.Name, "SetArea", "Home", new { id = area.Path.ToBase64(), fromUrl = Request.Url })<br />
 					}
 					else
 					{

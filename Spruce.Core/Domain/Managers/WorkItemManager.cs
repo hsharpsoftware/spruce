@@ -49,12 +49,17 @@ namespace Spruce.Core
 			item.Fields["State"].Value = summary.State;
 			item.IterationPath = summary.IterationPath;	
 			item.AreaPath = summary.AreaPath;
-			item.Fields["Priority"].Value = summary.Priority.Value;
+
+			if (item.Fields.Contains("Priority"))
+				item.Fields["Priority"].Value = summary.Priority.Value;
 
 			// For tasks
-			if (item.Fields.Contains("Original Estimate"))
+			if (item.Type.Name.ToLower() == "task")
 			{
-				item.Fields["Original Estimate"].Value = summary.EstimatedHours;
+				// For updates only
+				if (item.Fields.Contains("Original Estimate"))
+					item.Fields["Original Estimate"].Value = summary.EstimatedHours;
+
 				item.Fields["Remaining Work"].Value = summary.RemainingHours;
 				item.Fields["Completed Work"].Value = summary.CompletedHours;
 			}
@@ -152,11 +157,14 @@ namespace Spruce.Core
 			}
 
 			// For tasks: estimates
-			if (item.Fields.Contains("Original Estimate"))
+			if (item.Type.Name.ToLower() == "task")
 			{
-				summary.EstimatedHours = item.Fields["Original Estimate"].Value.ToIntOrDefault();
-				summary.EstimatedHours = item.Fields["Remaining Work"].Value.ToIntOrDefault();
-				summary.CompletedHours = item.Fields["Completed Work"].Value.ToIntOrDefault();
+				// For updates only
+				if (item.Fields.Contains("Original Estimate"))
+					summary.EstimatedHours = item.Fields["Original Estimate"].Value.ToDoubleOrDefault();
+
+				summary.EstimatedHours = item.Fields["Remaining Work"].Value.ToDoubleOrDefault();
+				summary.CompletedHours = item.Fields["Completed Work"].Value.ToDoubleOrDefault();
 			}
 
 			return summary;
@@ -209,9 +217,12 @@ namespace Spruce.Core
 			}
 
 			summary.ValidPriorities = new List<string>();
-			foreach (string state in item.Fields["Priority"].AllowedValues)
+			if (item.Fields.Contains("Priority"))
 			{
-				summary.ValidPriorities.Add(state);
+				foreach (string state in item.Fields["Priority"].AllowedValues)
+				{
+					summary.ValidPriorities.Add(state);
+				}
 			}
 
 			return summary;
@@ -300,8 +311,8 @@ namespace Spruce.Core
 			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
 
 			string query = string.Format("SELECT ID, Title from Issue WHERE " +
-				"System.TeamProject = @project AND [Work Item Type]='Task' AND State='Active' {0} " +
-				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+				"System.TeamProject = @project AND [Work Item Type]='Task' {0} " +
+				"ORDER BY Id,State DESC", AddSqlForPaths(parameters));
 
 			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
 
@@ -342,18 +353,23 @@ namespace Spruce.Core
 				IterationPath = item.IterationPath,
 				ResolvedBy = GetFieldValue(item,"Resolved By"),
 				State = item.State,
-				Title = item.Title
+				Title = item.Title,
+				IsBug = (item.Type.Name.ToLower() == "bug"),
+				ProjectName = item.Project.Name
 			};
 
 			if (item.Fields.Contains("Priority"))
 				summary.Priority = item.Fields["Priority"].Value.ToIntOrDefault();
 
 			// For tasks: estimates
-			if (item.Fields.Contains("Original Estimate"))
+			if (item.Type.Name.ToLower() == "task")
 			{
-				summary.EstimatedHours = item.Fields["Original Estimate"].Value.ToIntOrDefault();
-				summary.EstimatedHours = item.Fields["Remaining Work"].Value.ToIntOrDefault();
-				summary.CompletedHours = item.Fields["Completed Work"].Value.ToIntOrDefault();
+				// Check this field exists. 4.2 Agile seems to have it missing
+				if (item.Fields.Contains("Original Estimate"))
+					summary.EstimatedHours = item.Fields["Original Estimate"].Value.ToDoubleOrDefault();
+
+				summary.RemainingHours = item.Fields["Remaining Work"].Value.ToDoubleOrDefault();
+				summary.CompletedHours = item.Fields["Completed Work"].Value.ToDoubleOrDefault();
 			}
 
 			// For CMMI projects

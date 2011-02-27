@@ -8,6 +8,7 @@ namespace Spruce.Core
 	public class WorkItemSummary
 	{
 		public int Id { get; set; }
+		public string ProjectName { get; set; }
 		public bool IsNew { get; set; }
 		public string Title { get; set; }
 		public string Description { get; set; }
@@ -25,9 +26,11 @@ namespace Spruce.Core
 		public int? Priority { get; set; }
 
 		// For tasks
-		public int EstimatedHours { get; set; }
-		public int RemainingHours { get; set; }
-		public int CompletedHours { get; set; }
+		public double EstimatedHours { get; set; }
+		public double RemainingHours { get; set; }
+		public double CompletedHours { get; set; }
+
+		public bool IsBug { get; set; }
 
 		public IList<string> ValidStates { get; set; }
 		public IList<string> ValidPriorities { get; set; }

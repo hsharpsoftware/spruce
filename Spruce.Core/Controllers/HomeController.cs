@@ -12,52 +12,35 @@ namespace Spruce.Core.Controllers
     {
 		public ActionResult Index()
 		{
-			ControllerHelper.SetViewData(ViewData);
-
 			// Dashboard
 			return View("Index", WorkItemManager.AllBugs().ToList());
 		}
 
-		public ActionResult SetProject(string id)
+		public ActionResult SetProject(string id, string fromUrl)
 		{
-			if (!string.IsNullOrEmpty(id))
-			{
-				id = Encoding.Default.GetString(Convert.FromBase64String(id));
-				if (id != SpruceContext.Current.CurrentProject.Name)
-				{
-					SpruceContext.Current.SetProject(id);
-				}
-			}
+			TempData["RedirectedFromHomeController"] = true;
+			id = Encoding.Default.GetString(Convert.FromBase64String(id));
+			SetHighlightedProject(id);
 
-			return RedirectToAction("Index");
+			return Redirect(fromUrl);
 		}
 
-		public ActionResult SetIteration(string id)
+		public ActionResult SetIteration(string id,string fromUrl)
 		{
-			if (!string.IsNullOrEmpty(id))
-			{
-				id = Encoding.Default.GetString(Convert.FromBase64String(id));
+			TempData["RedirectedFromHomeController"] = true;
+			id = Encoding.Default.GetString(Convert.FromBase64String(id));
+			SetHighlightedIteration(id);
 
-				IterationSummary summary = SpruceContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == id);
-				SpruceContext.Current.FilterSettings.IterationName = summary.Name;
-				SpruceContext.Current.FilterSettings.IterationPath = summary.Path;
-			}
-
-			return RedirectToAction("Index");
+			return Redirect(fromUrl);
 		}
 
-		public ActionResult SetArea(string id)
+		public ActionResult SetArea(string id, string fromUrl)
 		{
-			if (!string.IsNullOrEmpty(id))
-			{
-				id = Encoding.Default.GetString(Convert.FromBase64String(id));
+			TempData["RedirectedFromHomeController"] = true;
+			id = Encoding.Default.GetString(Convert.FromBase64String(id));
+			SetHighlightedArea(id);
 
-				AreaSummary summary = SpruceContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == id);
-				SpruceContext.Current.FilterSettings.AreaName = summary.Name;
-				SpruceContext.Current.FilterSettings.AreaPath = summary.Path;
-			}
-
-			return RedirectToAction("Index");
+			return Redirect(fromUrl);
 		}		
     }
 }

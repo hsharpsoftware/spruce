@@ -60,7 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\DateTimeExtensions.cs" />
-    <Compile Include="Controllers\ControllerHelper.cs" />
+    <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Domain\Context\ProjectDetails.cs" />
     <Compile Include="Search\Fields\ContainsField.cs" />

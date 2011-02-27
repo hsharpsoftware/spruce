@@ -106,6 +106,10 @@ namespace Spruce.Core.Search
 					break;
 
 				case "Description":
+					_comparisonType = FieldComparison.Contains;
+					_fieldName = e.Token.Symbol.Name;
+					break;
+
 				case "State":
 				case "Type":
 				case "Area":
@@ -130,7 +134,13 @@ namespace Spruce.Core.Search
 				// Strings
 				//
 				case "StringLiteral":
-					_wiqlBuilder.AppendField(_fieldName, e.Token.Text.Replace("\"",""),FieldComparison.ExactMatch);
+					
+					// Make sure contains is kept for literals - mainly so the description field works.
+					if (_comparisonType == FieldComparison.Contains)
+						_wiqlBuilder.AppendField(_fieldName, e.Token.Text.Replace("\"",""), FieldComparison.Contains);
+					else
+						_wiqlBuilder.AppendField(_fieldName, e.Token.Text.Replace("\"", ""), FieldComparison.ExactMatch);
+
 					_fieldName = "";
 					_comparisonType = FieldComparison.Contains;
 					break;

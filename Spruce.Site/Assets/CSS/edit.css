@@ -1,6 +1,6 @@
 ﻿/* ===== Edit item ===== */
 #edit-pagename		{ font-size:2em; margin:0px; }
-#edit-container		{ border:solid 1px #7e8f72;padding: 10px; }
+#edit-container		{ padding: 5px; }
 
 #edit-title input
 {
@@ -23,8 +23,8 @@
 	-moz-border-radius: 4px;
 	border-radius:4px;
 }
-.edit-field			{ float:left;font-size:0.9em;font-family:Myriad Web Pro,helvetica;width:225px; }
-.edit-field .label	{ float:left;line-height:40px;width:75px; }
+.edit-field			{ float:left;font-size:0.9em;font-family:Myriad Web Pro,helvetica;width:240px; }
+.edit-field .label	{ float:left;line-height:40px;width:90px; }
 .edit-field .value	{ float:left;width:150px; }
 .edit-field .value select	{ margin-top:10px; border: 1px solid #7e8f72;width:130px; }
 

@@ -7,14 +7,21 @@
 <div id="tasks-container">
 	@foreach (WorkItemSummary item in Model)
 	{
-		<div class="task">
-			<h1>
-				<span class="workitem-id">#@item.Id</span><br />
-				@Html.ActionLink(item.Title,"View",new { id = item.Id})
+		string cssClass = "task";
+		if (item.State == "Closed")
+		{
+			cssClass += " dimmed";
+		}
+		<div class="@cssClass">
+			<h1 class="workitem-id">
+				#@item.Id
 			</h1>
-			<p>
+			<p class="bold">
+				@Html.ActionLink(item.Title.Shorten(60),"View",new { id = item.Id})
+			</p>
+			<p class="smaller">
 				Assigned to @item.AssignedTo (@item.State)<br />
-				<span style="font-size:0.6em">@item.CreatedDate.ToShortDateString()</span>
+				<span class="smallest">@item.CreatedDate.ToShortDateString()</span>
 			</p>
 		
 		</div>

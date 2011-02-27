@@ -2,17 +2,39 @@
 h1,h2,h3,h4,h4 { font-family: Myriad Pro,helvetica; }
 a			{ color:#333333; }
 a:hover		{ color:#babfb5; }
+
 .left		{ float:left; }
 .right		{ float:right; }
 .darkbg		{ background-color:#babfb5; }
 .midbg		{ background-color:#cbcfbe; }
-.lightbg	{ background-color:#e7eee1; }
+.lightbg	 
+{
+	background-color: #FFE;
+	border: 1px solid gray;
+	border-bottom-left-radius: 4px 4px;
+	border-bottom-right-radius: 4px 4px;
+	border-top-left-radius: 4px 4px;
+	border-top-right-radius: 4px 4px;
+	margin: 5px 0px;
+	padding: 5px;	
+}
 
 .dark-text		{ color: #646661; }
 .middark-text	{ color:#babfb5; }
 .mid-text		{ color:#cbcfbe; }
 .light-text		{ color:#e7eee1; }
 .white-text		{ color:#FFFFFF; }
+
+.biggest	{ font-size:1.5em; }
+.bigger		{ font-size:1.2em; }
+.big		{ font-size:1.1em; }
+.normal		{ font-size:1em; }
+.small		{ font-size:0.9em; }
+.smaller	{ font-size:0.8em; }
+.smallest	{ font-size:0.7em; }
+.bold		{ font-weight:bold; }
+.italic		{ font-style:italic; }
+.dimmed		{ opacity: 0.5; }
 
 #header	
 {
@@ -59,6 +81,7 @@ a:hover		{ color:#babfb5; }
 
 .searchresults { color:Green;font-size:1.1em; }
 .searchbox { width:400px; }
+
 
 /* Color scheme:
 
