@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\CSS\common.css" />
+    <Content Include="Assets\CSS\mobile.css" />
     <Content Include="Assets\CSS\list.css" />
     <Content Include="Assets\CSS\view.css" />
     <Content Include="Assets\CSS\edit.css" />
@@ -97,6 +98,7 @@
     <None Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Tasks\List.cshtml" />
+    <Content Include="Views\Shared\_MobileLayout.cshtml" />
     <None Include="Views\Tasks\Edit.cshtml" />
     <None Include="Views\Tasks\Index.cshtml" />
     <None Include="Views\Bugs\Edit.cshtml" />

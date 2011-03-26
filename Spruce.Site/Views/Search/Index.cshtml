@@ -8,14 +8,15 @@
 
 <span class="searchresults">Search result(s) for <b>@ViewData["search"]</b></span>
 
-@using (Html.BeginForm("Index", "Search", FormMethod.Post))
+<div id="searchagain-box">
+@using (Html.BeginForm("Index", "Search", FormMethod.Get))
 {
 	<div>
 		@Html.TextBox("id", ViewData["search"], new { @class = "searchbox" })
 		<input type="submit" value="search" />
 	</div>
 }
-<br /><br />
+</div>
 
 <table id="workitems-table">
 	<thead>

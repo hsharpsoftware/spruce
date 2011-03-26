@@ -14,6 +14,7 @@ namespace Spruce.Core
 	{
 		private static readonly string CONTEXT_KEY = "SPRUCE_CONTEXT";
 		private string _projectName;
+		private static SpruceContext _contextForNoneWeb;
 
 		public TfsTeamProjectCollection TfsCollection { get; private set; }
 		public WorkItemStore WorkItemStore { get; private set; }
@@ -23,7 +24,24 @@ namespace Spruce.Core
 		public List<string> Users { get; private set; }
 		public UserSettings FilterSettings { get; set; }
 		public static bool IsWeb { get; set; }
-		private static SpruceContext _contextForNoneWeb;
+		public bool IsMobileBrowser
+		{
+			get
+			{
+				if (IsWeb)
+				{
+					// Android, Blackberry + iPhone only for now
+					string userAgent = HttpContext.Current.Request.UserAgent.ToLower();
+					return (userAgent.IndexOf("apple-iphone") > -1 || 
+						userAgent.IndexOf("android") >-1 || 
+						userAgent.IndexOf("blackBerry") > -1);
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
 
 		public static SpruceContext Current
 		{

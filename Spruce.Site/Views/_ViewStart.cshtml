@@ -1,4 +1,11 @@
 ﻿@{
 	
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	if (SpruceContext.Current.IsMobileBrowser)
+	{
+		Layout = "~/Views/Shared/_MobileLayout.cshtml";
+	}
+	else
+	{
+		Layout = "~/Views/Shared/_Layout.cshtml";
+	}
 }

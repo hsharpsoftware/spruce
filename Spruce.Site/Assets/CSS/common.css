@@ -57,7 +57,8 @@ a:hover		{ color:#babfb5; }
 #rightcontent	{ width:30%;}
 
 #project-name { font-family: Myriad Pro,helvetica;font-size:36pt;}
-#iteration-name { font-family: Myriad Pro,helvetica;font-size:14pt;color:#646661;border-bottom:1px solid #7e8f72;margin-bottom:50px;margin-left:3px;}
+#iteration-name { font-family: Myriad Pro,helvetica;font-size:14pt;color:#646661;margin-left:3px;}
+#seperator		{border-bottom:1px solid #7e8f72;margin-bottom:50px;}
 
 #accordian { margin-top:10px;border: 1px solid #7e8f72;}
 #accordian .padding { padding:5px;margin:10px 5px 5px 10px; }
@@ -81,6 +82,7 @@ a:hover		{ color:#babfb5; }
 
 .searchresults { color:Green;font-size:1.1em; }
 .searchbox { width:400px; }
+#searchagain-box {margin-bottom:20px;}
 
 
 /* Color scheme:

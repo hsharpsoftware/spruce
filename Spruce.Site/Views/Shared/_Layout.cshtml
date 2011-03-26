@@ -12,11 +12,12 @@
 	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery.tipTip.minified.js")"></script>
 	<script type="text/javascript" src="@Url.Content("~/Assets/Scripts/spruce.js")"></script>
 
-	<link href="@Url.Content("~/Assets/CSS/site.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Assets/CSS/site.css")" rel="stylesheet" type="text/css" media="Screen" />
+	<link href="@Url.Content("~/Assets/CSS/mobile.css")" rel="stylesheet" type="text/css" media="handheld" />
 </head>
 
 <body>
-@using (Html.BeginForm("Index","Search", FormMethod.Post))
+@using (Html.BeginForm("Index","Search", FormMethod.Get))
 {
 	<div id="header">
 		<div class="left">Logged in as @ViewData["CurrentUser"]</div>
@@ -26,7 +27,7 @@
 			&nbsp;|&nbsp;@Html.ActionLink("New task","New","Tasks")
 			&nbsp;|&nbsp;@Html.ActionLink("Bugs", "Index", "Bugs")
 			&nbsp;|&nbsp;@Html.ActionLink("Tasks", "Index", "Tasks")
-			&nbsp;|&nbsp;Search: <input type="text" name="id" placeholder="Enter text to search" />
+			&nbsp;|&nbsp;Search: @Html.TextBox("search", null, new { placeholder = "Enter text to search" })
 		</div>
 	</div>
 }
@@ -40,7 +41,10 @@
 	<div id="container">
 		<div id="leftcontent" class="left">
 			<div id="project-name">Project @ViewData["CurrentProjectName"]</div>
+			@if (ViewData["CurrentIterationName"] != "None"){
 			<div id="iteration-name">@ViewData["CurrentIterationName"]</div>
+			}
+			<div id="seperator"></div>
 			@RenderBody()
 		</div>
 
