@@ -7,6 +7,11 @@ using com.calitha.goldparser;
 
 namespace ConsoleApplication1
 {
+	/// <summary>
+	/// This app is a simple test harness for the Gold/Calitha search, 
+	/// to make it faster to debug than going through a web app. The
+	/// .cgt file may get out of sync with the main one in the Spruce.Site folder.
+	/// </summary>
 	class Program
 	{
 		static void Main(string[] args)

@@ -54,7 +54,7 @@ namespace Spruce.Core
 			AddWorkItemTypesAsStrings();
 			WorkItemTypeForBug = WorkItemTypes.FirstOrDefault(t => t.Name == "Bug");
 			WorkItemTypeForTask = WorkItemTypes.FirstOrDefault(t => t.Name == "Task");
-			
+
 			AddReasonsForBug();
 			AddReasonsForTask();
 			AllowedTriageTypes = GetAllowedValues("Triage");
@@ -63,11 +63,18 @@ namespace Spruce.Core
 			AllowedStates = GetAllowedValues("State");
 
 			AddAreas();
-			AddIterations();	
+			AddIterations();
 		}
 
 		private void AddAreas()
 		{
+			// Add a "none" option - TFS stores the area name as the project name
+			Areas.Add(new AreaSummary()
+			{
+				Name = "None",
+				Path = Name,
+			});
+
 			foreach (Node areaNode in _project.AreaRootNodes)
 			{
 				Areas.Add(new AreaSummary()
@@ -76,20 +83,17 @@ namespace Spruce.Core
 					Path = areaNode.Path,
 				});
 			}
-
-			// If there are no subnodes, use the project name
-			if (Areas.Count == 0)
-			{
-				Areas.Add(new AreaSummary()
-				{
-					Name = _project.Name,
-					Path = _project.Name,
-				});
-			}
 		}
 
 		private void AddIterations()
 		{
+			// Add a "none" option - TFS stores the iteration name as the project name
+			Iterations.Add(new IterationSummary()
+			{
+				Name = "None",
+				Path = Name,
+			});
+
 			foreach (Node iterationNode in _project.IterationRootNodes)
 			{
 				Iterations.Add(new IterationSummary()
@@ -98,18 +102,8 @@ namespace Spruce.Core
 					Path = iterationNode.Path,
 				});
 			}
-
-			// If there are no subnodes, use the project name
-			if (Iterations.Count == 0)
-			{
-				Iterations.Add(new IterationSummary()
-				{
-					Name = _project.Name,
-					Path = _project.Name,
-				});
-			}
 		}
-		
+
 
 		private void AddWorkItemTypes()
 		{

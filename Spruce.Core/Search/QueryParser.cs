@@ -66,12 +66,12 @@ namespace Spruce.Core.Search
 			lalrParser.Parse(searchTerm);
 		}
 
-		private void lalrParser_OnTokenError(LALRParser parser, TokenErrorEventArgs args)
+		private void lalrParser_OnTokenError(LALRParser parser, TokenErrorEventArgs e)
 		{
 			OnParseComplete(EventArgs.Empty);
 		}
 
-		private void lalrParser_OnParseError(LALRParser parser, ParseErrorEventArgs args)
+		private void lalrParser_OnParseError(LALRParser parser, ParseErrorEventArgs e)
 		{
 			OnParseComplete(EventArgs.Empty);
 		}

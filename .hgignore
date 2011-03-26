@@ -1,10 +1,9 @@
-# Ignore file for Visual Studio 2008
+# Ignore file for Visual Studio 2010
 
 # use glob syntax
 syntax: glob
 
-# Ignore Visual Studio 2008 files
-*.DS_Store
+# Ignore Visual Studio 2010 files
 *.obj
 *.exe
 *.pdb
@@ -26,12 +25,11 @@ syntax: glob
 *.sbr
 *.scc
 [Bb]in
-[Db]ebug*/
-obj/
+[Dd]ebug*/
+[Oo]bj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
 [Bb]uild[Ll]og.*
 *.[Pp]ublish.xml
-*.testsettings
-*.vsmdi
+*.vsdmi

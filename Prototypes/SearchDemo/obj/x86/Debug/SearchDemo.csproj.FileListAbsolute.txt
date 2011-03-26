@@ -1,8 +1,0 @@
-C:\projects\spruce\Prototypes\SearchDemo\bin\Debug\spruce.cgt
-C:\projects\spruce\Prototypes\SearchDemo\bin\Debug\SearchDemo.exe
-C:\projects\spruce\Prototypes\SearchDemo\bin\Debug\SearchDemo.pdb
-C:\projects\spruce\Prototypes\SearchDemo\bin\Debug\CalithaLib.dll
-C:\projects\spruce\Prototypes\SearchDemo\bin\Debug\GoldParserEngine.dll
-C:\projects\spruce\Prototypes\SearchDemo\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\projects\spruce\Prototypes\SearchDemo\obj\x86\Debug\SearchDemo.exe
-C:\projects\spruce\Prototypes\SearchDemo\obj\x86\Debug\SearchDemo.pdb
