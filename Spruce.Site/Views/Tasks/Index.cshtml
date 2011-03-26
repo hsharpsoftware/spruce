@@ -4,6 +4,8 @@
 .task { background-image: url('@Url.Content("~/Assets/Images/stickynote-large.png")');width:185px;height:188px;padding:20px;float:left; }
 </style>
 
+@Html.ActionLink("View as list","List")
+
 <div id="tasks-container">
 	@foreach (WorkItemSummary item in Model)
 	{

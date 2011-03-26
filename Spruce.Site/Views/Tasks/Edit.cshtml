@@ -54,15 +54,17 @@
 				<div class="label">Iteration:</div>
 				<div class="value">@Html.DropDownBoxForIterations("IterationPath", (List<IterationSummary>)ViewData["Iterations"], Model.IterationPath,5)</div>
 			</div>
+
+			<div class="edit-field">
+				<div class="label">Priority:</div>
+				<div class="value">@Html.DropDownBoxFromList("Priority", (List<string>)ViewData["Priorities"], Model.Priority.Value.ToString(),4)</div>
+			</div>
 			<br style="clear:both"/>
 		
-			@if (!Model.IsNew)
-			{
 			<div class="edit-field-long">
 				<div class="label">Estimated hours:</div>
-				<div class="value">@(Html.TextBoxFor<WorkItemSummary, double>(w => w.EstimatedHours, new { @class = "twochar-textbox", tabindex = 6, maxlength = 10 }))</div>
+				<div class="value">@(Html.TextBoxFor<WorkItemSummary, double>(w => w.EstimatedHours, new { @class = "twochar-textbox", tabindex = 6, maxlength = 10}))</div>
 			</div>
-			}
 
 			<div class="edit-field-long">
 				<div class="label">Remaining hours:</div>

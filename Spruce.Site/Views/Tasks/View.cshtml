@@ -21,7 +21,10 @@
 
 		<div id="view-favouritebar">
 			<div class="info dark-text">
-				@Model.CreatedDate.ToString(), @Model.AreaName, @Model.IterationName
+				Estimated hours: @Model.EstimatedHours <br />
+				@Model.CreatedDate.ToString()<br />
+				Area: @Model.AreaName<br />
+				Iteration: @Model.IterationName
 			</div>
 			<div class="button dark-text">
 				<a href="javascript:;"><img id="favouritethis" src="@Url.Content("~/Assets/Images/star_on.png")" border="0" alt="Favourite this item" /></a>

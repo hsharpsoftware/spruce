@@ -16,6 +16,12 @@ namespace Spruce.Core.Controllers
 			return View(WorkItemManager.AllTasks().ToList());
 		}
 
+		public ActionResult List()
+		{
+			Session["ListLink"] = "All";
+			return View(WorkItemManager.AllTasks().ToList());
+		}
+
 		public ActionResult View(int id)
 		{
 			WorkItemSummary item = WorkItemManager.ItemById(id);
@@ -32,9 +38,12 @@ namespace Spruce.Core.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult New()
+		public ActionResult New(string id)
 		{
 			WorkItemSummary item = WorkItemManager.NewTask();
+
+			if (!string.IsNullOrWhiteSpace(id))
+				item.Title = id;
 
 			ViewData["PageName"] = "New task";
 			ViewData["States"] = item.ValidStates;

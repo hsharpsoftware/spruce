@@ -6,13 +6,16 @@
 	});
 </script>
 
+@Html.ActionLink("View as notes","Index")
+
 <table id="workitems-table">
 	<thead>
 		<tr class="midbg">
 			<th style="width:5%">ID</th>
 			<th style="width:60%">Title</th>
 			<th style="width:20%">Assigned to</th>
-			<th style="width:15%">Status</th>
+			<th>Status</th>
+			<th>Estimated hours</th>
 			<th>Priority</th>
 		</tr>
 	</thead>
@@ -24,6 +27,7 @@
 			<td>@item.Title</td>
 			<td>@item.AssignedTo</td>
 			<td>@item.State</td>
+			<td>@item.EstimatedHours</td>
 			<td>@item.Priority</td>
 		</tr>
 	}
@@ -32,10 +36,10 @@
 <br style="clear:both" />
 
 <div id="newitem-container">
-    <div id="newitem">&gt;&nbsp;<a href="javascript:toggleNewItem()">New bug</a></div>
+    <div id="newitem">&gt;&nbsp;<a href="javascript:toggleNewItem()">New task</a></div>
     <div id="newitem-textbox">
         <input type="text" id="textbox-newitem" style="width:350px;" />
-        <input type="button" value="Save" onclick="addBug()" />
+        <input type="button" value="Save" onclick="addTask()" />
         <input type="button" value="Cancel" onclick="toggleNewItem()" />
     </div>
 </div>
@@ -52,7 +56,6 @@
 <div id="accordian-areas" class="padding">
 	<a href="#">All</a><br />
 	<a href="#">Active</a><br />
-	<a href="#">Resolved</a><br />
 	<a href="#">Closed</a><br />
 	<a href="#">Assigned to me</a><br />
 	<a href="#">Today</a><br />

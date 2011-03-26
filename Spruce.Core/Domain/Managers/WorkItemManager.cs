@@ -51,7 +51,7 @@ namespace Spruce.Core
 			item.AreaPath = summary.AreaPath;
 
 			if (item.Fields.Contains("Priority"))
-				item.Fields["Priority"].Value = summary.Priority.Value;
+				item.Fields["Priority"].Value = (summary.Priority.HasValue) ? summary.Priority.Value : 1;
 
 			// For tasks
 			if (item.Type.Name.ToLower() == "task")

@@ -56,7 +56,12 @@ function toggleNewItem() {
 }
 
 function addBug() {
-	window.location = "/Tfs/Spruce/Home/NewBug/" + $("#textbox-newitem").val();
+	window.location = "./New/?id=" + $("#textbox-newitem").val();
+}
+
+function addTask()
+{
+	window.location = "./New/?id=" + $("#textbox-newitem").val();
 }
 
 //

@@ -16,6 +16,7 @@ namespace Spruce.Core.Controllers
 			return View("Index", WorkItemManager.AllBugs().ToList());
 		}
 
+
 		public ActionResult View(int id)
 		{
 			WorkItemSummary item = WorkItemManager.ItemById(id);

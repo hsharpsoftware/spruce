@@ -96,6 +96,7 @@
     <Content Include="Assets\Scripts\jquery.dataTables.min.js" />
     <None Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Tasks\List.cshtml" />
     <None Include="Views\Tasks\Edit.cshtml" />
     <None Include="Views\Tasks\Index.cshtml" />
     <None Include="Views\Bugs\Edit.cshtml" />
