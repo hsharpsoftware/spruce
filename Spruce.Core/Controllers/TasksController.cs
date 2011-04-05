@@ -37,6 +37,12 @@ namespace Spruce.Core.Controllers
 			return View(item);
 		}
 
+		public ActionResult Close(int id)
+		{
+			WorkItemManager.Close(id);
+			return RedirectToAction("Index");
+		}
+
 		[HttpGet]
 		public ActionResult New(string id)
 		{
@@ -55,13 +61,8 @@ namespace Spruce.Core.Controllers
 			return View("Edit", item);
 		}
 
-		public ActionResult Close(int id)
-		{
-			WorkItemManager.Close(id);
-			return RedirectToAction("Index");
-		}
-
 		[HttpPost]
+		[ValidateInput(false)]
 		public ActionResult New(WorkItemSummary item)
 		{
 			item.CreatedBy = SpruceContext.Current.CurrentUser;
@@ -89,6 +90,7 @@ namespace Spruce.Core.Controllers
 		}
 
 		[HttpPost]
+		[ValidateInput(false)]
 		public ActionResult Edit(WorkItemSummary item)
 		{
 			try

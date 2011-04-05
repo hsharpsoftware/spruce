@@ -77,7 +77,6 @@
     <Content Include="Assets\Images\favicon.png" />
     <Content Include="Assets\Images\forward_disabled.jpg" />
     <Content Include="Assets\Images\forward_enabled.jpg" />
-    <Content Include="Assets\Images\logo.png" />
     <Content Include="Assets\Images\rss_icon.png" />
     <Content Include="Assets\Images\rss_icon_disabled.png" />
     <Content Include="Assets\Images\star_off.png" />
@@ -86,7 +85,6 @@
     <Content Include="Assets\Images\stickynote-medium.png" />
     <Content Include="Assets\Images\toggle_minus.png" />
     <Content Include="Assets\Images\toggle_plus.png" />
-    <Content Include="Assets\Images\whitetooltipbg.png" />
     <Content Include="Assets\Scripts\jquery.extensions.min.js" />
     <Content Include="Assets\Scripts\jquery.form-extensions.min.js" />
     <Content Include="Assets\Scripts\jquery.tipTip.minified.js" />
@@ -95,22 +93,24 @@
     <Content Include="Assets\Scripts\tipTip.css" />
     <Content Include="Global.asax" />
     <Content Include="Assets\Scripts\jquery.dataTables.min.js" />
-    <None Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Tasks\List.cshtml" />
     <Content Include="Views\Shared\_MobileLayout.cshtml" />
-    <None Include="Views\Tasks\Edit.cshtml" />
-    <None Include="Views\Tasks\Index.cshtml" />
-    <None Include="Views\Bugs\Edit.cshtml" />
-    <None Include="Views\Bugs\View.cshtml" />
-    <None Include="Views\Bugs\Index.cshtml" />
+    <Content Include="Views\Tasks\Edit.cshtml" />
+    <Content Include="Views\Tasks\Index.cshtml" />
+    <Content Include="Views\Bugs\Edit.cshtml" />
+    <Content Include="Views\Bugs\View.cshtml" />
+    <Content Include="Views\Bugs\Index.cshtml" />
     <Content Include="Assets\Scripts\jquery-1.4.1.js" />
     <Content Include="Assets\Scripts\jquery-1.4.1.min.js" />
     <Content Include="Assets\Scripts\jquery-1.4.1-vsdoc.js" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Views\Tasks\View.cshtml" />
-    <Content Include="Web.config" />
+    <Content Include="Views\Tasks\View.cshtml" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

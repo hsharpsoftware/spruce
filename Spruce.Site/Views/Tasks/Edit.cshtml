@@ -55,11 +55,14 @@
 				<div class="value">@Html.DropDownBoxForIterations("IterationPath", (List<IterationSummary>)ViewData["Iterations"], Model.IterationPath,5)</div>
 			</div>
 
+			@if (Model.Priority != null)
+			{
 			<div class="edit-field">
 				<div class="label">Priority:</div>
 				<div class="value">@Html.DropDownBoxFromList("Priority", (List<string>)ViewData["Priorities"], Model.Priority.Value.ToString(),4)</div>
 			</div>
 			<br style="clear:both"/>
+			}
 		
 			<div class="edit-field-long">
 				<div class="label">Estimated hours:</div>

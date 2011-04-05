@@ -75,6 +75,7 @@ namespace Spruce.Core.Controllers
 		}
 
 		[HttpPost]
+		[ValidateInput(false)]
 		public ActionResult New(WorkItemSummary item)
 		{
 			item.CreatedBy = SpruceContext.Current.CurrentUser;
@@ -101,6 +102,7 @@ namespace Spruce.Core.Controllers
 		}
 
 		[HttpPost]
+		[ValidateInput(false)]
 		public ActionResult Edit(WorkItemSummary item)
 		{
 			WorkItemManager.SaveExisting(item);
