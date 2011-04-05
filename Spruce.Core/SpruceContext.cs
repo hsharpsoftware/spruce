@@ -32,7 +32,7 @@ namespace Spruce.Core
 				{
 					// Android, Blackberry + iPhone only for now
 					string userAgent = HttpContext.Current.Request.UserAgent.ToLower();
-					return (userAgent.IndexOf("apple-iphone") > -1 || 
+					return (userAgent.IndexOf("iphone") > -1 || 
 						userAgent.IndexOf("android") >-1 || 
 						userAgent.IndexOf("blackBerry") > -1);
 				}
