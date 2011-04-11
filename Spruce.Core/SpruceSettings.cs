@@ -12,7 +12,7 @@ namespace Spruce.Core
 		{
 			get
 			{
-				return ConfigurationManager.AppSettings["TfsServer"];
+				return SpruceSection.Current.TfsServer;
 			}
 		}
 
@@ -20,7 +20,7 @@ namespace Spruce.Core
 		{
 			get
 			{
-				return ConfigurationManager.AppSettings["DefaultProjectName"];
+				return SpruceSection.Current.DefaultProjectName;
 			}
 		}
 	}

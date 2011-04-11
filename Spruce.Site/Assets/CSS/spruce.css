@@ -1,0 +1,137 @@
+﻿body			{ font-family: Myriad Web Pro,helvetica;margin:0;color:#000000;}
+h1,h2,h3,h4,h4	{ font-family: Myriad Pro,helvetica; }
+a				{ color:#333333; }
+a:hover			{ color:#babfb5; }
+
+/* Color scheme reference:
+#42622a - green header bg
+#7e8f72 - borders
+#babfb5 - medium dark header bg
+#e7eee1 - light header bg
+#ab0111 - red text
+#f59c00 - orange text
+#48a503 - green text
+#646661 - dark grey text
+*/
+
+.left			{ float:left; }
+.right			{ float:right; }
+.darkbg			{ background-color:#dddddd; }
+.midbg			{ background-color:#cbcfbe; }
+.lightbg		{ background-color: #FFE; border:1px solid gray;border-radius:4px 4px;margin: 5px 0px;padding: 5px; }
+.dark-text		{ color: #646661; }
+.middark-text	{ color:#babfb5; }
+.mid-text		{ color:#cbcfbe; }
+.light-text		{ color:#e7eee1; }
+.white-text		{ color:#FFFFFF; }
+.biggest		{ font-size:1.5em; }
+.bigger			{ font-size:1.2em; }
+.big			{ font-size:1.1em; }
+.normal			{ font-size:1em; }
+.small			{ font-size:0.9em; }
+.smaller		{ font-size:0.8em; }
+.smallest		{ font-size:0.7em; }
+.bold			{ font-weight:bold; }
+.italic			{ font-style:italic; }
+.dimmed			{ opacity: 0.5; }
+
+#header			{ background-color:#42622a;width:100%;height:32px;color:#FFF;font-family: Myriad Web Pro,helvetica;font-size:0.8em; }
+#header div		{ margin:0 10px;color:White;height:32px;line-height:33px;margin-right:20px; }
+#header	a		{ color:White;text-decoration:none; }
+#header	a:hover	{ text-decoration:underline; }
+#header input	{ font-family:Arial,helvetica;font-size:0.9em; }
+
+#export-buttons { margin: 10px 20px 0px 0px;width:100%;text-align:right; }
+
+#container		{ margin:20px; }
+#leftcontent	{ width:65%;margin-right:20px; }
+#rightcontent	{ width:30%; }
+
+#project-name	{ font-family: Myriad Pro,helvetica;font-size:36pt; }
+#iteration-name { font-family: Myriad Pro,helvetica;font-size:14pt;color:#646661;margin-left:3px; }
+#seperator		{ border-bottom:1px solid #707170;margin-bottom:35px; }
+
+#accordian		{ margin-top:10px;border: 1px solid #707170;}
+#accordian .padding		{ padding:5px;margin:10px 5px 5px 10px; }
+#accordian .headertitle	{ height:32px;line-height:35px;margin:0px; }
+
+.errorbox		{ background-color: #fff8af;border: 1px solid #7e8f72;color: #333333;font-family:Calibri,helvetica;font-size:1em;width:99%;padding:10px;-moz-border-radius: 4px;border-radius:4px;margin-bottom:20px; }
+.errorbox h1	{ font-size:1em; }
+
+.searchresults	{ color:Green;font-size:1.1em; }
+.searchbox		{ width:400px; }
+#searchagain-box{ margin-bottom:20px; }
+
+
+/* Tables */
+#workitems-table { font-family:Arial,helvetica;font-size:1.0em;clear:both;margin: 10px 0;width:100%;background-color: #FFF;border-collapse:collapse;border:solid 1px #7e8f72;-moz-box-shadow:0 0 10px 5px #babfb5;-webkit-box-shadow: 0 0 10px #babfb5; }  
+#workitems-table thead th { cursor:pointer;padding:10px;font-weight:bold;color: #000000;text-align:left;}
+#workitems-table tbody td { color: #000;font-size:1.0em;padding:10px;text-align:left; }
+    
+#newitem-container { font-size:10pt;margin-top:10px; }
+#newitem-textbox { display:none; }
+
+/* General */
+.workitem-id{color: #6E6E6E;}
+
+/* Default dataTable plugin styles */
+.dataTables_wrapper {clear: both;min-height: 100px;	position: relative;	zoom: 1;}
+.dataTables_length { font-family:Arial,helvetica;float:left;width:40%;}
+.dataTables_filter { font-family:Arial,helvetica;float:left;width:60%;text-align: right;padding-top:5px; }
+.dataTables_info { width:50%;float:left;}
+.dataTables_paginate { float: right; text-align: right; width: 44px; }
+.paginate_disabled_previous, 
+	.paginate_enabled_previous, 
+	.paginate_disabled_next, 
+	.paginate_enabled_next { float: left; height: 19px;margin-left: 3px;width: 19px; }
+
+.paginate_disabled_previous { background-image: url('/Tfs/Spruce/Assets/Images/back_disabled.jpg');}
+.paginate_enabled_previous { background-image: url('/Tfs/Spruce/Assets/Images/back_enabled.jpg');}
+.paginate_disabled_next { background-image: url('/Tfs/Spruce/Assets/Images/forward_disabled.jpg');}
+.paginate_enabled_next { background-image: url('/Tfs/Spruce/Assets/Images/forward_enabled.jpg');}
+
+/*  View item */
+#view-pagename	{ font-size:2em; margin:0px; }
+#view-container	{ border:solid 1px #707170;background-color: #FFF; }
+#view-inner		{ padding: 10px; }
+#view-container .title			{ font-family:Myriad Web Pro,helvetica;font-size: 2em;display:inline;margin-bottom:10px; }
+#view-container .extradetails	{ margin:10px 0px;}
+#view-container .description	{ border-top: 1px dotted #707170;border-bottom:1px dotted #707170;color:#3f3f3f;}
+
+#view-favouritebar	{ margin-top:10px; }  
+#view-favouritebar .info	{ float:left; width:80%; font-size:0.8em;padding-top:3px;margin-bottom:10px; }
+#view-favouritebar .button	{ float:right;line-height:40px; }
+    
+#view-actionbar		{ padding:10px;border-top: 1px solid #707170; }   
+#view-actionbar a	{ font-size:0.9em;font-weight:bold; }
+#view-actionbar a:hover	{ color:#000000; }
+
+/* Tasks */
+#tasks-container {}
+.task h1		{ font-size:1.2em; }
+.task a			{ text-decoration:none; }
+.task a:hover	{ color:#ABABAB; }
+.task h2		{ font-size:1em; }
+
+/* Edit item */
+#edit-pagename		{ font-size:2em; margin:0px; }
+#edit-container		{ padding: 5px; }
+
+#edit-title input{border: 1px solid #7e8f72;color: #333333;font-family:Calibri,helvetica;font-size:2em;width:99%;-moz-border-radius: 4px;border-radius:4px;padding:5px;}
+
+.edit-options		{ width:99%;margin:5px 0px;padding:5px;border: 1px solid #7e8f72;-moz-border-radius: 4px;border-radius:4px;}
+.edit-field			{ float:left;font-size:0.9em;font-family:Myriad Web Pro,helvetica;width:240px; }
+.edit-field .label	{ float:left;line-height:40px;width:90px; }
+.edit-field .value	{ float:left;width:150px; }
+.edit-field .value select	{ margin-top:10px; border: 1px solid #7e8f72;width:130px; }
+
+.edit-field-long		{ float:left;font-size:0.9em;font-family:Myriad Web Pro,helvetica;width:225px; }
+.edit-field-long .label	{ float:left;width:160px;line-height:25px; }
+.edit-field-long .value	{ float:left;width:65px; }
+
+#edit-description textarea { border:1px solid #7e8f72;color:#000;font-family:Myriad Web Pro,helvetica;width:99%;height:150px;-moz-border-radius: 4px;border-radius:4px;padding:5px;}
+.edit-error	{ background-color: #faf389;border: solid 1px #FF0000;}
+
+#edit-buttons		{ text-align:right; }
+#edit-buttons input	{ font-family:Arial,helvetica;font-size:1.2em;margin-top:5px;width:100px; }  
+.twochar-textbox	{ width: 40px;}

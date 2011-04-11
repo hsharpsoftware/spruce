@@ -37,12 +37,6 @@ namespace Spruce.Core.Controllers
 			return View(item);
 		}
 
-		public ActionResult Close(int id)
-		{
-			WorkItemManager.Close(id);
-			return RedirectToAction("Index");
-		}
-
 		[HttpGet]
 		public ActionResult New(string id)
 		{
@@ -59,6 +53,12 @@ namespace Spruce.Core.Controllers
 			ViewData["Users"] = SpruceContext.Current.Users;
 
 			return View("Edit", item);
+		}
+
+		public ActionResult Close(int id)
+		{
+			WorkItemManager.Close(id);
+			return RedirectToAction("Index");
 		}
 
 		[HttpPost]

@@ -13,7 +13,7 @@ namespace Spruce.Core.Controllers
 		public ActionResult Index()
 		{
 			// Dashboard
-			return View("Index", WorkItemManager.AllBugs().ToList());
+			return View("Index", DashboardManager.GetSummary());
 		}
 
 		public ActionResult SetProject(string id, string fromUrl)

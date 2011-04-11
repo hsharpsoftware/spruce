@@ -7,6 +7,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.Server;
 using System.Xml;
 using System.Web.Mvc;
+using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace Spruce.Core
 {
@@ -18,6 +19,8 @@ namespace Spruce.Core
 
 		public TfsTeamProjectCollection TfsCollection { get; private set; }
 		public WorkItemStore WorkItemStore { get; private set; }
+		public VersionControlServer VersionControlServer { get; private set; }
+
 		public ProjectDetails CurrentProject { get; private set; }
 		public List<string> ProjectNames { get; private set; }
 		public string CurrentUser { get; private set; }
@@ -32,9 +35,7 @@ namespace Spruce.Core
 				{
 					// Android, Blackberry + iPhone only for now
 					string userAgent = HttpContext.Current.Request.UserAgent.ToLower();
-					return (userAgent.IndexOf("iphone") > -1 || 
-						userAgent.IndexOf("android") >-1 || 
-						userAgent.IndexOf("blackBerry") > -1);
+					return (userAgent.IndexOf("iphone") > -1 || userAgent.IndexOf("android") >-1 || userAgent.IndexOf("blackBerry") > -1);
 				}
 				else
 				{
@@ -87,6 +88,7 @@ namespace Spruce.Core
 			TfsCollection = new TfsTeamProjectCollection(new Uri(SpruceSettings.TfsServer));
 			TfsCollection.Authenticate();
 			WorkItemStore = new WorkItemStore(TfsCollection);
+			VersionControlServer = TfsCollection.GetService<VersionControlServer>();
 
 			CurrentUser = TfsCollection.AuthorizedIdentity.DisplayName;
 			SetProject(SpruceSettings.DefaultProjectName);

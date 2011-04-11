@@ -16,6 +16,7 @@ namespace Spruce.Core
 
 		public int Id { get; private set; }
 		public string Name { get; private set; }
+		public string Path { get; private set; }
 		public string TemplateName { get; private set; }
 		public List<WorkItemType> WorkItemTypes { get; private set; }
 		public List<string> WorkItemTypesAsStrings { get; private set; }
@@ -37,6 +38,8 @@ namespace Spruce.Core
 			_project = project;
 			Id = project.Id;
 			Name = project.Name;
+			string p = project.QueryHierarchy.Path;
+			Path = "$/" + Name; // TODO: check this is correct.
 			TemplateName = "";
 
 			WorkItemTypes = new List<WorkItemType>();

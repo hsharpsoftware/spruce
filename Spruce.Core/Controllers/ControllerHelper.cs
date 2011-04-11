@@ -23,22 +23,4 @@ namespace Spruce.Core.Controllers
 			viewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
 		}
 	}
-
-	public class ControllerBase : Controller
-	{
-		protected override void OnActionExecuting(ActionExecutingContext filterContext)
-		{
-			ViewData["CurrentUser"] = SpruceContext.Current.CurrentUser;
-			ViewData["CurrentProjectName"] = SpruceContext.Current.CurrentProject.Name;
-
-			ViewData["CurrentIterationName"] = SpruceContext.Current.FilterSettings.IterationName;
-			ViewData["CurrentIterationPath"] = SpruceContext.Current.FilterSettings.IterationPath;
-			ViewData["CurrentAreaName"] = SpruceContext.Current.FilterSettings.AreaName;
-			ViewData["CurrentAreaPath"] = SpruceContext.Current.FilterSettings.AreaPath;
-
-			ViewData["Projects"] = SpruceContext.Current.ProjectNames;
-			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
-			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
-		}
-	}
 }

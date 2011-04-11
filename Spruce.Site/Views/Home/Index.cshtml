@@ -1,2 +1,76 @@
-﻿@model List<WorkItemSummary>
-A dashboard
+﻿@model DashboardSummary
+
+<style type="text/css">
+	.left { float:left;margin-left:10px; }
+	.bold { font-weight:bold; }
+	.clear { clear:both;}
+</style>
+
+<div class="left bold">Bug count:</div>
+<div class="left">@Model.BugCount</div>
+<br class="clear" />
+
+<div class="left bold">Active bugs:</div>
+<div class="left">@Model.ActiveBugs</div>
+<br class="clear" />
+
+<div class="left bold">Tasks count:</div>
+<div class="left">@Model.TaskCount</div>
+<br class="clear" />
+
+<div class="left bold">Active tasks:</div>
+<div class="left">@Model.ActiveTasks</div>
+<br class="clear" />
+
+<div class="left bold">My active bug count:</div>
+<div class="left">@Model.MyActiveBugCount</div>
+<br class="clear" />
+
+<h2>My bugs</h2>
+
+@if (Model.MyActiveBugs.Count == 0)
+{
+	<p>You have no active bugs assigned to you right now.</p>
+}
+else
+{
+<ul>
+	@foreach (WorkItemSummary summary in Model.MyActiveBugs)
+	{
+	<li>@summary.Id &nbsp; @Html.ActionLink(summary.Title, "View", "Bugs", new { id = summary.Id }, null)</li>
+	}
+</ul>
+}
+
+<h2>My tasks</h2>
+@if (Model.MyActiveTasks.Count == 0)
+{
+	<p>You have no active tasks assigned to you right now.</p>
+}
+else
+{
+<ul>
+	@foreach (WorkItemSummary summary in Model.MyActiveTasks)
+	{
+	<li>@summary.Id &nbsp; @Html.ActionLink(summary.Title, "View", "Tasks", new { id = summary.Id }, null)</li>
+	}
+</ul>
+}
+
+<h2>Recent checkins</h2>
+@if (Model.RecentCheckins.Count == 0)
+{
+	<p>There are no checkins yet.</p>
+}
+else
+{
+	foreach (ChangesetSummary summary in Model.RecentCheckins)
+	{
+	<div class="left bold">@summary.Id</div>
+	<div class="left">@summary.Date</div>
+	<div class="left">@summary.User</div>
+	<div class="left">@summary.Message</div>
+	<br class="clear" />
+	}
+}
+<br /><br />

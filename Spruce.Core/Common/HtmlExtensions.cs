@@ -11,7 +11,7 @@ namespace Spruce.Core
 {
 	public static class HtmlExtensions
 	{
-		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue,int tabIndex)
+		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
 
@@ -62,7 +62,7 @@ namespace Spruce.Core
 
 		public static MvcHtmlString HtmlForListFilters(this HtmlHelper helper, string title, string description, string url)
 		{
-			string link = "<b>" +title+ "</b>";
+			string link = "<b>" + title + "</b>";
 
 			if ((string)HttpContext.Current.Session["ListLink"] != url)
 			{
@@ -71,7 +71,7 @@ namespace Spruce.Core
 
 			link += "&nbsp;|&nbsp;";
 
-			return new MvcHtmlString(link);			
+			return new MvcHtmlString(link);
 		}
 
 		/// <summary>
