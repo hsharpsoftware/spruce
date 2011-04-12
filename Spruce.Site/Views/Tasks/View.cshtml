@@ -1,40 +1,30 @@
 ﻿@model WorkItemSummary
 
-<div id="view-pagename" class="mid-text">
-	#@Model.Id
-</div>
+<div style="padding:5px;border:1px solid #e5e5e5;margin:20px 0;font-family:Arial;font-size:18pt;width:80%;">
+	<div style="padding:5px;background-color:#f6f6f6;border:1px solid #e5e5e5;">
+		<div class="left">@Model.Title</div>
+		<div class="right" style="color:#d1d1d1">#@Model.Id</div>
+		<br class="clear" />
+	</div>	
 
-<div id="view-container">
-	<div id="view-inner">
-		<div class="title">
-			@Model.Title
-		</div>
-		<div class="extradetails dark-text">
-			<b>@Model.State</b>, Assigned to @Model.AssignedTo
-		</div>
-			
-		<div class="description">
-			<p>
-				@MvcHtmlString.Create(Model.Description.Replace("\n","<br/>"))
-			</p>
-		</div>
-
-		<div id="view-favouritebar">
-			<div class="info dark-text">
-				Estimated hours: @Model.EstimatedHours <br />
-				@Model.CreatedDate.ToString()<br />
-				Area: @Model.AreaName<br />
-				Iteration: @Model.IterationName
-			</div>
-			<div class="button dark-text">
-				<a href="javascript:;"><img id="favouritethis" src="@Url.Content("~/Assets/Images/star_on.png")" border="0" alt="Favourite this item" /></a>
-			</div>
-		</div>
+	<div style="padding:5px;border-bottom:1px solid #e5e5e5;min-height:200px;">
+		@MvcHtmlString.Create(Model.Description.Replace("\n","<br/>"))
 	</div>
 
-    <br style="clear:both"/>
-    <div id="view-actionbar" class="darkbg">
-		@Html.ActionLink("Edit", "Edit", new { id = Model.Id })&nbsp;|&nbsp;
-		@Html.ActionLink("Close", "Close", new { id = Model.Id })
-    </div>
+	<div style="padding:10px 5px 5px 5px;font-size:12pt;">
+		<div class="left">
+			Created on @Model.CreatedDate.ToString("dd-MM-yyyy") . Assigned to @Model.AssignedTo
+		</div>
+		<div class="right" style="color:#0391da;text-align:right;width:100px;">
+			<div>
+				<a href="javascript:;" id="actionmenu-link"><img style="margin:0;padding:2px;" src="@Url.Content("~/Assets/Images/black-arrow-down.png")" border="0" alt="menu" /></a>
+				@Model.State
+			</div>
+			<div id="actionmenu" style="font-size:12pt;display:none;border-top:1px dotted #AAA;padding:5px 0px;margin:0;">
+				@Html.ActionLink("Edit", "Edit", new { id = Model.Id })<br/>
+				@Html.ActionLink("Close", "Close", new { id = Model.Id })
+			</div>
+		</div>
+		<br class="clear" />
+	</div>
 </div>

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<WorkItemSummary>
 
 <h2 class="dimmed">Bugs</h2>
-@Html.ActionLink("View as heat map","Heatmap")
+@Html.ActionLink("View as list","Index")
 <br /><br />
 
 <table style="padding:0;border-collapse:collapse;font-family:Arial;font-size:1em;width:80%;">
@@ -30,7 +30,7 @@
 	<tbody>
 	@foreach (WorkItemSummary item in Model)
 	{
-		<tr style="border-bottom:1px dashed #cdcdcd;">
+		<tr style="border-bottom:1px dashed #cdcdcd;" class="priority@(item.Priority)">
 			<td>
 				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@item.Title</div>
 			</td>

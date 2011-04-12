@@ -62,33 +62,25 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\CSS\spruce2.css" />
     <Content Include="Assets\CSS\spruce.css" />
     <Content Include="Assets\CSS\spruce.mobile.css" />
-    <Content Include="Assets\Images\back_disabled.jpg" />
-    <Content Include="Assets\Images\back_enabled.jpg" />
+    <Content Include="Assets\Images\arrow-up.png" />
+    <Content Include="Assets\Images\black-arrow-down.png" />
     <Content Include="Assets\Images\csv_icon.png" />
     <Content Include="Assets\Images\csv_icon_disabled.png" />
     <Content Include="Assets\Images\excel_icon.png" />
     <Content Include="Assets\Images\excel_icon_disabled.png" />
     <Content Include="Assets\Images\favicon.png" />
-    <Content Include="Assets\Images\forward_disabled.jpg" />
-    <Content Include="Assets\Images\forward_enabled.jpg" />
     <Content Include="Assets\Images\rss_icon.png" />
     <Content Include="Assets\Images\rss_icon_disabled.png" />
     <Content Include="Assets\Images\star_off.png" />
     <Content Include="Assets\Images\star_on.png" />
     <Content Include="Assets\Images\stickynote-large.png" />
     <Content Include="Assets\Images\stickynote-medium.png" />
-    <Content Include="Assets\Images\toggle_minus.png" />
-    <Content Include="Assets\Images\toggle_plus.png" />
-    <Content Include="Assets\Scripts\jquery.extensions.min.js" />
-    <Content Include="Assets\Scripts\jquery.form-extensions.min.js" />
-    <Content Include="Assets\Scripts\jquery.tipTip.minified.js" />
-    <Content Include="Assets\Scripts\jquery.tools.min.js" />
+    <Content Include="Assets\Images\top-dropshadow.png" />
     <Content Include="Assets\Scripts\spruce.js" />
-    <Content Include="Assets\Scripts\tipTip.css" />
     <Content Include="Global.asax" />
-    <Content Include="Assets\Scripts\jquery.dataTables.min.js" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Views\Tasks\List.cshtml" />
@@ -98,7 +90,6 @@
     <Content Include="Views\Bugs\Edit.cshtml" />
     <Content Include="Views\Bugs\View.cshtml" />
     <Content Include="Views\Bugs\Index.cshtml" />
-    <Content Include="Assets\Scripts\jquery-1.4.1.js" />
     <Content Include="Assets\Scripts\jquery-1.4.1.min.js" />
     <Content Include="Assets\Scripts\jquery-1.4.1-vsdoc.js" />
   </ItemGroup>
@@ -130,7 +121,12 @@
   <ItemGroup>
     <Content Include="Views\_ViewStart.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Views\Shared\PopoutBlock.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Bugs\Heatmap.cshtml" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

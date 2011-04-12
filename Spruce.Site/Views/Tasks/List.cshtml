@@ -1,67 +1,58 @@
-﻿@model List<WorkItemSummary>
+﻿@model IEnumerable<WorkItemSummary>
 
-<script type="text/javascript" charset="utf-8">
-	$(document).ready(function (){
-		setupListPage();
-	});
-</script>
+<h2 class="dimmed">Tasks</h2>
+@Html.ActionLink("View as notes","Index")
+<br /><br />
 
-<span id="viewas-notes">
-	@Html.ActionLink("View as notes","Index")
-</span>
-
-<table id="workitems-table">
+<table style="padding:0;border-collapse:collapse;font-family:Arial;font-size:1em;width:80%;">
 	<thead>
-		<tr class="midbg">
-			<th style="width:5%">ID</th>
-			<th style="width:60%">Title</th>
-			<th style="width:20%">Assigned to</th>
-			<th>Status</th>
-			<th>Estimated hours</th>
-			<th>Priority</th>
+		<tr style="background-color:#f6f6f6;color:#282828;border:1px solid #cdcdcd;">
+			<th>
+				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">Title</div>
+			</th>
+			<th style="width:12%;">
+				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">ID</div>
+			</th>
+			<th style="width:15%">
+				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">Assigned to</div>
+			</th>
+			<th style="width:12%">
+				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">Status</div>
+			</th>
+			<th style="width:12%">
+				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">Priority</div>
+			</th>
+			<th style="width:10%">
+				<div style="padding:5px;text-align:left;margin:10px;"></div>
+			</th>
 		</tr>
 	</thead>
 	<tbody>
 	@foreach (WorkItemSummary item in Model)
 	{
-		<tr>
-			<td>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</td>
-			<td>@item.Title</td>
-			<td>@item.AssignedTo</td>
-			<td>@item.State</td>
-			<td>@item.EstimatedHours</td>
-			<td>@item.Priority</td>
+		<tr style="border-bottom:1px dashed #cdcdcd;">
+			<td>
+				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@item.Title</div>
+			</td>
+			<td style="width:12%;">
+				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</div>
+			</td>
+			<td style="width:15%">
+				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@item.AssignedTo</div>
+			</td>
+			<td style="width:12%">
+				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@item.State</div>
+			</td>
+			<td style="width:12%">
+				<div style="padding:6px;text-align:center;margin:10px;">@item.Priority</div>
+			</td>
+			<td style="width:10%">
+				<div style="padding:6px;text-align:center;margin:10px;">
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id })
+				</div>
+			</td>
 		</tr>
 	}
 	</tbody>
 </table>
 <br style="clear:both" />
-
-<div id="newitem-container">
-    <div id="newitem">&gt;&nbsp;<a href="javascript:toggleNewItem()">New task</a></div>
-    <div id="newitem-textbox">
-        <input type="text" id="textbox-newitem" style="width:350px;" />
-        <input type="button" value="Save" onclick="addTask()" />
-        <input type="button" value="Cancel" onclick="toggleNewItem()" />
-    </div>
-</div>
-
-
-@section RightContent
-{
-<!-- Filters -->
-<div class="darkbg">
-	<div class="left toggleitem"><a href="javascript:;"><img src="@Url.Content("~/Assets/Images/toggle_minus.png")" border="0" alt="Toggle" /></a></div>
-	<div class="left headertitle">Filters</div>
-	<br style="clear:both"/>
-</div>
-<div id="accordian-areas" class="padding">
-	<a href="#">All</a><br />
-	<a href="#">Active</a><br />
-	<a href="#">Closed</a><br />
-	<a href="#">Assigned to me</a><br />
-	<a href="#">Today</a><br />
-	<a href="#">Yesterday</a><br />
-	<a href="#">This week</a><br />
-</div>
-}

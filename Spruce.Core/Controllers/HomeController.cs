@@ -41,6 +41,20 @@ namespace Spruce.Core.Controllers
 			SetHighlightedArea(id);
 
 			return Redirect(fromUrl);
-		}		
+		}
+
+		/// <summary>
+		/// Returns a string containing Javascript 'constants' for the site.
+		public ActionResult GlobalJsVars()
+		{
+			UrlHelper helper = new UrlHelper(HttpContext.Request.RequestContext);
+
+			StringBuilder builder = new StringBuilder();
+			builder.AppendLine(string.Format("var SPRUCE_SCRIPTPATH = '{0}';", helper.Content("~/Assets/Scripts/")));
+			builder.AppendLine(string.Format("var SPRUCE_CSSPATH = '{0}';", helper.Content("~/Assets/Css/")));
+			builder.AppendLine(string.Format("var SPRUCE_IMAGEPATH = '{0}';", helper.Content("~/Assets/Images/")));
+
+			return Content(builder.ToString(), "text/javascript");
+		}
     }
 }

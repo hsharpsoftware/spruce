@@ -9,20 +9,20 @@ namespace Spruce.Core.Controllers
 {
 	public class SearchController : ControllerBase
     {
-        public ActionResult Index(string search)
+        public ActionResult Index(string q)
         {
 			IList<WorkItemSummary> summaries = new List<WorkItemSummary>();
 
-			if (!string.IsNullOrEmpty(search))
+			if (!string.IsNullOrEmpty(q))
 			{
 				SearchManager manager = new SearchManager();
-				summaries = manager.Search(search);
-				ViewData["search"] = search;
+				summaries = manager.Search(q);
+				ViewData["search"] = q;
 
-				if (manager.IsWorkItemId(search) && summaries.Count == 1)
+				if (manager.IsWorkItemId(q) && summaries.Count == 1)
 				{
 					// For single work item ids (that exist), redirect straight to the bug page
-					return RedirectToAction("View", "Bugs", new { id = int.Parse(search) });
+					return RedirectToAction("View", "Bugs", new { id = int.Parse(q) });
 				}
 			}
 

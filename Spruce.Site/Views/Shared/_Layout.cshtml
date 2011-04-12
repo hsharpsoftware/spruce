@@ -6,114 +6,39 @@
 	<link rel="shortcut icon" href="@Url.Content("~/Assets/Images/favicon.png")" />
 
 	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery-1.4.1.min.js")"></script>
-	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery.extensions.min.js")"></script>
-	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery.form-extensions.min.js")"></script>
-	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery.dataTables.min.js")"></script>
-	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery.tipTip.minified.js")"></script>
+	<script type="text/javascript" language="javascript" src="@Url.Action("GlobalJsVars","Home")"></script>
 	<script type="text/javascript" src="@Url.Content("~/Assets/Scripts/spruce.js")"></script>
 
-	<link href="@Url.Content("~/Assets/CSS/spruce.css")" rel="stylesheet" type="text/css" media="Screen" />
+	<link href="@Url.Content("~/Assets/CSS/spruce2.css")" rel="stylesheet" type="text/css" media="Screen" />
 	<link href="@Url.Content("~/Assets/CSS/spruce.mobile.css")" rel="stylesheet" type="text/css" media="handheld" />
 </head>
 
 <body>
 @using (Html.BeginForm("Index","Search", FormMethod.Get))
 {
-	<div id="header">
-		<div class="left">Logged in as @ViewData["CurrentUser"]</div>
-		<div class="right">
+	<div id="header">		
+		<div class="left">
+			<a href="javascript:;" id="togglemenu"><img src="@Url.Content("~/Assets/Images/arrow-down.png")" border="0" alt="toggle" /></a>
 			@Html.ActionLink("Dashboard","Index","Home")
-			&nbsp;|&nbsp;@Html.ActionLink("New bug","New","Bugs")
-			&nbsp;|&nbsp;@Html.ActionLink("New task","New","Tasks")
 			&nbsp;|&nbsp;@Html.ActionLink("Bugs", "Index", "Bugs")
 			&nbsp;|&nbsp;@Html.ActionLink("Tasks", "Index", "Tasks")
-			&nbsp;|&nbsp;Search: @Html.TextBox("search", null, new { placeholder = "Enter text to search" })
+			&nbsp;|&nbsp;@Html.ActionLink("New task","New","Tasks")
+			&nbsp;|&nbsp;@Html.ActionLink("New bug","New","Bugs")
+		</div>
+		
+		<div class="right">
+			Logged in as @ViewData["CurrentUser"]
+			&nbsp;|&nbsp;Search: @Html.TextBox("q", null, new { placeholder = "Enter text to search" })
 		</div>
 	</div>
 }
 
-	<div id="export-buttons" class="right">
-		<a href="#csv"><img src="@Url.Content("~/Assets/Images/csv_icon_disabled.png")" border="0" alt="CSV export" /></a>
-		<a href="#excel"><img src="@Url.Content("~/Assets/Images/excel_icon_disabled.png")" border="0" alt="Excel export" /></a>
-		<a href="#rss"><img src="@Url.Content("~/Assets/Images/rss_icon_disabled.png")" border="0" alt="RSS feed of this page" /></a>
-	</div>
+	@Html.Partial("PopoutBlock")
 
-	<div id="container">
-		<div id="leftcontent" class="left">
+	<div id="main-container">
 			<div id="project-name">Project @ViewData["CurrentProjectName"]</div>
-			@if (ViewData["CurrentIterationName"] != "None"){
-			<div id="iteration-name">@ViewData["CurrentIterationName"]</div>
-			}
-			<div id="seperator"></div>
+			<div id="areaiteration-name">@Html.FormatAreaAndIterationName(ViewData["CurrentIterationName"], ViewData["CurrentAreaName"])</div>
 			@RenderBody()
-		</div>
-
-		<div id="rightcontent" class="right">
-			<div id="accordian">
-
-				<!-- Projects -->
-				<div class="darkbg">
-					<div class="left toggleitem"><a href="javascript:;"><img src="@Url.Content("~/Assets/Images/toggle_minus.png")" border="0" alt="Toggle" /></a></div>
-					<div class="left headertitle">Projects</div>
-					<br style="clear:both"/>
-				</div>
-				<div id="accordian-projects" class="padding">
-				@foreach (string projectName in (List<string>)ViewData["Projects"])
-				 {
-					if (projectName != (string) ViewData["CurrentProjectName"])
-					{
-						@Html.ActionLink(projectName, "SetProject", "Home", new { id = projectName.ToBase64(), fromUrl = Request.Url }, null) <br />
-					}
-					else
-					{
-						<b>@projectName</b><br />
-					}			
-				}
-				</div>
-
-				<!-- Iterations -->
-				<div class="darkbg">
-					<div class="left toggleitem"><a href="javascript:;"><img src="@Url.Content("~/Assets/Images/toggle_minus.png")" border="0" alt="Toggle" /></a></div>
-					<div class="left headertitle">Iterations</div>
-					<br style="clear:both"/>
-				</div>
-				<div id="accordian-iterations" class="padding">
-				@foreach (IterationSummary summary in (List<IterationSummary>)ViewData["Iterations"])
-				{
-					if (summary.Path != (string) ViewData["CurrentIterationPath"])
-					{
-						@Html.ActionLink(summary.Name, "SetIteration", "Home", new { id = summary.Path.ToBase64(), fromUrl = Request.Url }, null)<br />
-					}
-					else
-					{
-						<b>@summary.Name</b><br />
-					}
-				}
-				</div>
-
-				<!-- Areas -->
-				<div class="darkbg">
-					<div class="left toggleitem"><a href="javascript:;"><img src="@Url.Content("~/Assets/Images/toggle_minus.png")" border="0" alt="Toggle" /></a></div>
-					<div class="left headertitle">Areas</div>
-					<br style="clear:both"/>
-				</div>
-				<div id="accordian-areas" class="padding">
-				@foreach (AreaSummary area in (List<AreaSummary>)ViewData["Areas"])
-				{
-					if (area.Path != (string) ViewData["CurrentAreaPath"])
-					{
-						@Html.ActionLink(area.Name, "SetArea", "Home", new { id = area.Path.ToBase64(), fromUrl = Request.Url })<br />
-					}
-					else
-					{
-						<b>@area.Name</b><br />
-					}
-				}
-				</div>
-				
-				@RenderSection("RightContent",false)			
-			</div>
-		</div>
 	</div>
 </body>
 </html>

@@ -13,13 +13,13 @@ namespace Spruce.Core.Controllers
 		public ActionResult Index()
 		{
 			Session["ListLink"] = "All";
-			return View(WorkItemManager.AllTasks().ToList());
+			return View(WorkItemManager.AllTasks());
 		}
 
 		public ActionResult List()
 		{
 			Session["ListLink"] = "All";
-			return View(WorkItemManager.AllTasks().ToList());
+			return View(WorkItemManager.AllTasks());
 		}
 
 		public ActionResult View(int id)

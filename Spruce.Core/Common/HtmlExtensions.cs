@@ -11,6 +11,26 @@ namespace Spruce.Core
 {
 	public static class HtmlExtensions
 	{
+		public static MvcHtmlString FormatAreaAndIterationName(this HtmlHelper helper, object iteration, object area)
+		{
+			string iterationName = iteration.ToString();
+			string areaName = area.ToString();
+
+			string result = "";
+			if (!string.IsNullOrEmpty(iterationName) && iterationName != "None")
+				result = iterationName;
+
+			if (!string.IsNullOrEmpty(areaName) && areaName != "None")
+			{
+				if (!string.IsNullOrEmpty(result))
+					result += "&nbsp;|&nbsp;";
+
+				result += areaName;
+			}
+
+			return MvcHtmlString.Create(result);
+		}
+
 		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();

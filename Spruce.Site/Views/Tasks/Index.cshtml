@@ -1,10 +1,8 @@
-﻿@model List<WorkItemSummary>
+﻿@model IEnumerable<WorkItemSummary>
 
-<style type="text/css">
-.task { background-image: url('@Url.Content("~/Assets/Images/stickynote-large.png")');width:185px;height:188px;padding:20px;float:left; }
-</style>
-
+<h2 class="dimmed">Tasks</h2>
 @Html.ActionLink("View as list","List")
+<br /><br />
 
 <div id="tasks-container">
 	@foreach (WorkItemSummary item in Model)

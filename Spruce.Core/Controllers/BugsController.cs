@@ -13,9 +13,14 @@ namespace Spruce.Core.Controllers
 		public ActionResult Index()
 		{
 			Session["ListLink"] = "All";
-			return View("Index", WorkItemManager.AllBugs().ToList());
+			return View(WorkItemManager.AllBugs());
 		}
 
+		public ActionResult Heatmap()
+		{
+			Session["ListLink"] = "All";
+			return View( WorkItemManager.AllBugs().OrderBy(b => b.Priority));
+		}
 
 		public ActionResult View(int id)
 		{

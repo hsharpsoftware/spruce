@@ -1,0 +1,49 @@
+﻿<div id="popoutmenu">
+	<div id="dropshadow"></div>
+	<div class="container">
+		<div class="list">
+			<h3>Projects</h3>
+			<span class="selected">@ViewData["CurrentProjectName"]</span><br />
+			@foreach (string projectName in (List<string>)ViewData["Projects"])
+			{
+				if (projectName != (string) ViewData["CurrentProjectName"])
+				{
+					@Html.ActionLink(projectName, "SetProject", "Home", new { id = projectName.ToBase64(), fromUrl = Request.Url }, null) <br />
+				}			
+			}
+		</div>
+		<div class="list">
+			<h3>Iterations</h3>
+			<span class="selected">@ViewData["CurrentIterationName"]</span><br />
+			@foreach (IterationSummary summary in (List<IterationSummary>)ViewData["Iterations"])
+			{
+				if (summary.Path != (string) ViewData["CurrentIterationPath"])
+				{
+					@Html.ActionLink(summary.Name, "SetIteration", "Home", new { id = summary.Path.ToBase64(), fromUrl = Request.Url }, null)<br />
+				}
+			}
+		</div>
+		<div class="list">
+			<h3>Areas</h3>
+			<span class="selected">@ViewData["CurrentAreaName"]</span><br />
+			@foreach (AreaSummary area in (List<AreaSummary>)ViewData["Areas"])
+			{
+				if (area.Path != (string) ViewData["CurrentAreaPath"])
+				{
+					@Html.ActionLink(area.Name, "SetArea", "Home", new { id = area.Path.ToBase64(), fromUrl = Request.Url },null)<br />
+				}
+			}
+		</div>
+		<div class="list">
+			<h3>Filters</h3>
+			<a href="#">All</a><br />
+			<a href="#">Active</a><br />
+			<a href="#">Resolved</a><br />
+			<a href="#">Closed</a><br />
+			<a href="#">Assigned to me</a><br />
+			<a href="#">Today</a><br />
+			<a href="#">Yesterday</a><br />
+			<a href="#">This week</a><br />
+		</div>
+	</div>
+</div>
