@@ -65,12 +65,13 @@
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\ControllerHelper.cs" />
     <Compile Include="Controllers\SearchController.cs" />
-    <Compile Include="Domain\Context\FilterType.cs" />
-    <Compile Include="Domain\Context\ProjectDetails.cs" />
     <Compile Include="Domain\Managers\DashboardManager.cs" />
     <Compile Include="Domain\Summaries\ChangesetSummary.cs" />
     <Compile Include="Domain\Summaries\FilterTypeSummary.cs" />
     <Compile Include="Domain\Summaries\DashboardSummary.cs" />
+    <Compile Include="Domain\User\FilterType.cs" />
+    <Compile Include="Domain\User\ProjectDetails.cs" />
+    <Compile Include="Domain\User\UserSettings.cs" />
     <Compile Include="Search\Fields\ContainsField.cs" />
     <Compile Include="Search\Fields\ProjectField.cs" />
     <Compile Include="Search\Fields\DateField.cs" />
@@ -83,7 +84,6 @@
     <Compile Include="SpruceSection.cs" />
     <Compile Include="SpruceSettings.cs" />
     <Compile Include="SpruceContext.cs" />
-    <Compile Include="Domain\Context\UserSettings.cs" />
     <Compile Include="Common\CoreExtensions.cs" />
     <Compile Include="Common\HtmlExtensions.cs" />
     <Compile Include="Controllers\BugsController.cs" />
