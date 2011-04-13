@@ -37,7 +37,7 @@ a:visted	{ color:#1173a6; }
 
 #main-container		{ margin:20px; }
 
-#project-name		{ font-family: Myriad Pro,helvetica;font-size:36pt;margin:20px 0 0px 0px; }
+#project-name		{ font-family: Myriad Pro,helvetica;font-size:18pt;margin:20px 0 0px 0px; }
 #areaiteration-name	{ font-family: Myriad Pro,helvetica;font-size:14pt;margin:0; }
 
 .task { background-image: url('../Images/stickynote-large.png');width:185px;height:188px;padding:20px;float:left; }

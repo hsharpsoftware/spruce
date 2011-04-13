@@ -1,28 +1,23 @@
 ﻿@model DashboardSummary
 
-<style type="text/css">
-	.left { float:left;margin-left:10px; }
-	.bold { font-weight:bold; }
-	.clear { clear:both;}
-</style>
-
-<div class="left bold">Bug count:</div>
+<br /><br />
+<div class="left bold" style="width:100px">Bug count:</div>
 <div class="left">@Model.BugCount</div>
 <br class="clear" />
 
-<div class="left bold">Active bugs:</div>
+<div class="left bold" style="width:100px">Active bugs:</div>
 <div class="left">@Model.ActiveBugs</div>
 <br class="clear" />
 
-<div class="left bold">Tasks count:</div>
+<div class="left bold" style="width:100px">Tasks count:</div>
 <div class="left">@Model.TaskCount</div>
 <br class="clear" />
 
-<div class="left bold">Active tasks:</div>
+<div class="left bold" style="width:100px">Active tasks:</div>
 <div class="left">@Model.ActiveTasks</div>
 <br class="clear" />
 
-<div class="left bold">My active bug count:</div>
+<div class="left bold" style="width:160px">My active bug count:</div>
 <div class="left">@Model.MyActiveBugCount</div>
 <br class="clear" />
 

@@ -12,14 +12,45 @@ namespace Spruce.Core.Controllers
     {
 		public ActionResult Index()
 		{
-			Session["ListLink"] = "All";
-			return View(WorkItemManager.AllBugs());
+			SetBugView("Index");
+			return View(GetList());
 		}
 
 		public ActionResult Heatmap()
 		{
-			Session["ListLink"] = "All";
-			return View( WorkItemManager.AllBugs().OrderBy(b => b.Priority));
+			SetBugView("Heatmap");
+			return View(GetList().OrderBy(b => b.Priority));
+		}
+
+		private IEnumerable<WorkItemSummary> GetList()
+		{
+			switch (SpruceContext.Current.UserSettings.FilterType)
+			{
+				case FilterType.Active:
+					return WorkItemManager.AllActiveBugs();
+
+				case FilterType.Resolved:
+					return WorkItemManager.AllResolvedBugs();
+
+				case FilterType.Closed:
+					return WorkItemManager.AllClosedBugs();
+
+				case FilterType.AssignedToMe:
+					return WorkItemManager.BugsAssignedToMe();
+
+				case FilterType.Today:
+					return WorkItemManager.AllBugs();
+
+				case FilterType.Yesterday:
+					return WorkItemManager.AllBugs();
+
+				case FilterType.ThisWeek:
+					return WorkItemManager.AllBugs();
+
+				case FilterType.All:
+				default:
+					return WorkItemManager.AllBugs();
+			}
 		}
 
 		public ActionResult View(int id)

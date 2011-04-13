@@ -12,14 +12,45 @@ namespace Spruce.Core.Controllers
     {
 		public ActionResult Index()
 		{
-			Session["ListLink"] = "All";
-			return View(WorkItemManager.AllTasks());
+			SetTaskView("Index");
+			return View(GetList());
 		}
 
 		public ActionResult List()
 		{
-			Session["ListLink"] = "All";
-			return View(WorkItemManager.AllTasks());
+			SetTaskView("List");
+			return View(GetList());
+		}
+
+		private IEnumerable<WorkItemSummary> GetList()
+		{
+			switch (SpruceContext.Current.UserSettings.FilterType)
+			{
+				case FilterType.Active:
+					return WorkItemManager.AllTasks();
+
+				case FilterType.Resolved:
+					return WorkItemManager.AllTasks();
+
+				case FilterType.Closed:
+					return WorkItemManager.AllTasks();
+
+				case FilterType.AssignedToMe:
+					return WorkItemManager.AllTasks();
+
+				case FilterType.Today:
+					return WorkItemManager.AllTasks();
+
+				case FilterType.Yesterday:
+					return WorkItemManager.AllTasks();
+
+				case FilterType.ThisWeek:
+					return WorkItemManager.AllTasks();
+
+				case FilterType.All:
+				default:
+					return WorkItemManager.AllTasks();
+			}
 		}
 
 		public ActionResult View(int id)

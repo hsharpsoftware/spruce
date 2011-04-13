@@ -20,8 +20,8 @@
 		<div class="left">
 			<a href="javascript:;" id="togglemenu"><img src="@Url.Content("~/Assets/Images/arrow-down.png")" border="0" alt="toggle" /></a>
 			@Html.ActionLink("Dashboard","Index","Home")
-			&nbsp;|&nbsp;@Html.ActionLink("Bugs", "Index", "Bugs")
-			&nbsp;|&nbsp;@Html.ActionLink("Tasks", "Index", "Tasks")
+			&nbsp;|&nbsp;@Html.ActionLink("Bugs", ViewData["CurrentBugView"].ToString(), "Bugs")
+			&nbsp;|&nbsp;@Html.ActionLink("Tasks", ViewData["CurrentTaskView"].ToString(), "Tasks")
 			&nbsp;|&nbsp;@Html.ActionLink("New task","New","Tasks")
 			&nbsp;|&nbsp;@Html.ActionLink("New bug","New","Bugs")
 		</div>

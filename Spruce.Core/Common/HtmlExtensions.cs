@@ -80,20 +80,6 @@ namespace Spruce.Core
 			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
-		public static MvcHtmlString HtmlForListFilters(this HtmlHelper helper, string title, string description, string url)
-		{
-			string link = "<b>" + title + "</b>";
-
-			if ((string)HttpContext.Current.Session["ListLink"] != url)
-			{
-				link = string.Format(@"<a href=""/Tfs/Spruce/Home/{0}"" title=""{1}"">{2}</a>", url, description, title);
-			}
-
-			link += "&nbsp;|&nbsp;";
-
-			return new MvcHtmlString(link);
-		}
-
 		/// <summary>
 		/// Limits the length of string by the provided maximum length, returning the string with "..." if it's longer.
 		/// </summary>

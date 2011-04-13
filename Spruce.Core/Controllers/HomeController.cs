@@ -43,6 +43,14 @@ namespace Spruce.Core.Controllers
 			return Redirect(fromUrl);
 		}
 
+		public ActionResult SetFilter(string id, string fromUrl)
+		{
+			TempData["RedirectedFromHomeController"] = true;
+			SetHighlightedFilter(id);
+
+			return Redirect(fromUrl);
+		}
+
 		/// <summary>
 		/// Returns a string containing Javascript 'constants' for the site.
 		public ActionResult GlobalJsVars()

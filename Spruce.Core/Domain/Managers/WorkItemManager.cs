@@ -134,8 +134,8 @@ namespace Spruce.Core
 			summary.IsNew = true;
 
 			// Default area + iteration
-			summary.AreaPath = SpruceContext.Current.FilterSettings.AreaPath;
-			summary.IterationPath = SpruceContext.Current.FilterSettings.IterationPath;
+			summary.AreaPath = SpruceContext.Current.UserSettings.AreaPath;
+			summary.IterationPath = SpruceContext.Current.UserSettings.IterationPath;
 
 			// Populate the valid states
 			summary.ValidStates = new List<string>();
@@ -284,6 +284,35 @@ namespace Spruce.Core
 			return ToWorkItemSummaryList(collection);
 		}
 
+		public static IList<WorkItemSummary> AllResolvedBugs()
+		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Bug' AND State='Resolved' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
+
+			return ToWorkItemSummaryList(collection);
+		}
+
+		public static IList<WorkItemSummary> BugsAssignedToMe()
+		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+			parameters.Add("user", SpruceContext.Current.CurrentUser);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Bug' AND [Assigned To]=@user {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			WorkItemCollection collection = SpruceContext.Current.WorkItemStore.Query(query, parameters);
+
+			return ToWorkItemSummaryList(collection);
+		}
+
 		public static IList<WorkItemSummary> ExecuteWiqlQuery(string query, Dictionary<string, object> parameters,bool useDefaultProject)
 		{
 			if (parameters == null)
@@ -323,15 +352,15 @@ namespace Spruce.Core
 		{
 			string result = "";
 
-			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.FilterSettings.IterationPath))
+			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.UserSettings.IterationPath))
 			{
-				parameters.Add("iteration", SpruceContext.Current.FilterSettings.IterationPath);
+				parameters.Add("iteration", SpruceContext.Current.UserSettings.IterationPath);
 				result = " AND [Iteration Path]=@iteration";
 			}
 
-			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.FilterSettings.AreaPath))
+			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.UserSettings.AreaPath))
 			{
-				parameters.Add("area", SpruceContext.Current.FilterSettings.AreaPath);
+				parameters.Add("area", SpruceContext.Current.UserSettings.AreaPath);
 				result += " AND [Area Path]=@area";
 			}
 

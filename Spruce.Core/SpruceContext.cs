@@ -24,8 +24,10 @@ namespace Spruce.Core
 		public ProjectDetails CurrentProject { get; private set; }
 		public List<string> ProjectNames { get; private set; }
 		public string CurrentUser { get; private set; }
+		public Guid CurrentUserId { get; private set; }
 		public List<string> Users { get; private set; }
-		public UserSettings FilterSettings { get; set; }
+		public UserSettings UserSettings { get; set; }
+		public List<FilterTypeSummary> FilterTypes { get; set; }
 		public static bool IsWeb { get; set; }
 		public bool IsMobileBrowser
 		{
@@ -77,8 +79,6 @@ namespace Spruce.Core
 
 		public SpruceContext()
 		{
-			FilterSettings = new UserSettings(); // permanently store somewhere
-
 			if (string.IsNullOrEmpty(SpruceSettings.TfsServer))
 				throw new ArgumentNullException("The TfsServer settings is empty, please set it in the web.config (full URL, including the port)");
 
@@ -91,29 +91,52 @@ namespace Spruce.Core
 			VersionControlServer = TfsCollection.GetService<VersionControlServer>();
 
 			CurrentUser = TfsCollection.AuthorizedIdentity.DisplayName;
-			SetProject(SpruceSettings.DefaultProjectName);
-			GetProjectNames();
-			GetUsers();
+			CurrentUserId = TfsCollection.AuthorizedIdentity.TeamFoundationId;
+			UserSettings = UserSettings.Load(CurrentUserId);
+
+			if (string.IsNullOrEmpty(UserSettings.ProjectName) || !WorkItemStore.Projects.Contains(UserSettings.ProjectName))
+			{
+				SetCurrentProject(SpruceSettings.DefaultProjectName);
+
+				UserSettings.BugView = "Index";
+				UserSettings.TaskView = "Index";
+			}
+			else
+			{
+				_projectName = UserSettings.ProjectName;
+				CurrentProject = new ProjectDetails(WorkItemStore.Projects[_projectName]);
+			}
+
+			AddProjectNames();
+			AddUsers();
+			AddFilterNames();
 		}
 
-		public void SetProject(string name)
+		public void UpdateUserSettings()
 		{
-			if (string.IsNullOrWhiteSpace(name))
+			UserSettings.Save(CurrentUserId,UserSettings);
+		}
+
+		public void SetCurrentProject(string projectName)
+		{
+			if (string.IsNullOrWhiteSpace(projectName))
 				throw new ArgumentNullException("The project name was null or empty");
 
-			if (!WorkItemStore.Projects.Contains(name))
-				throw new InvalidOperationException(string.Format("The project {0} doesn't exist.", name));
+			if (!WorkItemStore.Projects.Contains(projectName))
+				throw new InvalidOperationException(string.Format("The project {0} doesn't exist.", projectName));
 
-			_projectName = name;
-			CurrentProject = new ProjectDetails(WorkItemStore.Projects[name]);
+			_projectName = projectName;
+			CurrentProject = new ProjectDetails(WorkItemStore.Projects[projectName]);
 
-			FilterSettings.IterationName = CurrentProject.Iterations[0].Name;
-			FilterSettings.IterationPath = CurrentProject.Iterations[0].Path;
-			FilterSettings.AreaName = CurrentProject.Areas[0].Name;
-			FilterSettings.AreaPath = CurrentProject.Areas[0].Path;
+			UserSettings.ProjectName = projectName;
+			UserSettings.IterationName = CurrentProject.Iterations[0].Name;
+			UserSettings.IterationPath = CurrentProject.Iterations[0].Path;
+			UserSettings.AreaName = CurrentProject.Areas[0].Name;
+			UserSettings.AreaPath = CurrentProject.Areas[0].Path;
+			UserSettings.FilterType = FilterType.All;
 		}
 
-		private void GetProjectNames()
+		private void AddProjectNames()
 		{
 			ProjectNames = new List<string>();
 			foreach (Project project in WorkItemStore.Projects)
@@ -122,7 +145,27 @@ namespace Spruce.Core
 			}
 		}
 
-		public void GetUsers()
+		private void AddFilterNames()
+		{
+			FilterTypes = new List<FilterTypeSummary>();
+			List<string> names = new List<string>(Enum.GetNames(typeof(FilterType)));
+			
+			foreach (string name in names)
+			{
+				FilterType filterType;
+				Enum.TryParse<FilterType>(name, out filterType);
+
+				FilterTypeSummary summary = new FilterTypeSummary() 
+				{ 
+					Name = name, 
+					Description = filterType.GetDescription() 
+				};
+
+				FilterTypes.Add(summary);
+			}
+		}
+
+		public void AddUsers()
 		{
 			Users = new List<string>();
 

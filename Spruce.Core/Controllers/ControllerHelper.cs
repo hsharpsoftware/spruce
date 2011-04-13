@@ -13,10 +13,10 @@ namespace Spruce.Core.Controllers
 			viewData["CurrentUser"] = SpruceContext.Current.CurrentUser;
 			viewData["CurrentProjectName"] = SpruceContext.Current.CurrentProject.Name;
 
-			viewData["CurrentIterationName"] = SpruceContext.Current.FilterSettings.IterationName;
-			viewData["CurrentIterationPath"] = SpruceContext.Current.FilterSettings.IterationPath;
-			viewData["CurrentAreaName"] = SpruceContext.Current.FilterSettings.AreaName;
-			viewData["CurrentAreaPath"] = SpruceContext.Current.FilterSettings.AreaPath;
+			viewData["CurrentIterationName"] = SpruceContext.Current.UserSettings.IterationName;
+			viewData["CurrentIterationPath"] = SpruceContext.Current.UserSettings.IterationPath;
+			viewData["CurrentAreaName"] = SpruceContext.Current.UserSettings.AreaName;
+			viewData["CurrentAreaPath"] = SpruceContext.Current.UserSettings.AreaPath;
 
 			viewData["Projects"] = SpruceContext.Current.ProjectNames;
 			viewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;

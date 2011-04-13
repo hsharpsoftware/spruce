@@ -36,14 +36,14 @@
 		</div>
 		<div class="list">
 			<h3>Filters</h3>
-			<a href="#">All</a><br />
-			<a href="#">Active</a><br />
-			<a href="#">Resolved</a><br />
-			<a href="#">Closed</a><br />
-			<a href="#">Assigned to me</a><br />
-			<a href="#">Today</a><br />
-			<a href="#">Yesterday</a><br />
-			<a href="#">This week</a><br />
+			<span class="selected">@ViewData["CurrentFilter"]</span><br />
+			@foreach (FilterTypeSummary filter in (List<FilterTypeSummary>)ViewData["Filters"])
+			{
+				if (filter.Name != (string)ViewData["CurrentFilter"])
+				{
+					@Html.ActionLink(filter.Description, "SetFilter", "Home", new { id = filter.Name, fromUrl = Request.Url }, null)<br />
+				}
+			}
 		</div>
 	</div>
 </div>

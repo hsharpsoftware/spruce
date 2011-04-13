@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace Spruce.Core
 {
@@ -42,6 +44,18 @@ namespace Spruce.Core
 				return Convert.ToBase64String(Encoding.Default.GetBytes(value));
 			else
 				return "";
+		}
+
+		public static string GetDescription(this Enum value)
+		{
+			Type type = value.GetType();
+			FieldInfo fieldInfo = type.GetField(value.ToString());
+
+			// Look for a description attribute
+			DescriptionAttribute[] attribs = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false) as DescriptionAttribute[];
+
+			// Return the description or if there isn't one, the value
+			return (attribs.Length > 0) ? attribs[0].Description : Enum.GetName(value.GetType(),value);
 		}
 	}
 }
