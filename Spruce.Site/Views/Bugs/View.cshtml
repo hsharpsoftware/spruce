@@ -1,30 +1,30 @@
 ﻿@model WorkItemSummary
 			  
-<div style="padding:5px;border:1px solid #e5e5e5;margin:20px 0;font-family:Arial;font-size:18pt;width:80%;">
-	<div style="padding:5px;background-color:#f6f6f6;border:1px solid #e5e5e5;">
-		<div class="left">@Model.Title</div>
-		<div class="right" style="color:#d1d1d1">#@Model.Id</div>
-		<br class="clear" />
-	</div>
-	
-	<div style="padding:5px;border-bottom:1px solid #e5e5e5;min-height:200px;">
-		@MvcHtmlString.Create(Model.Description.Replace("\n","<br/>"))
-	</div>
-
-	<div style="padding:10px 5px 5px 5px;font-size:12pt;">
-		<div class="left">
-			Created on @Model.CreatedDate.ToString("dd-MM-yyyy") . Assigned to @Model.AssignedTo
-		</div>
-		<div class="right" style="color:#0391da;text-align:right;width:100px;">
+<div id="item-container">
+	<div id="item-header">
+		<div class="left" id="item-id">#@Model.Id</div>
+		<div class="left bold">@Model.Title</div>
+		<div class="right" id="item-menucontainer">
 			<div>
-				<a href="javascript:;" id="actionmenu-link"><img style="margin:0;padding:2px;" src="@Url.Content("~/Assets/Images/black-arrow-down.png")" border="0" alt="menu" /></a>
+				<a href="javascript:;" id="item-actionmenulink"><img id="item-arrowimg" src="@Url.Content("~/Assets/Images/black-arrow-down.png")" border="0" alt="menu" /></a>
 				@Model.State
 			</div>
-			<div id="actionmenu" style="font-size:12pt;display:none;border-top:1px dotted #AAA;padding:5px 0px;margin:0;">
-				@Html.ActionLink("Edit", "Edit", new { id = Model.Id })<br/>
+			<div id="item-menu">
 				@Html.ActionLink("Resolve", "Resolve", new { id = Model.Id })<br/>
 				@Html.ActionLink("Close", "Close", new { id = Model.Id })
 			</div>
+		</div>
+		<br class="clear" />
+	</div>
+	
+	<div id="item-description">
+		@MvcHtmlString.Create(Model.Description.Replace("\n","<br/>"))
+	</div>
+
+	<div id="item-details">
+		<div class="left">@Html.ActionLink("Edit", "Edit", new { id = Model.Id })</div>
+		<div class="right">
+		Created on @Model.CreatedDate.ToString("ddd dd MMMM yyyy"). Assigned to @Model.AssignedTo
 		</div>
 		<br class="clear" />
 	</div>

@@ -1,4 +1,4 @@
-﻿body			{ width:95%;font-family:Helvetica;font-size:2em;margin:10px auto;}
+﻿body			{ width:95%;font-family:Helvetica;margin:10px auto;}
 .block			{ border-radius:5px;background-color:#EEE;border: 1px solid black;padding:5px;margin-top:5px;}
 .block input	{ height:40px;width:99%;}
 .hidden			{ display:none;}
@@ -11,9 +11,9 @@
 #viewas-notes	{ display:none;}
 #newitem-container { display:none;}
 
-#workitems-table { border-radius:5px;background-color:#EEE;border: 1px solid black;padding:5px;margin-top:5px;}
-#workitems-table thead th { cursor:pointer;padding:10px;font-weight:bold;color: #000000;text-align:left;font-size:0.6em;background-color:#EEE;}
-#workitems-table tbody td { color: #000;font-size:0.7em;padding:10px;text-align:left; }
+#list-table { border-radius:5px;background-color:#EEE;border: 1px solid black;padding:5px;margin-top:5px;}
+#list-table thead th { cursor:pointer;padding:10px;font-weight:bold;color: #000000;text-align:left;font-size:0.6em;background-color:#EEE;}
+#list-table tbody td { color: #000;font-size:0.7em;padding:10px;text-align:left; }
 
 #view-pagename	{ font-size:1em; margin:0px; }
 #view-container	{ border-radius:5px;background-color:#EEE;border: 1px solid black; }

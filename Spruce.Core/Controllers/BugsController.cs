@@ -10,20 +10,23 @@ namespace Spruce.Core.Controllers
 {
 	public class BugsController : ControllerBase
     {
-		public ActionResult Index()
+		public ActionResult Index(string id)
 		{
 			SetBugView("Index");
-			return View(GetList());
+			return View(GetList(id));
 		}
 
-		public ActionResult Heatmap()
+		public ActionResult Heatmap(string id)
 		{
 			SetBugView("Heatmap");
-			return View(GetList().OrderBy(b => b.Priority));
+			return View(GetList(id).OrderBy(b => b.Priority));
 		}
 
-		private IEnumerable<WorkItemSummary> GetList()
+		private IEnumerable<WorkItemSummary> GetList(string projectName)
 		{
+			if (!string.IsNullOrEmpty(projectName))
+				SetHighlightedProject(projectName);
+
 			switch (SpruceContext.Current.UserSettings.FilterType)
 			{
 				case FilterType.Active:
@@ -114,11 +117,24 @@ namespace Spruce.Core.Controllers
 		[ValidateInput(false)]
 		public ActionResult New(WorkItemSummary item)
 		{
-			item.CreatedBy = SpruceContext.Current.CurrentUser;
-			item.IsNew = true;
-			WorkItemManager.SaveBug(item);
+			try
+			{
+				item.CreatedBy = SpruceContext.Current.CurrentUser;
+				item.IsNew = true;
+				WorkItemManager.SaveBug(item);
 
-			return RedirectToAction("Index");
+				// Set the project/iteration/area to the previously edited item
+				SetHighlightedProject(item.ProjectName);
+				SetHighlightedArea(item.AreaPath);
+				SetHighlightedIteration(item.IterationPath);
+
+				return RedirectToAction("Index");
+			}
+			catch (SaveException e)
+			{
+				TempData["Error"] = e.Message;
+				return RedirectToAction("New", new { id = item.Title});
+			}
 		}
 
 		[HttpGet]
@@ -141,8 +157,22 @@ namespace Spruce.Core.Controllers
 		[ValidateInput(false)]
 		public ActionResult Edit(WorkItemSummary item)
 		{
-			WorkItemManager.SaveExisting(item);
-			return RedirectToAction("View", new { id = item.Id });
+			try
+			{
+				WorkItemManager.SaveExisting(item);
+
+				// Set the project/iteration/area to the previously edited item
+				SetHighlightedProject(item.ProjectName);
+				SetHighlightedArea(item.AreaPath);
+				SetHighlightedIteration(item.IterationPath);
+
+				return RedirectToAction("View", new { id = item.Id });
+			}
+			catch (SaveException e)
+			{
+				TempData["Error"] = e.Message;
+				return RedirectToAction("Edit", new { id = item.Id});
+			}
 		}
     }
 }

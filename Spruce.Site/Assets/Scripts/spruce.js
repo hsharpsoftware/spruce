@@ -14,17 +14,17 @@ $(document).ready(function ()
 		}
 	});
 
-	$("#actionmenu-link").click(function ()
+	$("#item-actionmenulink").click(function ()
 	{
-		if($("#actionmenu").is(":visible"))
+		if ($("#item-menu").is(":visible"))
 		{
-			$("#actionmenu-link img").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-down.png");
-			$("#actionmenu").slideUp(100);
+			$("#item-actionmenulink img").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-down.png");
+			$("#item-menu").slideUp(100);
 		}
 		else
 		{
-			$("#actionmenu-link img").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-up.png");
-			$("#actionmenu").slideDown(100);
+			$("#item-actionmenulink img").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-up.png");
+			$("#item-menu").slideDown(100);
 		}
 	});
 });

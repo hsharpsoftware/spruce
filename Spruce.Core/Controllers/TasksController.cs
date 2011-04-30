@@ -10,20 +10,23 @@ namespace Spruce.Core.Controllers
 {
 	public class TasksController : ControllerBase
     {
-		public ActionResult Index()
+		public ActionResult Index(string id)
 		{
 			SetTaskView("Index");
-			return View(GetList());
+			return View(GetList(id));
 		}
 
-		public ActionResult List()
+		public ActionResult List(string id)
 		{
 			SetTaskView("List");
-			return View(GetList());
+			return View(GetList(id));
 		}
 
-		private IEnumerable<WorkItemSummary> GetList()
+		private IEnumerable<WorkItemSummary> GetList(string projectName)
 		{
+			if (!string.IsNullOrEmpty(projectName))
+				SetHighlightedProject(projectName);
+
 			switch (SpruceContext.Current.UserSettings.FilterType)
 			{
 				case FilterType.Active:
@@ -86,20 +89,33 @@ namespace Spruce.Core.Controllers
 			return View("Edit", item);
 		}
 
-		public ActionResult Close(int id)
-		{
-			WorkItemManager.Close(id);
-			return RedirectToAction("Index");
-		}
-
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult New(WorkItemSummary item)
 		{
-			item.CreatedBy = SpruceContext.Current.CurrentUser;
-			item.IsNew = true;
-			WorkItemManager.SaveTask(item);
+			try
+			{
+				item.CreatedBy = SpruceContext.Current.CurrentUser;
+				item.IsNew = true;
+				WorkItemManager.SaveTask(item);
 
+				// Set the project/iteration/area to the previously edited item
+				SetHighlightedProject(item.ProjectName);
+				SetHighlightedArea(item.AreaPath);
+				SetHighlightedIteration(item.IterationPath);
+
+				return RedirectToAction("Index");
+			}
+			catch (SaveException e)
+			{
+				TempData["Error"] = e.Message;
+				return RedirectToAction("New", new { id = item.Title });
+			}
+		}
+
+		public ActionResult Close(int id)
+		{
+			WorkItemManager.Close(id);
 			return RedirectToAction("Index");
 		}
 
@@ -127,6 +143,12 @@ namespace Spruce.Core.Controllers
 			try
 			{
 				WorkItemManager.SaveExisting(item);
+
+				// Set the project/iteration/area to the previously edited item
+				SetHighlightedProject(item.ProjectName);
+				SetHighlightedArea(item.AreaPath);
+				SetHighlightedIteration(item.IterationPath);
+
 				return RedirectToAction("View", new { id = item.Id });
 			}
 			catch (SaveException e)

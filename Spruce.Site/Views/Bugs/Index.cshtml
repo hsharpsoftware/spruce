@@ -1,53 +1,53 @@
 ﻿@model IEnumerable<WorkItemSummary>
 
-<h2 class="dimmed">Bugs (@ViewData["CurrentFilter"])</h2>
+<h3>Bugs (@ViewData["CurrentFilter"])</h3>
 @Html.ActionLink("View as heat map","Heatmap")
 <br /><br />
 
-<table style="padding:0;border-collapse:collapse;font-family:Arial;font-size:1em;width:90%;">
+<table id="list-table">
 	<thead>
-		<tr style="background-color:#f6f6f6;color:#282828;border:1px solid #cdcdcd;">
+		<tr id="list-table-header">
 			<th>
-				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">Title</div>
+				<div>Title</div>
 			</th>
 			<th style="width:12%;">
-				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">ID</div>
+				<div>ID</div>
 			</th>
 			<th style="width:15%">
-				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">Assigned to</div>
+				<div>Assigned to</div>
 			</th>
 			<th style="width:12%">
-				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">Status</div>
+				<div>Status</div>
 			</th>
 			<th style="width:12%">
-				<div style="padding:5px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">Priority</div>
+				<div>Priority</div>
 			</th>
 			<th style="width:10%">
-				<div style="padding:5px;text-align:left;margin:10px;"></div>
+				<div class="list-table-noborder"></div>
 			</th>
 		</tr>
 	</thead>
 	<tbody>
 	@foreach (WorkItemSummary item in Model)
 	{
-		<tr style="border-bottom:1px dashed #cdcdcd;">
+		<tr id="list-table-row">
 			<td>
-				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@item.Title</div>
+				<div>@item.Title</div>
 			</td>
-			<td style="width:12%;">
-				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</div>
+			<td>
+				<div>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</div>
 			</td>
 			<td style="width:15%">
-				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@item.AssignedTo</div>
+				<div>@item.AssignedTo</div>
 			</td>
-			<td style="width:12%">
-				<div style="padding:6px;text-align:left;margin:10px;border-right:1px solid #cdcdcd;">@item.State</div>
+			<td>
+				<div>@item.State</div>
 			</td>
-			<td style="width:12%">
-				<div style="padding:6px;text-align:center;margin:10px;">@item.Priority</div>
+			<td>
+				<div>@item.Priority</div>
 			</td>
 			<td style="width:10%">
-				<div style="padding:6px;text-align:center;margin:10px;">
+				<div class="list-table-noborder">
 					@Html.ActionLink("Edit", "Edit", new { id = item.Id })
 				</div>
 			</td>
@@ -55,4 +55,4 @@
 	}
 	</tbody>
 </table>
-<br style="clear:both" />
+<br class="clear" />

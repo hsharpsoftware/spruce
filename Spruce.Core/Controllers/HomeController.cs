@@ -10,8 +10,11 @@ namespace Spruce.Core.Controllers
 {
 	public class HomeController : ControllerBase
     {
-		public ActionResult Index()
+		public ActionResult Index(string id)
 		{
+			if (!string.IsNullOrEmpty(id))
+				SetHighlightedProject(id);
+
 			// Dashboard
 			return View("Index", DashboardManager.GetSummary());
 		}
@@ -53,6 +56,7 @@ namespace Spruce.Core.Controllers
 
 		/// <summary>
 		/// Returns a string containing Javascript 'constants' for the site.
+		/// </summary>
 		public ActionResult GlobalJsVars()
 		{
 			UrlHelper helper = new UrlHelper(HttpContext.Request.RequestContext);

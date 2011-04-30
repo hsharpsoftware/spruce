@@ -21,9 +21,7 @@
 {
 	@(Html.HiddenFor<WorkItemSummary,int>(m => m.Id))
 
-	<div id="edit-pagename" class="mid-text">
-		@ViewData["PageName"]
-	</div>
+	<h3>@ViewData["PageName"]</h3>
 	
 	<div id="edit-container">
 		<div id="edit-title">
@@ -34,49 +32,49 @@
 															maxlength=150 }))
 		</div>
 
-		<div class="edit-options lightbg">
-			<div class="edit-field">
-				<div class="label">Assigned to:</div>
-				<div class="value">@Html.DropDownBoxFromList("AssignedTo",(List<string>)ViewData["Users"],Model.AssignedTo,2)</div>
+		<div id="edit-options" class="lightbg">
+			<div class="left edit-field">
+				<div class="left label">Assigned to:</div>
+				<div class="left value">@Html.DropDownBoxFromList("AssignedTo",(List<string>)ViewData["Users"],Model.AssignedTo,2)</div>
 			</div>
 		
-			<div class="edit-field">
-				<div class="label">State:</div>
-				<div class="value">@Html.DropDownBoxFromList("State", (List<string>)ViewData["States"], Model.State,3)</div>
+			<div class="left edit-field">
+				<div class="left label">State:</div>
+				<div class="left value">@Html.DropDownBoxFromList("State", (List<string>)ViewData["States"], Model.State,3)</div>
 			</div>
 
-			<div class="edit-field">
-				<div class="label">Area:</div>
-				<div class="value">@Html.DropDownBoxForAreas("AreaPath", (List<AreaSummary>)ViewData["Areas"], Model.AreaPath,4)</div>
+			<div class="left edit-field">
+				<div class="left label">Area:</div>
+				<div class="left value">@Html.DropDownBoxForAreas("AreaPath", (List<AreaSummary>)ViewData["Areas"], Model.AreaPath,4)</div>
 			</div>
 
-			<div class="edit-field">
-				<div class="label">Iteration:</div>
-				<div class="value">@Html.DropDownBoxForIterations("IterationPath", (List<IterationSummary>)ViewData["Iterations"], Model.IterationPath,5)</div>
+			<div class="left edit-field">
+				<div class="left label">Iteration:</div>
+				<div class="left value">@Html.DropDownBoxForIterations("IterationPath", (List<IterationSummary>)ViewData["Iterations"], Model.IterationPath,5)</div>
 			</div>
 
 			@if (Model.Priority != null)
 			{
-			<div class="edit-field">
-				<div class="label">Priority:</div>
-				<div class="value">@Html.DropDownBoxFromList("Priority", (List<string>)ViewData["Priorities"], Model.Priority.Value.ToString(),4)</div>
+			<div class="left edit-field">
+				<div class="left label">Priority:</div>
+				<div class="left value">@Html.DropDownBoxFromList("Priority", (List<string>)ViewData["Priorities"], Model.Priority.Value.ToString(),4)</div>
 			</div>
 			<br style="clear:both"/>
 			}
 		
-			<div class="edit-field-long">
-				<div class="label">Estimated hours:</div>
-				<div class="value">@(Html.TextBoxFor<WorkItemSummary, double>(w => w.EstimatedHours, new { @class = "twochar-textbox", tabindex = 6, maxlength = 10}))</div>
+			<div class="left edit-field-long">
+				<div class="left label">Estimated hours:</div>
+				<div class="left value">@(Html.TextBoxFor<WorkItemSummary, double>(w => w.EstimatedHours, new { @class = "twochar-textbox", tabindex = 6, maxlength = 10}))</div>
 			</div>
 
-			<div class="edit-field-long">
-				<div class="label">Remaining hours:</div>
-				<div class="value">@(Html.TextBoxFor<WorkItemSummary, double>(w => w.RemainingHours, new { @class = "twochar-textbox", tabindex = 7, maxlength = 10 }))</div>
+			<div class="left edit-field-long">
+				<div class="left label">Remaining hours:</div>
+				<div class="left value">@(Html.TextBoxFor<WorkItemSummary, double>(w => w.RemainingHours, new { @class = "twochar-textbox", tabindex = 7, maxlength = 10 }))</div>
 			</div>
 
-			<div class="edit-field-long">
-				<div class="label">Completed hours:</div>
-				<div class="value">@(Html.TextBoxFor<WorkItemSummary, double>(w => w.CompletedHours, new { @class = "twochar-textbox", tabindex = 8, maxlength = 10 }))</div>
+			<div class="left edit-field-long">
+				<div class="left label">Completed hours:</div>
+				<div class="left value">@(Html.TextBoxFor<WorkItemSummary, double>(w => w.CompletedHours, new { @class = "twochar-textbox", tabindex = 8, maxlength = 10 }))</div>
 			</div>
 			<br style="clear:both"/>
 		</div>

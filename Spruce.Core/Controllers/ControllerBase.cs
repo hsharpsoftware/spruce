@@ -39,11 +39,11 @@ namespace Spruce.Core.Controllers
 			}	
 		}
 
-		protected void SetHighlightedArea(string area)
+		protected void SetHighlightedArea(string areaPath)
 		{		
-			if (!string.IsNullOrEmpty(area))
+			if (!string.IsNullOrEmpty(areaPath))
 			{
-				AreaSummary summary = SpruceContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == area);
+				AreaSummary summary = SpruceContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == areaPath);
 				SpruceContext.Current.UserSettings.AreaName = summary.Name;
 				SpruceContext.Current.UserSettings.AreaPath = summary.Path;
 
@@ -54,11 +54,11 @@ namespace Spruce.Core.Controllers
 			}
 		}
 
-		protected void SetHighlightedIteration(string iteration)
+		protected void SetHighlightedIteration(string iterationPath)
 		{
-			if (!string.IsNullOrEmpty(iteration))
+			if (!string.IsNullOrEmpty(iterationPath))
 			{
-				IterationSummary summary = SpruceContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iteration);
+				IterationSummary summary = SpruceContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iterationPath);
 				SpruceContext.Current.UserSettings.IterationName = summary.Name;
 				SpruceContext.Current.UserSettings.IterationPath = summary.Path;
 
@@ -83,12 +83,20 @@ namespace Spruce.Core.Controllers
 			}
 		}
 
+		/// <summary>
+		/// Sets the user settings for either heatmap or a normal list.
+		/// </summary>
+		/// <param name="actionName"></param>
 		protected void SetBugView(string actionName)
 		{
 			SpruceContext.Current.UserSettings.BugView = actionName;
 			SpruceContext.Current.UpdateUserSettings();
 		}
 
+		/// <summary>
+		/// Sets the user settings for either a post it note view or a normal list.
+		/// </summary>
+		/// <param name="actionName"></param>
 		protected void SetTaskView(string actionName)
 		{
 			SpruceContext.Current.UserSettings.TaskView = actionName;

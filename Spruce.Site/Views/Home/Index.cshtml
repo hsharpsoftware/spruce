@@ -29,12 +29,14 @@
 }
 else
 {
-<ul>
-	@foreach (WorkItemSummary summary in Model.MyActiveBugs)
+	foreach (WorkItemSummary summary in Model.MyActiveBugs)
 	{
-	<li>@summary.Id &nbsp; @Html.ActionLink(summary.Title, "View", "Bugs", new { id = summary.Id }, null)</li>
+	<div>
+		<div class="left" style="width:80px;">@summary.Id</div>
+		<div class="left">@Html.ActionLink(summary.Title, "View", "Bugs", new { id = summary.Id }, null)</div>
+	</div>
+	<br class="clear" />
 	}
-</ul>
 }
 
 <h2>My tasks</h2>
@@ -44,12 +46,14 @@ else
 }
 else
 {
-<ul>
-	@foreach (WorkItemSummary summary in Model.MyActiveTasks)
+	foreach (WorkItemSummary summary in Model.MyActiveTasks)
 	{
-	<li>@summary.Id &nbsp; @Html.ActionLink(summary.Title, "View", "Tasks", new { id = summary.Id }, null)</li>
+	<div>
+		<div class="left" style="width:80px;">@summary.Id</div>
+		<div class="left">@Html.ActionLink(summary.Title, "View", "Tasks", new { id = summary.Id }, null)</div>
+	</div>
+	<br class="clear" />
 	}
-</ul>
 }
 
 <h2>Recent checkins</h2>
@@ -61,10 +65,10 @@ else
 {
 	foreach (ChangesetSummary summary in Model.RecentCheckins)
 	{
-	<div class="left bold">@summary.Id</div>
-	<div class="left">@summary.Date</div>
-	<div class="left">@summary.User</div>
+	<div class="left bold" style="width:80px">@summary.Id</div>
 	<div class="left">@summary.Message</div>
+	<br class="clear" />
+	<div class="smaller dimmed" style="margin-left:80px">by @summary.User - @summary.Date.ToString("ddd dd MMMM yyyy")</div>
 	<br class="clear" />
 	}
 }

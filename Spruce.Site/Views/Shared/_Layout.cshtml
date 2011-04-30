@@ -9,7 +9,7 @@
 	<script type="text/javascript" language="javascript" src="@Url.Action("GlobalJsVars","Home")"></script>
 	<script type="text/javascript" src="@Url.Content("~/Assets/Scripts/spruce.js")"></script>
 
-	<link href="@Url.Content("~/Assets/CSS/spruce2.css")" rel="stylesheet" type="text/css" media="Screen" />
+	<link href="@Url.Content("~/Assets/CSS/spruce.css")" rel="stylesheet" type="text/css" media="Screen" />
 	<link href="@Url.Content("~/Assets/CSS/spruce.mobile.css")" rel="stylesheet" type="text/css" media="handheld" />
 </head>
 
@@ -38,6 +38,7 @@
 	<div id="main-container">
 			<div id="project-name">Project @ViewData["CurrentProjectName"]</div>
 			<div id="areaiteration-name">@Html.FormatAreaAndIterationName(ViewData["CurrentIterationName"], ViewData["CurrentAreaName"])</div>
+
 			@RenderBody()
 	</div>
 </body>

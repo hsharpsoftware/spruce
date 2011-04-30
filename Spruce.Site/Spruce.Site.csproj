@@ -62,7 +62,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\CSS\spruce2.css" />
     <Content Include="Assets\CSS\spruce.css" />
     <Content Include="Assets\CSS\spruce.mobile.css" />
     <Content Include="Assets\Images\arrow-up.png" />
