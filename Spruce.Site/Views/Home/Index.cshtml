@@ -1,75 +1,77 @@
 ﻿@model DashboardSummary
 
-<br /><br />
-<div class="left bold" style="width:100px">Bug count:</div>
-<div class="left">@Model.BugCount</div>
-<br class="clear" />
+<div id="dashboard">
+	<div class="left bold" style="width:100px">Bug count:</div>
+	<div class="left">@Model.BugCount</div>
+	<br class="clear" />
 
-<div class="left bold" style="width:100px">Active bugs:</div>
-<div class="left">@Model.ActiveBugs</div>
-<br class="clear" />
+	<div class="left bold" style="width:100px">Active bugs:</div>
+	<div class="left">@Model.ActiveBugs</div>
+	<br class="clear" />
 
-<div class="left bold" style="width:100px">Tasks count:</div>
-<div class="left">@Model.TaskCount</div>
-<br class="clear" />
+	<div class="left bold" style="width:100px">Tasks count:</div>
+	<div class="left">@Model.TaskCount</div>
+	<br class="clear" />
 
-<div class="left bold" style="width:100px">Active tasks:</div>
-<div class="left">@Model.ActiveTasks</div>
-<br class="clear" />
+	<div class="left bold" style="width:100px">Active tasks:</div>
+	<div class="left">@Model.ActiveTasks</div>
+	<br class="clear" />
 
-<div class="left bold" style="width:160px">My active bug count:</div>
-<div class="left">@Model.MyActiveBugCount</div>
-<br class="clear" />
+	<div class="left bold" style="width:160px">My active bug count:</div>
+	<div class="left">@Model.MyActiveBugCount</div>
+	<br class="clear" />
+	<br />
 
-<h2>My bugs</h2>
+	<h2>My bugs</h2>
 
-@if (Model.MyActiveBugs.Count == 0)
-{
-	<p>You have no active bugs assigned to you right now.</p>
-}
-else
-{
-	foreach (WorkItemSummary summary in Model.MyActiveBugs)
+	@if (Model.MyActiveBugs.Count == 0)
 	{
-	<div>
-		<div class="left" style="width:80px;">@summary.Id</div>
-		<div class="left">@Html.ActionLink(summary.Title, "View", "Bugs", new { id = summary.Id }, null)</div>
-	</div>
-	<br class="clear" />
+		<p>You have no active bugs assigned to you right now.</p>
 	}
-}
-
-<h2>My tasks</h2>
-@if (Model.MyActiveTasks.Count == 0)
-{
-	<p>You have no active tasks assigned to you right now.</p>
-}
-else
-{
-	foreach (WorkItemSummary summary in Model.MyActiveTasks)
+	else
 	{
-	<div>
-		<div class="left" style="width:80px;">@summary.Id</div>
-		<div class="left">@Html.ActionLink(summary.Title, "View", "Tasks", new { id = summary.Id }, null)</div>
-	</div>
-	<br class="clear" />
+		foreach (WorkItemSummary summary in Model.MyActiveBugs)
+		{
+		<div>
+			<div class="left" style="width:80px;">@summary.Id</div>
+			<div class="left">@Html.ActionLink(summary.Title, "View", "Bugs", new { id = summary.Id }, null)</div>
+		</div>
+		<br class="clear" />
+		}
 	}
-}
 
-<h2>Recent checkins</h2>
-@if (Model.RecentCheckins.Count == 0)
-{
-	<p>There are no checkins yet.</p>
-}
-else
-{
-	foreach (ChangesetSummary summary in Model.RecentCheckins)
+	<h2>My tasks</h2>
+	@if (Model.MyActiveTasks.Count == 0)
 	{
-	<div class="left bold" style="width:80px">@summary.Id</div>
-	<div class="left">@summary.Message</div>
-	<br class="clear" />
-	<div class="smaller dimmed" style="margin-left:80px">by @summary.User - @summary.Date.ToString("ddd dd MMMM yyyy")</div>
-	<br class="clear" />
+		<p>You have no active tasks assigned to you right now.</p>
 	}
-}
-<br /><br />
+	else
+	{
+		foreach (WorkItemSummary summary in Model.MyActiveTasks)
+		{
+		<div>
+			<div class="left" style="width:80px;">@summary.Id</div>
+			<div class="left">@Html.ActionLink(summary.Title, "View", "Tasks", new { id = summary.Id }, null)</div>
+		</div>
+		<br class="clear" />
+		}
+	}
+
+	<h2>Recent checkins</h2>
+	@if (Model.RecentCheckins.Count == 0)
+	{
+		<p>There are no checkins yet.</p>
+	}
+	else
+	{
+		foreach (ChangesetSummary summary in Model.RecentCheckins)
+		{
+		<div class="left bold" style="width:80px">@summary.Id</div>
+		<div class="left">@summary.Date.ToString("ddd dd MMMM yyyy") - @(!string.IsNullOrEmpty(summary.Message) ? summary.Message : "(No message)")</div>
+		<br class="clear" />
+		<div class="smaller dimmed" style="margin-left:80px">by @summary.User</div>
+		<br class="clear" />
+		}
+	}
+	<br /><br />
+</div>

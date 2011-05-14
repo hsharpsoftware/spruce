@@ -35,6 +35,7 @@ namespace Spruce.Core
 
 			if (summary.IsNew)
 			{
+				SpruceContext.Current.WorkItemStore.RefreshCache();
 				// This knows which project to save in using the WorkItemType.
 				item = new WorkItem(type);
 			}

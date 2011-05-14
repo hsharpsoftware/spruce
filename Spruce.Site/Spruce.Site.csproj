@@ -64,8 +64,10 @@
   <ItemGroup>
     <Content Include="Assets\CSS\spruce.css" />
     <Content Include="Assets\CSS\spruce.mobile.css" />
+    <Content Include="Assets\Images\arrow-down.png" />
     <Content Include="Assets\Images\arrow-up.png" />
     <Content Include="Assets\Images\black-arrow-down.png" />
+    <Content Include="Assets\Images\black-arrow-up.png" />
     <Content Include="Assets\Images\csv_icon.png" />
     <Content Include="Assets\Images\csv_icon_disabled.png" />
     <Content Include="Assets\Images\excel_icon.png" />
@@ -79,6 +81,7 @@
     <Content Include="Assets\Images\stickynote-medium.png" />
     <Content Include="Assets\Images\top-dropshadow.png" />
     <Content Include="Assets\Scripts\spruce.js" />
+    <Content Include="Assets\CSS\spruce.print.css" />
     <Content Include="Global.asax" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />

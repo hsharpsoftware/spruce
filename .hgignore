@@ -29,6 +29,7 @@ syntax: glob
 [Oo]bj*/
 [Rr]elease*/
 _ReSharper*/
+App_Data*/
 [Tt]est[Rr]esult*
 [Bb]uild[Ll]og.*
 *.[Pp]ublish.xml

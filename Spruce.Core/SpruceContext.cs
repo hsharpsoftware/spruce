@@ -171,16 +171,24 @@ namespace Spruce.Core
 
 			// These must use QueryMembership.Expanded otherwise additional information doesn't get returned
 			IGroupSecurityService service = TfsCollection.GetService<IGroupSecurityService>();
+
 			Identity usersInCollection = service.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
 			Identity[] members = service.ReadIdentities(SearchFactor.Sid, usersInCollection.Members, QueryMembership.Expanded);
-			var users = members.Where(u => u.Type == IdentityType.WindowsUser).ToList();
 
-			foreach (var user in users)
+			for (int i = 0; i < members.Length; i++)
 			{
-				// TODO: Add smarter filtering
-				if (user.Domain.ToLower() != "nt authority")
-					Users.Add(user.DisplayName);
+				// Basic filtering
+				if (!members[i].SecurityGroup )//&& !usernames.Contains(username))
+				{
+					string name = members[i].DisplayName;
+					if (string.IsNullOrEmpty(name))
+						name = members[i].AccountName;
+
+					Users.Add(name);
+				}
 			}
+
+			Users.Sort();
 		}
 	}
 }

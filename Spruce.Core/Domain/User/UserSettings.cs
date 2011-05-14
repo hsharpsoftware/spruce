@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace Spruce.Core
 {
 	public class UserSettings
 	{
-		public static Dictionary<Guid, UserSettings> _cache;
+		public static string _cacheFolder;
 
 		public string ProjectName { get; set; }
 		public string IterationName { get; set; }
@@ -26,7 +28,19 @@ namespace Spruce.Core
 
 		static UserSettings()
 		{
-			_cache = new Dictionary<Guid, UserSettings>();
+			_cacheFolder = string.Format(@"{0}\App_Data\usersettings\", AppDomain.CurrentDomain.BaseDirectory);
+
+			try
+			{
+				if (!Directory.Exists(_cacheFolder))
+				{
+					Directory.CreateDirectory(_cacheFolder);
+				}
+			}
+			catch (IOException)
+			{
+				// TODO: Warn
+			}
 		}
 
 		/// <summary>
@@ -36,28 +50,64 @@ namespace Spruce.Core
 		/// <returns></returns>
 		public static UserSettings Load(Guid userId)
 		{
-			if (_cache.ContainsKey(userId))
-			{
-				return _cache[userId];
-			}
-			else
-			{
-				UserSettings settings = new UserSettings();
-				_cache.Add(userId, settings);
+			string filename = string.Format(@"{0}\{1}.xml", _cacheFolder, userId);
 
-				return settings;
+			if (!File.Exists(filename))
+				return new UserSettings();
+
+			try
+			{
+				using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
+				{
+					XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
+					UserSettings settings = (UserSettings) serializer.Deserialize(stream);
+
+					if (settings == null)
+						return new UserSettings();
+					else
+						return settings;
+				}
+			}
+			catch (IOException)
+			{
+				// TODO: Warn
+				return new UserSettings();
+			}
+			catch (FormatException)
+			{
+				// TODO: Warn
+				return new UserSettings();
+			}
+			catch (Exception)
+			{
+				// TODO: Warn
+				return new UserSettings();
 			}
 		}
 
 		public static void Save(Guid userId,UserSettings settings)
 		{
-			if (_cache.ContainsKey(userId))
+			string filename = string.Format(@"{0}\{1}.xml", _cacheFolder, userId);
+
+			try
 			{
-				_cache[userId] = settings;
+				using (FileStream stream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
+				{
+					XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
+					serializer.Serialize(stream,settings);
+				}
 			}
-			else
+			catch (IOException)
 			{
-				_cache.Add(userId, settings);
+				// TODO: Warn
+			}
+			catch (FormatException)
+			{
+				// TODO: Warn
+			}
+			catch (Exception)
+			{
+				// TODO: Warn
 			}
 		}
 	}
