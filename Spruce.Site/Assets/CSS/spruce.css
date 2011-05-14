@@ -27,7 +27,7 @@ a:visted	{ color:#1173a6; }
 #popoutmenu				{ font-family:Myriad Web Pro,helvetica;z-index:99;display:none;background-color:#282828;height:165px;color:#FFF;font-size:0.8em;position:absolute;top:32px;left:0px;width:100%; }
 #popoutmenu #dropshadow { background-image:url('../Images/top-dropshadow.png');height:5px;width:100%; }
 #popoutmenu .container	{ padding:5px;height:120px; }
-#popoutmenu .list		{ overflow:auto;width:24%;height:125px;float:left;border-left:1px dotted #AAA;padding:5px; }
+#popoutmenu .list		{ overflow:auto;width:23%;height:125px;float:left;border-left:1px dotted #AAA;padding:5px; }
 #popoutmenu .list .selected { color:#FEFEFE; }
 #popoutmenu .list .selected::before { content: "» "; }
 #popoutmenu	h3			{ margin:0 0 5px 0;color:#70a449; }
@@ -59,6 +59,13 @@ a:visted	{ color:#1173a6; }
 #list-table-row tr td		{ width:12%; }
 #list-table-row td div		{ padding:2px;text-align:left;margin:5px; }
 .list-table-noborder		{ border:0px !important; }
+
+#pagebar-container			{ width:90%; }
+#pagenumbers				{ float:left; }
+#pagesize					{ float:right; }
+.pagesize-label				{ margin-right:5px;padding:5px;font-size:0.7em;}
+.pagesize					{ margin-right:5px;padding:5px;border:1px solid #CCC;background-color:#F6F6F6;font-size:0.7em; }
+.page						{ margin-right:5px;padding:5px;border:1px solid #CCC;background-color:#F6F6F6;font-size:0.7em; }
 
 /* View an item */
 #item-container		{ padding:5px;border:1px solid #e5e5e5;margin:20px 0;font-size:1em;width:80%;background-color:#FAFAFA; }
@@ -92,7 +99,7 @@ a:visted	{ color:#1173a6; }
 .edit-field-long .label		{ width:160px;line-height:25px; }
 .edit-field-long .value		{ width:65px; }
 
-#edit-description textarea	{ font-family:Arial,helvetica;font-size:1em;border:1px solid #cdcdcd;color:#000;width:99%;min-height:150px;padding:5px;}}
+#edit-description textarea	{ font-family:Arial,helvetica;font-size:1em;border:1px solid #cdcdcd;color:#000;width:99%;min-height:150px;padding:5px; }
 .edit-error					{ background-color: #faf389;border: solid 1px #FF0000;}
 
 #edit-buttons				{ text-align:right; }

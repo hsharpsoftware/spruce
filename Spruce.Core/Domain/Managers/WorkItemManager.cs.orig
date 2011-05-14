@@ -1,0 +1,273 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using Microsoft.TeamFoundation.Client;
+using System.Net;
+using System.Security.Principal;
+using Microsoft.TeamFoundation.Server;
+using System.Xml;
+using Microsoft.TeamFoundation;
+
+namespace Spruce.Core
+{
+	/// <summary>
+	/// Blog:
+	/// - Moved to using WorkItems
+	/// - WorkitemCollection is already a readonly list
+	/// - Only concern is the controller can save directly, but it makes the views more flexible.
+	/// - Workitem Extensions
+	/// - Cross domain auth
+	/// - Upgrading 4 to 5
+	/// </summary>
+	public class WorkItemManager
+	{
+		public static WorkItem NewTask()
+		{
+			return NewItem(SpruceContext.Current.CurrentProject.WorkItemTypeForTask);
+		}
+
+		public static WorkItem NewBug()
+		{
+			return NewItem(SpruceContext.Current.CurrentProject.WorkItemTypeForBug);
+		}
+
+		public static WorkItem NewItem(WorkItemType type)
+		{
+			WorkItem item = new WorkItem(type);
+			return item;
+		}
+
+		public static void SaveBug(WorkItem workItem)
+		{
+			Save(workItem);
+		}
+
+		public static void SaveTask(WorkItem workitem)
+		{
+			Save(workitem);
+		}
+
+		public static void Save(WorkItem workitem)
+		{
+			try
+			{
+				workitem.Save();
+			}
+			catch (ValidationException e)
+			{
+				throw new SaveException(string.Format("Save failed for '{0}' ({1})", workitem.Title, e.Message), e);
+			}
+		}
+
+		public static void Resolve(int id)
+		{
+			try
+			{
+				WorkItem item = ItemById(id);
+				item.Fields["Resolved By"].Value = SpruceContext.Current.CurrentUser;
+				item.Fields["State"].Value = "Resolved";
+				Save(item);
+			}
+			catch (Exception)
+			{
+				// TODO: log invalid state
+			}
+		}
+
+		public static void Close(int id)
+		{
+			try
+			{
+				WorkItem item = ItemById(id);
+				item.Fields["Resolved By"].Value = SpruceContext.Current.CurrentUser;
+				item.Fields["State"].Value = "Closed";
+				Save(item);
+			}
+			catch (Exception)
+			{
+				// TODO: log invalid state
+			}
+		}
+
+		public static IList<IterationSummary> IterationsForProject(string projectName)
+		{
+			List<IterationSummary> list = new List<IterationSummary>();
+
+			foreach (Node areaNode in SpruceContext.Current.WorkItemStore.Projects[projectName].IterationRootNodes)
+			{
+				list.Add(new IterationSummary()
+				{
+					Name = areaNode.Name,
+					Path = areaNode.Path,
+				});
+			}
+
+			return list;
+		}
+
+		public static IList<AreaSummary> AreasForProject(string projectName)
+		{
+			List<AreaSummary> list = new List<AreaSummary>();
+
+			foreach (Node areaNode in SpruceContext.Current.WorkItemStore.Projects[projectName].AreaRootNodes)
+			{
+				list.Add(new AreaSummary()
+				{
+					Name = areaNode.Name,
+					Path = areaNode.Path,
+				});
+			}
+
+			return list;
+		}
+		
+		public static WorkItem ItemById(int id)
+		{
+			return SpruceContext.Current.WorkItemStore.GetWorkItem(id);
+		}
+
+		public static WorkItemCollection AllBugs()
+		{
+			Dictionary<string,string> parameters = new Dictionary<string,string>();
+			parameters.Add("project",SpruceContext.Current.CurrentProject.Name);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE "+
+				"System.TeamProject = @project AND [Work Item Type]='Bug' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			return SpruceContext.Current.WorkItemStore.Query(query, parameters);
+		}
+
+		public static WorkItemCollection AllItems()
+		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			return SpruceContext.Current.WorkItemStore.Query(query, parameters);
+		}
+
+		public static WorkItemCollection AllClosedBugs()
+		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Bug' AND State='Closed' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			return SpruceContext.Current.WorkItemStore.Query(query, parameters);
+		}
+
+		public static WorkItemCollection AllActiveBugs()
+		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Bug' AND State='Active' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			return SpruceContext.Current.WorkItemStore.Query(query, parameters);
+		}
+
+		public static WorkItemCollection AllResolvedBugs()
+		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Bug' AND State='Resolved' {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			return SpruceContext.Current.WorkItemStore.Query(query, parameters);
+		}
+
+		public static WorkItemCollection BugsAssignedToMe()
+		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+			parameters.Add("user", SpruceContext.Current.CurrentUser);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Bug' AND [Assigned To]=@user {0} " +
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+
+			return SpruceContext.Current.WorkItemStore.Query(query, parameters);
+		}
+
+		public static WorkItemCollection ExecuteWiqlQuery(string query, Dictionary<string, object> parameters, bool useDefaultProject)
+		{
+			if (parameters == null)
+				parameters = new Dictionary<string, object>();
+
+			// Add the default project name if one is missing
+			if (query.IndexOf("TeamProject") == -1 && useDefaultProject)
+			{
+				if (!parameters.ContainsKey("Project"))
+					parameters.Add("Project", SpruceContext.Current.CurrentProject.Name);
+				else
+					parameters["Project"] = SpruceContext.Current.CurrentProject.Name;
+
+				query += " AND System.TeamProject = @Project";
+			}
+
+			return SpruceContext.Current.WorkItemStore.Query(query, parameters);
+		}
+
+		public static WorkItemCollection AllTasks()
+		{
+			Dictionary<string, string> parameters = new Dictionary<string, string>();
+			parameters.Add("project", SpruceContext.Current.CurrentProject.Name);
+
+			string query = string.Format("SELECT ID, Title from Issue WHERE " +
+				"System.TeamProject = @project AND [Work Item Type]='Task' {0} " +
+				"ORDER BY Id,State DESC", AddSqlForPaths(parameters));
+
+			return SpruceContext.Current.WorkItemStore.Query(query, parameters);
+		}
+
+		private static string AddSqlForPaths(Dictionary<string,string> parameters)
+		{
+			string result = "";
+
+			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.UserSettings.IterationPath))
+			{
+				parameters.Add("iteration", SpruceContext.Current.UserSettings.IterationPath);
+				result = " AND [Iteration Path]=@iteration";
+			}
+
+			if (!string.IsNullOrWhiteSpace(SpruceContext.Current.UserSettings.AreaPath))
+			{
+				parameters.Add("area", SpruceContext.Current.UserSettings.AreaPath);
+				result += " AND [Area Path]=@area";
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// Accomodates fields that won't necessarily exist (such as resolved by) until a later stage of the work item.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <param name="fieldName"></param>
+		/// <returns></returns>
+		private static string GetFieldValue(WorkItem item, string fieldName)
+		{
+			if (item.Fields.Contains(fieldName))
+				return Convert.ToString(item.Fields[fieldName].Value);
+			else
+				return "";
+		}
+
+		private static string ProjectNameForSql()
+		{
+			return SpruceContext.Current.CurrentProject.Name.Replace("'", "''");
+		}
+	}
+}

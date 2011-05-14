@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Core
 {
@@ -21,6 +22,7 @@ namespace Spruce.Core
 		public string State { get; set; }
 		public string AssignedTo { get; set; }
 		public string ResolvedBy { get; set; }
+		public FieldCollection Fields { get; internal set; }
 
 		// For bugs
 		public int? Priority { get; set; }

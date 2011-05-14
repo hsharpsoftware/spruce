@@ -8,16 +8,19 @@
 	<thead>
 		<tr id="list-table-header">
 			<th>
-				<div>Title</div>
+				<div>@Html.ActionLink("Title","Heatmap",new { sortBy = "Title", desc = !(bool)ViewData["desc"]})</div>
 			</th>
-			<th style="width:12%;">
-				<div>ID</div>
+			<th style="width:8%;">
+				<div>@Html.ActionLink("ID","Heatmap",new { sortBy = "Id", desc = !(bool)ViewData["desc"]})</div>
 			</th>
 			<th style="width:15%">
-				<div>Assigned to</div>
+				<div>@Html.ActionLink("Assigned to", "Heatmap", new { sortBy = "AssignedTo", desc = !(bool)ViewData["desc"] })</div>
+			</th>
+			<th style="width:15%">
+				<div>@Html.ActionLink("Created on", "Heatmap", new { sortBy = "CreatedDate", desc = !(bool)ViewData["desc"] })</div>
 			</th>
 			<th style="width:12%">
-				<div>Status</div>
+				<div>@Html.ActionLink("Status", "Heatmap", new { sortBy = "State", desc = !(bool)ViewData["desc"] })</div>
 			</th>
 			<th style="width:12%">
 				<div>Priority</div>
@@ -40,6 +43,9 @@
 			<td style="width:15%">
 				<div>@item.AssignedTo</div>
 			</td>
+			<td style="width:15%">
+				<div>@item.CreatedDate.ToString("ddd dd MMM yyyy")</div>
+			</td>
 			<td>
 				<div>@item.State</div>
 			</td>
@@ -56,3 +62,4 @@
 	</tbody>
 </table>
 <br style="clear:both" />
+@Html.Partial("PagingBar", new int[] { int.Parse(ViewData["pageCount"].ToString()), int.Parse(ViewData["currentPage"].ToString()) })

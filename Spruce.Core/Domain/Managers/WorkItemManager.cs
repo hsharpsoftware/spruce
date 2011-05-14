@@ -385,7 +385,8 @@ namespace Spruce.Core
 				State = item.State,
 				Title = item.Title,
 				IsBug = (item.Type.Name.ToLower() == "bug"),
-				ProjectName = item.Project.Name
+				ProjectName = item.Project.Name,
+				Fields = item.Fields
 			};
 
 			if (item.Fields.Contains("Priority"))

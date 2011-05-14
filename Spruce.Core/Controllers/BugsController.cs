@@ -5,55 +5,151 @@ using System.Web;
 using System.Web.Mvc;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Text;
+using System.Linq.Dynamic;
 
 namespace Spruce.Core.Controllers
 {
 	public class BugsController : ControllerBase
     {
-		public ActionResult Index(string id)
+		public ActionResult Index(string id, string sortBy, bool? desc,int? page,int? pageSize)
 		{
 			SetBugView("Index");
-			return View(GetList(id));
+
+			int pageCount = 1;
+			int currentPage = page.HasValue ? page.Value : 1;
+			int pageSizeVal = pageSize.HasValue ? pageSize.Value : 10;
+			IEnumerable<WorkItemSummary> list = GetList(id, false, sortBy, desc, out pageCount, pageSizeVal, currentPage);
+
+			if (desc.HasValue)
+				ViewData["desc"] = desc;
+			else
+				ViewData["desc"] = true;
+
+			ViewData["pageCount"] = pageCount;
+			ViewData["currentPage"] = currentPage;
+			ViewData["pageSize"] = pageSizeVal;
+
+			return View(list);
 		}
 
-		public ActionResult Heatmap(string id)
+		public ActionResult Heatmap(string id, string sortBy, bool? desc, int? page, int? pageSize)
 		{
 			SetBugView("Heatmap");
-			return View(GetList(id).OrderBy(b => b.Priority));
+
+			int pageCount = 1;
+			int currentPage = page.HasValue ? page.Value : 1;
+			int pageSizeVal = pageSize.HasValue ? pageSize.Value : 10;
+			IEnumerable<WorkItemSummary> list = GetList(id, true, sortBy, desc, out pageCount, pageSizeVal, currentPage);
+
+			if (desc.HasValue)
+				ViewData["desc"] = desc;
+			else
+				ViewData["desc"] = true;
+
+			ViewData["pageCount"] = pageCount;
+			ViewData["currentPage"] = currentPage;
+			ViewData["pageSize"] = pageSizeVal;
+
+			return View(list);
 		}
 
-		private IEnumerable<WorkItemSummary> GetList(string projectName)
+		private IEnumerable<WorkItemSummary> GetList(string projectName,bool isHeatMap, string sortBy,bool? descending,out int pageCount,int pageSize,int pageNumber)
 		{
 			if (!string.IsNullOrEmpty(projectName))
 				SetHighlightedProject(projectName);
 
+			IEnumerable<WorkItemSummary> list;
+
 			switch (SpruceContext.Current.UserSettings.FilterType)
 			{
 				case FilterType.Active:
-					return WorkItemManager.AllActiveBugs();
+					list = WorkItemManager.AllActiveBugs();
+					break;
 
 				case FilterType.Resolved:
-					return WorkItemManager.AllResolvedBugs();
+					list = WorkItemManager.AllResolvedBugs();
+					break;
 
 				case FilterType.Closed:
-					return WorkItemManager.AllClosedBugs();
+					list = WorkItemManager.AllClosedBugs();
+					break;
 
 				case FilterType.AssignedToMe:
-					return WorkItemManager.BugsAssignedToMe();
+					list = WorkItemManager.BugsAssignedToMe();
+					break;
 
 				case FilterType.Today:
-					return WorkItemManager.AllBugs();
+					list = WorkItemManager.AllBugs();
+					break;
 
 				case FilterType.Yesterday:
-					return WorkItemManager.AllBugs();
+					list = WorkItemManager.AllBugs();
+					break;
 
 				case FilterType.ThisWeek:
-					return WorkItemManager.AllBugs();
+					list = WorkItemManager.AllBugs();
+					break;
 
 				case FilterType.All:
 				default:
-					return WorkItemManager.AllBugs();
+					list = WorkItemManager.AllBugs();
+					break;
 			}
+
+			// Use dynamic linq for the sorting
+			try
+			{
+				string sort = "";
+				if (isHeatMap)
+				{
+					sort = "Priority asc";
+				}
+
+				if (!string.IsNullOrEmpty(sortBy))
+				{
+					if (!string.IsNullOrEmpty(sort))
+						sort += ", ";
+
+					string desc = (descending == true) ? "desc" : "asc";
+					sort += string.Format("{0} {1}", sortBy, desc);	
+				}
+
+				list = list.AsQueryable().OrderBy(sort).AsEnumerable();
+			}
+			catch (ParseException)
+			{
+				// Ignore dynamic linq errors
+			}
+
+			//
+			// Paging
+			//
+			if (pageSize < 1)
+				pageSize = 5;
+
+			if (pageNumber < 1)
+				pageNumber = 1;
+
+			// Number of items per page, rounded up
+			int itemCount = list.Count();
+			double itemsPerPage = list.Count() / (double) pageSize;
+			pageCount = (int) Math.Ceiling(itemsPerPage);
+
+			if (pageNumber > pageCount)
+				pageNumber = pageCount;
+
+			if (pageNumber >= pageCount)
+			{
+				// Grab everything all remaining items from the list
+				list = list.Skip(pageSize * (pageNumber - 1));
+			}
+			else
+			{
+				// Skip past all items from the previous page.
+				list = list.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
+			}
+
+			return list;
 		}
 
 		public ActionResult View(int id)

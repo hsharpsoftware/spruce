@@ -31,14 +31,14 @@ namespace Spruce.Core
 			return MvcHtmlString.Create(result);
 		}
 
-		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue, int tabIndex)
+		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, object selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
 
 			foreach (string item in items)
 			{
 				SelectListItem selectListItem = new SelectListItem() { Text = item, Value = item };
-				if (item == selectedValue)
+				if (item == selectedValue.ToString())
 					selectListItem.Selected = true;
 
 				selectList.Add(selectListItem);
@@ -92,44 +92,6 @@ namespace Spruce.Core
 				return input.Substring(0, maxLength) + "...";
 			else
 				return input;
-		}
-
-		/// <summary>
-		/// Attempts to add 'page=1' to the querystring of a url.
-		/// </summary>
-		public static string AppendQueryString(this Uri url, string name, object value)
-		{
-			string newUrl = url.ToString();
-
-			if (!string.IsNullOrEmpty(url.Query))
-				newUrl = newUrl.Replace(url.Query, "");
-
-			var nameValues = HttpUtility.ParseQueryString(url.Query);
-
-			if (nameValues.Keys.Count > 0)
-			{
-				newUrl += "?";
-				bool hasQuery = false;
-
-				// Append all querystring name/values except the 'name' one.
-				foreach (string key in nameValues.Keys)
-				{
-					if (!string.IsNullOrEmpty(key) && key != name)
-					{
-						newUrl += string.Format("{0}{1}={2}",hasQuery ? "&" : "", key, nameValues[key]);
-						hasQuery = true;
-					}
-				}
-
-				// Append our querystring item to the end
-				newUrl += string.Format("{0}{1}={2}",hasQuery ? "&" : "",name,value);
-			}
-			else
-			{
-				newUrl += string.Format("?{0}={1}", name, value);
-			}
-
-			return newUrl;
 		}
 	}
 }

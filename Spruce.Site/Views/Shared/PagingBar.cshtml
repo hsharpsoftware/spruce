@@ -1,0 +1,60 @@
+﻿@model int[]
+
+<div id="pagebar-container">
+	<div id="pagenumbers">
+		@if (Model[0] <= 1)
+		{
+			<div class="page">1</div>
+		}
+		else
+		{
+			for (int page = 1; page <= Model[0]; page++)
+			{
+				<div class="page left">
+					@if (Model[1] == page)
+					{
+						@page
+					}
+					else
+					{
+						<a href="@(ViewContext.HttpContext.Request.Url.AppendQueryString("page",page))">@page</a>
+					}
+				</div>
+			}
+		}
+	</div>
+	<div id="pagesize">
+		<div class="pagesize-label left">Items per page</div>
+		<div class="pagesize left">
+			@if ((int) ViewData["pageSize"] == 10)
+			{
+				<text>10</text>
+			}
+			else
+			{
+				<a href="@(ViewContext.HttpContext.Request.Url.AppendQueryString("pageSize", 10))">10</a>
+			}
+		</div>
+		<div class="pagesize left">
+			@if ((int) ViewData["pageSize"] == 25)
+			{
+				<text>25</text>
+			}
+			else
+			{
+				<a href="@(ViewContext.HttpContext.Request.Url.AppendQueryString("pageSize", 25))">25</a>
+			}
+		</div>
+		<div class="pagesize left">
+			@if ((int) ViewData["pageSize"] == 100)
+			{
+				<text>100</text>
+			}
+			else
+			{
+				<a href="@(ViewContext.HttpContext.Request.Url.AppendQueryString("pageSize", 100))">100</a>
+			}
+		</div>
+	</div>
+</div>
+<br />

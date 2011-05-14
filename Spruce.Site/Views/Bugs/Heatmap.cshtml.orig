@@ -1,0 +1,58 @@
+﻿@model IList<WorkItem>
+
+<h3>Bugs (@ViewData["CurrentFilter"])</h3>
+@Html.ActionLink("View as list","Index")
+<br /><br />
+
+<table id="list-table">
+	<thead>
+		<tr id="list-table-header">
+			<th>
+				<div>Title</div>
+			</th>
+			<th style="width:12%;">
+				<div>ID</div>
+			</th>
+			<th style="width:15%">
+				<div>Assigned to</div>
+			</th>
+			<th style="width:12%">
+				<div>Status</div>
+			</th>
+			<th style="width:12%">
+				<div>Priority</div>
+			</th>
+			<th style="width:10%">
+				<div class="list-table-noborder"></div>
+			</th>
+		</tr>
+	</thead>
+	<tbody>
+	@foreach (WorkItem item in Model)
+	{
+		<tr id="list-table-row">
+			<td>
+				<div>@item.Title</div>
+			</td>
+			<td>
+				<div>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</div>
+			</td>
+			<td style="width:15%">
+				<div>@item.Fields["Assigned To"].Value</div>
+			</td>
+			<td>
+				<div>@item.State</div>
+			</td>
+			<td>
+				<div>@item.Fields["Priority"].Value</div>
+			</td>
+			<td style="width:10%">
+				<div class="list-table-noborder">
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id })
+				</div>
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>
+<br style="clear:both" />
