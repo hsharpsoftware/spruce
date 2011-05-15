@@ -131,5 +131,55 @@ namespace Spruce.Core
 
 			return newUrl;
 		}
+
+		public static string ToCsv(this WorkItemSummary summary)
+		{
+			StringBuilder builder = new StringBuilder();
+
+			// Title
+			if (summary.Title.IndexOf(",") > -1)
+				builder.Append("\"" +summary.Title+ "\"");
+			else
+				builder.Append(summary.Title);
+
+			builder.Append(",");
+
+			// ID
+			builder.Append(summary.Id);
+			builder.Append(",");
+
+			// Assigned to
+			if (summary.AssignedTo.IndexOf(",") > -1)
+				builder.Append("\"" + summary.AssignedTo + "\"");
+			else
+				builder.Append(summary.AssignedTo);
+
+			builder.Append(",");
+
+			// Created on
+			builder.Append(summary.CreatedDate.ToString("ddd dd MMM yyyy"));
+			builder.Append(",");
+
+			// State
+			if (summary.State.IndexOf(",") > -1)
+				builder.Append("\"" + summary.State + "\"");
+			else
+				builder.Append(summary.State);
+
+			builder.Append(",");
+
+			// Priority
+			builder.Append(summary.Priority);
+			builder.Append(",");
+
+			// Severity
+			if (summary.Severity.IndexOf(",") > -1)
+				builder.Append("\"" + summary.Severity + "\"");
+			else
+				builder.Append(summary.Title);
+
+
+			return builder.AppendLine().ToString();
+		}
 	}
 }

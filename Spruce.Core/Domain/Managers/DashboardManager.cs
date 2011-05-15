@@ -11,12 +11,12 @@ namespace Spruce.Core
 	{
 		public static DashboardSummary GetSummary()
 		{
-			IList<WorkItemSummary> allbugs = WorkItemManager.AllBugs();
-			IList<WorkItemSummary> allTasks = WorkItemManager.AllTasks();
+			IList<WorkItemSummary> allbugs = BugManager.AllBugs();
+			IList<WorkItemSummary> allTasks = TaskManager.AllTasks();
 
 			DashboardSummary summary = new DashboardSummary();
 			summary.RecentCheckins = RecentCheckins();
-			summary.ActiveBugs = WorkItemManager.AllActiveBugs().Count;
+			summary.ActiveBugs = BugManager.AllActiveBugs().Count;
 			summary.ActiveTasks = allTasks.Count;
 			summary.BugCount = allbugs.Count;
 			summary.TaskCount = allTasks.Count;

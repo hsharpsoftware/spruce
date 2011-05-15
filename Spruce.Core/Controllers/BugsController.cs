@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Text;
 using System.Linq.Dynamic;
+using System.IO;
+using System.ServiceModel.Syndication;
 
 namespace Spruce.Core.Controllers
 {
@@ -14,20 +16,7 @@ namespace Spruce.Core.Controllers
 		public ActionResult Index(string id, string sortBy, bool? desc,int? page,int? pageSize)
 		{
 			SetBugView("Index");
-
-			int pageCount = 1;
-			int currentPage = page.HasValue ? page.Value : 1;
-			int pageSizeVal = pageSize.HasValue ? pageSize.Value : 10;
-			IEnumerable<WorkItemSummary> list = GetList(id, false, sortBy, desc, out pageCount, pageSizeVal, currentPage);
-
-			if (desc.HasValue)
-				ViewData["desc"] = desc;
-			else
-				ViewData["desc"] = true;
-
-			ViewData["pageCount"] = pageCount;
-			ViewData["currentPage"] = currentPage;
-			ViewData["pageSize"] = pageSizeVal;
+			IEnumerable<WorkItemSummary> list = GetList(id, false, sortBy, desc, page, pageSize);
 
 			return View(list);
 		}
@@ -35,25 +24,12 @@ namespace Spruce.Core.Controllers
 		public ActionResult Heatmap(string id, string sortBy, bool? desc, int? page, int? pageSize)
 		{
 			SetBugView("Heatmap");
-
-			int pageCount = 1;
-			int currentPage = page.HasValue ? page.Value : 1;
-			int pageSizeVal = pageSize.HasValue ? pageSize.Value : 10;
-			IEnumerable<WorkItemSummary> list = GetList(id, true, sortBy, desc, out pageCount, pageSizeVal, currentPage);
-
-			if (desc.HasValue)
-				ViewData["desc"] = desc;
-			else
-				ViewData["desc"] = true;
-
-			ViewData["pageCount"] = pageCount;
-			ViewData["currentPage"] = currentPage;
-			ViewData["pageSize"] = pageSizeVal;
+			IEnumerable<WorkItemSummary> list = GetList(id, true, sortBy, desc, page, pageSize);
 
 			return View(list);
 		}
 
-		private IEnumerable<WorkItemSummary> GetList(string projectName,bool isHeatMap, string sortBy,bool? descending,out int pageCount,int pageSize,int pageNumber)
+		private IEnumerable<WorkItemSummary> GetList(string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize)
 		{
 			if (!string.IsNullOrEmpty(projectName))
 				SetHighlightedProject(projectName);
@@ -63,91 +39,52 @@ namespace Spruce.Core.Controllers
 			switch (SpruceContext.Current.UserSettings.FilterType)
 			{
 				case FilterType.Active:
-					list = WorkItemManager.AllActiveBugs();
+					list = BugManager.AllActiveBugs();
 					break;
 
 				case FilterType.Resolved:
-					list = WorkItemManager.AllResolvedBugs();
+					list = BugManager.AllResolvedBugs();
 					break;
 
 				case FilterType.Closed:
-					list = WorkItemManager.AllClosedBugs();
+					list = BugManager.AllClosedBugs();
 					break;
 
 				case FilterType.AssignedToMe:
-					list = WorkItemManager.BugsAssignedToMe();
+					list = BugManager.BugsAssignedToMe();
 					break;
 
 				case FilterType.Today:
-					list = WorkItemManager.AllBugs();
+					list = BugManager.Today();
 					break;
 
 				case FilterType.Yesterday:
-					list = WorkItemManager.AllBugs();
+					list = BugManager.Yesterday();
 					break;
 
 				case FilterType.ThisWeek:
-					list = WorkItemManager.AllBugs();
+					list = BugManager.ThisWeek();
 					break;
 
 				case FilterType.All:
 				default:
-					list = WorkItemManager.AllBugs();
+					list = BugManager.AllBugs();
 					break;
 			}
 
-			// Use dynamic linq for the sorting
-			try
-			{
-				string sort = "";
-				if (isHeatMap)
-				{
-					sort = "Priority asc";
-				}
-
-				if (!string.IsNullOrEmpty(sortBy))
-				{
-					if (!string.IsNullOrEmpty(sort))
-						sort += ", ";
-
-					string desc = (descending == true) ? "desc" : "asc";
-					sort += string.Format("{0} {1}", sortBy, desc);	
-				}
-
-				list = list.AsQueryable().OrderBy(sort).AsEnumerable();
-			}
-			catch (ParseException)
-			{
-				// Ignore dynamic linq errors
-			}
-
 			//
-			// Paging
+			// Page the list
 			//
-			if (pageSize < 1)
-				pageSize = 5;
+			int currentPage = page.HasValue ? page.Value : 1;
+			int pageSizeVal = pageSize.HasValue ? pageSize.Value : 10;
 
-			if (pageNumber < 1)
-				pageNumber = 1;
+			Pager pager = new Pager(isHeatMap, sortBy, descending == true, pageSizeVal);
+			list = pager.Page<WorkItemSummary>(list, currentPage);
 
-			// Number of items per page, rounded up
-			int itemCount = list.Count();
-			double itemsPerPage = list.Count() / (double) pageSize;
-			pageCount = (int) Math.Ceiling(itemsPerPage);
-
-			if (pageNumber > pageCount)
-				pageNumber = pageCount;
-
-			if (pageNumber >= pageCount)
-			{
-				// Grab everything all remaining items from the list
-				list = list.Skip(pageSize * (pageNumber - 1));
-			}
-			else
-			{
-				// Skip past all items from the previous page.
-				list = list.Skip(pageSize * (pageNumber - 1)).Take(pageSize);
-			}
+			ViewData["pageCount"] = pager.PageCount;
+			ViewData["currentPage"] = currentPage;
+			ViewData["pageSize"] = pageSizeVal;
+			ViewData["desc"] = (descending == true);
 
 			return list;
 		}
@@ -167,18 +104,6 @@ namespace Spruce.Core.Controllers
 			return View(item);
 		}
 
-		public ActionResult Active()
-		{
-			Session["ListLink"] = "Active";
-			return View("Index", WorkItemManager.AllActiveBugs().ToList());
-		}
-
-		public ActionResult Closed()
-		{
-			Session["ListLink"] = "Closed";
-			return View("Index", WorkItemManager.AllClosedBugs().ToList());
-		}
-
 		public ActionResult Resolve(int id)
 		{
 			WorkItemManager.Resolve(id);
@@ -189,6 +114,28 @@ namespace Spruce.Core.Controllers
 		{
 			WorkItemManager.Close(id);
 			return RedirectToAction("View", new { id = id });
+		}
+
+		public ActionResult DeleteAttachment(int id,string url)
+		{
+			url = url.FromBase64();
+
+			WorkItemManager.DeleteAttachment(id,url);
+			return RedirectToAction("Edit", new { id = id });
+		}
+
+		public ActionResult AllFields()
+		{
+			StringBuilder builder = new StringBuilder();
+
+			WorkItemSummary summary = WorkItemManager.NewBug();
+			IEnumerable<Field> list = summary.Fields.Cast<Field>().OrderBy(f => f.Name);
+			foreach (Field field in list)
+			{
+				builder.AppendLine(string.Format("{0} [{1}] - {2}", field.Name, field.ReferenceName, string.Join(",", field.AllowedValues.Cast<string>())));
+			}
+
+			return Content(builder.ToString(),"text/plain");
 		}
 
 		[HttpGet]
@@ -202,6 +149,7 @@ namespace Spruce.Core.Controllers
 			ViewData["PageName"] = "New bug";
 			ViewData["States"] = item.ValidStates;
 			ViewData["Priorities"] = item.ValidPriorities;
+			ViewData["Severities"] = item.ValidSeverities;
 			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
 			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
 			ViewData["Users"] = SpruceContext.Current.Users;
@@ -217,7 +165,40 @@ namespace Spruce.Core.Controllers
 			{
 				item.CreatedBy = SpruceContext.Current.CurrentUser;
 				item.IsNew = true;
-				WorkItemManager.SaveBug(item);
+				WorkItemManager.SaveBug(item); // item.Id is updated
+
+				// Save the files once it's saved (as we can't add an AttachmentsCollection as it has no constructors)
+				if (Request.Files.Count > 0)
+				{
+					try
+					{
+						// Save to the App_Data folder.
+						List<Attachment> attachments = new List<Attachment>();
+						string filename1 = SaveFile("uploadFile1", item.Id);
+						string filename2 = SaveFile("uploadFile2", item.Id);
+						string filename3 = SaveFile("uploadFile3", item.Id);
+
+						if (!string.IsNullOrEmpty(filename1))
+						{
+							attachments.Add(new Attachment(filename1, Request.Form["uploadFile1Comments"]));
+						}
+						if (!string.IsNullOrEmpty(filename2))
+						{
+							attachments.Add(new Attachment(filename2, Request.Form["uploadFile2Comments"]));
+						}
+						if (!string.IsNullOrEmpty(filename3))
+						{
+							attachments.Add(new Attachment(filename3, Request.Form["uploadFile3Comments"]));
+						}
+
+						WorkItemManager.SaveAttachments(item.Id, attachments);
+					}
+					catch (IOException e)
+					{
+						TempData["Error"] = e.Message;
+						return RedirectToAction("Edit", new { id = item.Id });
+					}
+				}
 
 				// Set the project/iteration/area to the previously edited item
 				SetHighlightedProject(item.ProjectName);
@@ -234,14 +215,16 @@ namespace Spruce.Core.Controllers
 		}
 
 		[HttpGet]
-		public ActionResult Edit(int id)
+		public ActionResult Edit(int id,string fromUrl)
 		{
 			WorkItemSummary item = WorkItemManager.ItemById(id);
 			item.IsNew = false;
 
+			ViewData["fromUrl"] = fromUrl;
 			ViewData["PageName"] = "Bug " + id;
 			ViewData["States"] = item.ValidStates;
 			ViewData["Priorities"] = item.ValidPriorities;
+			ViewData["Severities"] = item.ValidSeverities;
 			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
 			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
 			ViewData["Users"] = SpruceContext.Current.Users;
@@ -251,24 +234,111 @@ namespace Spruce.Core.Controllers
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Edit(WorkItemSummary item)
+		public ActionResult Edit(WorkItemSummary item,string fromUrl)
 		{
 			try
 			{
 				WorkItemManager.SaveExisting(item);
+
+				// Save the files once it's saved (as we can't add an AttachmentsCollection as it has no constructors)
+				if (Request.Files.Count > 0)
+				{
+					try
+					{
+						// Save to the App_Data folder.
+						List<Attachment> attachments = new List<Attachment>();
+						string filename1 = SaveFile("uploadFile1", item.Id);
+						string filename2 = SaveFile("uploadFile2", item.Id);
+						string filename3 = SaveFile("uploadFile3", item.Id);
+
+						if (!string.IsNullOrEmpty(filename1))
+						{
+							attachments.Add(new Attachment(filename1, Request.Form["uploadFile1Comments"]));
+						}
+						if (!string.IsNullOrEmpty(filename2))
+						{
+							attachments.Add(new Attachment(filename2, Request.Form["uploadFile2Comments"]));
+						}
+						if (!string.IsNullOrEmpty(filename3))
+						{
+							attachments.Add(new Attachment(filename3, Request.Form["uploadFile3Comments"]));
+						}
+
+						WorkItemManager.SaveAttachments(item.Id, attachments);
+					}
+					catch (IOException e)
+					{
+						TempData["Error"] = e.Message;
+						return RedirectToAction("Edit", new { id = item.Id });
+					}
+				}
 
 				// Set the project/iteration/area to the previously edited item
 				SetHighlightedProject(item.ProjectName);
 				SetHighlightedArea(item.AreaPath);
 				SetHighlightedIteration(item.IterationPath);
 
-				return RedirectToAction("View", new { id = item.Id });
+				if (string.IsNullOrEmpty(fromUrl))
+					return RedirectToAction("View", new { id = item.Id });
+				else
+					return Redirect(fromUrl);
 			}
 			catch (SaveException e)
 			{
 				TempData["Error"] = e.Message;
 				return RedirectToAction("Edit", new { id = item.Id});
 			}
+		}
+
+		private string SaveFile(string fieldName,int id)
+		{
+			string filename = Request.Files[fieldName].FileName;
+			if (!string.IsNullOrEmpty(filename))
+			{
+				string directory = string.Format(@"{0}{1}", SpruceSettings.UploadDirectory, id);
+				if (!Directory.Exists(directory))
+					Directory.CreateDirectory(directory);
+
+				string filePath = string.Format(@"{0}\{1}",directory,filename);
+				HttpPostedFileBase postedFile = Request.Files[fieldName] as HttpPostedFileBase;
+				postedFile.SaveAs(filePath);
+
+				return filePath;
+			}
+			else
+			{
+				return "";
+			}
+		}
+
+		public ActionResult Excel()
+		{
+			IEnumerable<WorkItemSummary> list = GetList("", true, "CreatedDate", true, 1, 10000);
+
+			StringBuilder builder = new StringBuilder();
+			using (StringWriter writer = new StringWriter(builder))
+			{
+				ViewData.Model = list;
+				ViewEngineResult engineResult = ViewEngines.Engines.FindView(ControllerContext, "Excel", "_ExcelLayout");
+				ViewContext context = new ViewContext(ControllerContext, engineResult.View, ViewData, TempData, writer);
+
+				engineResult.View.Render(context, writer);
+				writer.Close();
+
+				FileContentResult result = new FileContentResult(Encoding.Default.GetBytes(builder.ToString()), "application/ms-excel");
+				result.FileDownloadName = "bugs.xml";
+
+				return result;
+			}
+		}
+
+		public ActionResult Rss()
+		{
+			IEnumerable<WorkItemSummary> list = GetList("", true, "CreatedDate", true, 1, 10000);
+
+			RssActionResult result = new RssActionResult();
+			result.Feed = GetRssFeed(list,"Bugs");
+			return result;
 		}
     }
 }

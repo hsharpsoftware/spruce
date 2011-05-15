@@ -23,9 +23,11 @@ namespace Spruce.Core
 		public string AssignedTo { get; set; }
 		public string ResolvedBy { get; set; }
 		public FieldCollection Fields { get; internal set; }
+		public AttachmentCollection Attachments { get; set; }
 
 		// For bugs
 		public int? Priority { get; set; }
+		public string Severity { get; set; }
 
 		// For tasks
 		public double EstimatedHours { get; set; }
@@ -36,11 +38,13 @@ namespace Spruce.Core
 
 		public IList<string> ValidStates { get; set; }
 		public IList<string> ValidPriorities { get; set; }
+		public IList<string> ValidSeverities { get; set; }
 
 		public WorkItemSummary()
 		{
 			ValidStates = new List<string>();
-			ValidStates = new List<string>();
+			ValidPriorities = new List<string>();
+			ValidSeverities = new List<string>();
 		}
 	}
 }

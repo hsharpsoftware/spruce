@@ -1,29 +1,35 @@
 ﻿@model IEnumerable<WorkItemSummary>
 
-<h3>Tasks</h3>
+<h3>Tasks (@ViewData["CurrentFilter"])</h3>
 @Html.ActionLink("View as list","List")
 <br /><br />
 
-<div id="tasks-container">
-	@foreach (WorkItemSummary item in Model)
+<div>
+@foreach (WorkItemSummary item in Model)
+{
+	string cssClass = "";
+	if (item.State == "Closed")
 	{
-		string cssClass = "task";
-		if (item.State == "Closed")
-		{
-			cssClass += " dimmed";
-		}
-		<div class="@cssClass">
+		cssClass = " dimmed";
+	}
+	<div id="task-container" class="@cssClass">
+		<div class="task">
 			<h1 class="workitem-id">
 				#@item.Id
 			</h1>
 			<p class="bold">
-				@Html.ActionLink(item.Title.Shorten(60),"View",new { id = item.Id})
+				@Html.ActionLink(item.Title.Shorten(60), "View", new { id = item.Id })
 			</p>
 			<p class="smaller">
 				Assigned to @item.AssignedTo (@item.State)<br />
-				<span class="smallest">@item.CreatedDate.ToShortDateString()</span>
+				<span class="small">@item.CreatedDate.ToShortDateString()</span>
 			</p>
 		
 		</div>
-	}
+	</div>
+}
+</div>
+<br class="clear" />
+<div style="width:90%;margin-left:20px;">
+@Html.Partial("PagingBar", new int[] { int.Parse(ViewData["pageCount"].ToString()), int.Parse(ViewData["currentPage"].ToString()) })
 </div>

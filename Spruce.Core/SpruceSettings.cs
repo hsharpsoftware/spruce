@@ -23,5 +23,19 @@ namespace Spruce.Core
 				return SpruceSection.Current.DefaultProjectName;
 			}
 		}
+
+		/// <summary>
+		/// The directory for all attachments to be uploaded prior to being saved on TFS. Includes a trailing slash.
+		/// </summary>
+		public static string UploadDirectory
+		{
+			get
+			{
+				if (SpruceContext.IsWeb)
+					return HttpContext.Current.Server.MapPath("~/App_Data/Attachments/");
+				else
+					return @"Attachments\";
+			}
+		}
 	}
 }

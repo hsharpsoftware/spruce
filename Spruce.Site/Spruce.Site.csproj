@@ -77,8 +77,7 @@
     <Content Include="Assets\Images\rss_icon_disabled.png" />
     <Content Include="Assets\Images\star_off.png" />
     <Content Include="Assets\Images\star_on.png" />
-    <Content Include="Assets\Images\stickynote-large.png" />
-    <Content Include="Assets\Images\stickynote-medium.png" />
+    <Content Include="Assets\Images\stickynote.png" />
     <Content Include="Assets\Images\top-dropshadow.png" />
     <Content Include="Assets\Scripts\spruce.js" />
     <Content Include="Assets\CSS\spruce.print.css" />
@@ -131,6 +130,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\PagingBar.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Bugs\Excel.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_ExcelLayout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Tasks\Excel.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

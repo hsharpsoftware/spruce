@@ -20,6 +20,25 @@
 		@MvcHtmlString.Create(Model.Description.Replace("\n","<br/>"))
 	</div>
 
+	@if (Model.Attachments.Count > 0)
+	{
+	<div id="item-attachments">	
+		<b>Attachments</b>
+		<ul>
+		@foreach(Attachment attachment in Model.Attachments)
+		{
+			<li>
+				<a href="@attachment.Uri.ToString()" target="_blank">@attachment.Name</a>
+				@if (!string.IsNullOrEmpty(attachment.Comment))
+				{
+					<br /> @attachment.Comment
+				}
+			</li>
+		}
+		</ul>
+	</div>
+	}
+
 	<div id="item-details">
 		<div class="left">@Html.ActionLink("Edit", "Edit", new { id = Model.Id })</div>
 		<div class="right">

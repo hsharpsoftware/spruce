@@ -25,6 +25,9 @@
 			<th style="width:12%">
 				<div>Priority</div>
 			</th>
+			<th style="width:12%">
+				<div>Severity</div>
+			</th>
 			<th style="width:10%">
 				<div class="list-table-noborder"></div>
 			</th>
@@ -52,9 +55,12 @@
 			<td>
 				<div>@item.Priority</div>
 			</td>
+			<td>
+				<div>@item.Severity</div>
+			</td>
 			<td style="width:10%">
 				<div class="list-table-noborder">
-					@Html.ActionLink("Edit", "Edit", new { id = item.Id })
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id, fromUrl = Request.Url.PathAndQuery })
 				</div>
 			</td>
 		</tr>

@@ -44,6 +44,16 @@ namespace Spruce.Core
 			set { this["defaultProjectName"] = value; }
 		}
 
+		/// <summary>
+		/// The base url for the site. This is used for the RSS feed links.
+		/// </summary>
+		[ConfigurationProperty("siteUrl", IsRequired = true)]
+		public string SiteUrl
+		{
+			get { return (string)this["siteUrl"]; }
+			set { this["siteUrl"] = value; }
+		}
+
 		// New additions (after a release candidate) should be marked IsRequired=false
 	}
 }

@@ -61,6 +61,7 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Entity" />
@@ -77,13 +78,17 @@
   <ItemGroup>
     <Compile Include="Common\Dynamic.cs" />
     <Compile Include="Common\DateTimeExtensions.cs" />
+    <Compile Include="Controllers\RssActionResult.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
     <Compile Include="Controllers\ControllerHelper.cs" />
     <Compile Include="Controllers\SearchController.cs" />
+    <Compile Include="Domain\Managers\BugManager.cs" />
+    <Compile Include="Domain\Managers\TaskManager.cs" />
     <Compile Include="Domain\Managers\DashboardManager.cs" />
     <Compile Include="Domain\Summaries\ChangesetSummary.cs" />
     <Compile Include="Domain\Summaries\FilterTypeSummary.cs" />
     <Compile Include="Domain\Summaries\DashboardSummary.cs" />
+    <Compile Include="Domain\Summaries\Pager.cs" />
     <Compile Include="Domain\User\FilterType.cs" />
     <Compile Include="Domain\User\ProjectDetails.cs" />
     <Compile Include="Domain\User\UserSettings.cs" />
@@ -104,7 +109,6 @@
     <Compile Include="Controllers\BugsController.cs" />
     <Compile Include="Controllers\CsvController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\RssController.cs" />
     <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Domain\Exceptions\SaveException.cs" />

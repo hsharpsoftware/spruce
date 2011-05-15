@@ -46,6 +46,14 @@ namespace Spruce.Core
 				return "";
 		}
 
+		public static string FromBase64(this string value)
+		{
+			if (!string.IsNullOrWhiteSpace(value))
+				return Encoding.Default.GetString(Convert.FromBase64String(value));
+			else
+				return "";
+		}
+
 		public static string GetDescription(this Enum value)
 		{
 			Type type = value.GetType();

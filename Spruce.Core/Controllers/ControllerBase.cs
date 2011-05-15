@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.Mvc;
+using System.ServiceModel.Syndication;
 
 namespace Spruce.Core.Controllers
 {
@@ -101,6 +102,33 @@ namespace Spruce.Core.Controllers
 		{
 			SpruceContext.Current.UserSettings.TaskView = actionName;
 			SpruceContext.Current.UpdateUserSettings();
+		}
+
+		protected SyndicationFeed GetRssFeed(IEnumerable<WorkItemSummary> list,string controller)
+		{
+			SyndicationFeed feed = new SyndicationFeed();
+
+			string title = string.Format("Bugs ({0} - {1})", ViewData["CurrentProjectName"], ViewData["CurrentFilter"]);
+			feed.Title = new TextSyndicationContent(title);
+
+			List<SyndicationItem> items = new List<SyndicationItem>();
+			foreach (WorkItemSummary summary in list)
+			{
+				SyndicationItem item = new SyndicationItem();
+				item.Title = new TextSyndicationContent(string.Format("#{0} - {1}", summary.Id, summary.Title));
+				item.PublishDate = summary.CreatedDate;
+				item.Summary = new TextSyndicationContent(summary.Description);
+				item.Content = new TextSyndicationContent(summary.Description);
+				item.Authors.Add(new SyndicationPerson(summary.CreatedBy));
+
+				string url = string.Format("{0}/{1}/view/{2}",SpruceSection.Current.SiteUrl,controller,summary.Id);
+				item.AddPermalink(new Uri(url));
+
+				items.Add(item);
+			}
+
+			feed.Items = items;
+			return feed;
 		}
 	}
 }

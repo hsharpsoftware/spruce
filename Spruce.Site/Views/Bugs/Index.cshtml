@@ -4,6 +4,12 @@
 @Html.ActionLink("View as heat map","Heatmap")
 <br /><br />
 
+<!-- Excel export -->
+<div class="right">
+	<a href="@Url.Action("Excel")" title="Export to current list an Excel 2007 spreadsheet"><img src="@Url.Content("~/Assets/Images/excel_icon.png")" border="0" alt="Export to excel" /></a>
+	<a href="@Url.Action("Rss")" title="View the current list as an RSS feed"><img src="@Url.Content("~/Assets/Images/rss_icon.png")" border="0" alt="RSS" /></a>
+</div>
+
 <table id="list-table">
 	<thead>
 		<tr id="list-table-header">
@@ -24,6 +30,9 @@
 			</th>
 			<th style="width:12%">
 				<div>@Html.ActionLink("Priority", "Index", new { sortBy = "Priority", desc = !(bool)ViewData["desc"] })</div>
+			</th>
+			<th style="width:12%">
+				<div>@Html.ActionLink("Severity", "Index", new { sortBy = "Severity", desc = !(bool)ViewData["desc"] })</div>
 			</th>
 			<th style="width:10%">
 				<div class="list-table-noborder"></div>
@@ -52,9 +61,12 @@
 			<td>
 				<div>@item.Priority</div>
 			</td>
+			<td>
+				<div>@item.Severity</div>
+			</td>
 			<td style="width:10%">
 				<div class="list-table-noborder">
-					@Html.ActionLink("Edit", "Edit", new { id = item.Id })
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id, fromUrl=Request.Url.PathAndQuery })
 				</div>
 			</td>
 		</tr>

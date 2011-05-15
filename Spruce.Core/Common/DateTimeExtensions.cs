@@ -29,12 +29,18 @@ namespace Spruce.Core
 		/// <remarks>the beginning of the week is controlled by the current Culture</remarks>
 		public static DateTime StartOfWeek(this DateTime dateTime)
 		{
-			//Thanks to: http://stackoverflow.com/questions/38039/how-can-i-get-the-datetime-for-the-start-of-the-week
+			//Thanks to: http://stackoverflow.com/questions/38039/how-can-i-get-the-datetime-for-the-start-of-the-week/38064#38064
 			System.Globalization.CultureInfo ci = System.Threading.Thread.CurrentThread.CurrentCulture;
-			DayOfWeek firstDay = ci.DateTimeFormat.FirstDayOfWeek;
+			DayOfWeek startOfWeek = ci.DateTimeFormat.FirstDayOfWeek;
 			DayOfWeek today = DateTime.Now.DayOfWeek;
 
-			return DateTime.Now.AddDays(-(today - firstDay)).Date;
+			int diff = today - startOfWeek;
+			if (diff < 0)
+			{
+				diff += 7;
+			}
+
+			return dateTime.AddDays(-1 * diff).Date;
 		}
 
 		/// <summary>

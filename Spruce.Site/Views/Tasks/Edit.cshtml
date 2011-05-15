@@ -6,24 +6,23 @@
 	});
 </script>
 
-@if (ViewData["Error"] != null)
-{
-	<div class="errorbox">
-		<h1>There was a problem saving the task</h1>
-		<p>
-			<b>The error TFS returned was:</b><br />
-			@ViewData["Error"]
-		</p>
-	</div>
-}
-	
-@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "editform" }))
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "editform", enctype = "multipart/form-data" }))
 {
 	@(Html.HiddenFor<WorkItemSummary,int>(m => m.Id))
 
 	<h3>@ViewData["PageName"]</h3>
 	
 	<div id="edit-container">
+		@if (TempData["Error"] != null)
+		{
+			<div class="errorbox">
+				<h4>There was a problem saving the bug</h4>
+				<b>The error TFS returned was:</b><br />
+				@TempData["Error"]
+			</div>
+		}
+
 		<div id="edit-title">
 			@(Html.TextBoxFor<WorkItemSummary, string>(i => i.Title, 
 														new { tabindex = 1, 
@@ -86,9 +85,58 @@
 														placeholder = "Enter a brief description. See your project template for guidance" }))
 		</div>
 
+		<div class="edit-attachmentsbar">
+			<a href="javascript:;" id="attachments-link"><img style="margin-right:5px;margin-bottom:2px;" src="@Url.Content("~/Assets/Images/black-arrow-down.png")" border="0" alt="toggle" />Attachments</a>
+		</div>
+		<div id="edit-attachments" class="hidden">
+			<div>
+		@if (Model.Attachments != null)
+		{
+				<b>Current attachments</b>
+			if (Model.Attachments.Count > 0)
+			{
+				<ul>
+				@foreach(Attachment attachment in Model.Attachments)
+				{
+					<li>
+						<a href="@attachment.Uri.ToString()" target="_blank">@attachment.Name</a>&nbsp;&nbsp;&nbsp;
+						@Html.ActionLink("delete","DeleteAttachment",new { id = Model.Id,Url = attachment.Uri.ToString().ToBase64() })
+					</li>
+				}
+				</ul>
+			}
+			else
+			{
+					<br /><i>No attachments.</i>
+			}
+		}
+			</div><br />
+
+			<div>
+				<b>Upload</b><br />
+				<div class="left">
+					<input type="file" name="uploadFile1" id="uploadFile1" tabindex="9" />
+					Comments: <input type="text" name="uploadFile1Comments" id="uploadFile1Comments" tabindex="10" />
+				</div>
+				<br class="clear"/>
+				
+				<div class="left">
+					<input type="file" name="uploadFile2" id="uploadFile2" tabindex="11" />
+					Comments: <input type="text" name="uploadFile2Comments" id="uploadFile2Comments" tabindex="12" />
+				</div>
+				<br class="clear"/>
+
+				<div class="left">
+					<input type="file" name="uploadFile3" id="uploadFile3" tabindex="13" />
+					Comments: <input type="text" name="uploadFile3Comments" id="uploadFile3Comments" tabindex="14" />
+				</div>
+			</div>
+			<br class="clear" />
+		</div>
+
 		<div id="edit-buttons">
 			<input type="submit" value="Save" tabindex="10" />
-			<input type="button" value="Cancel" onclick="history.go(-1);" tabindex="11"  />
+			<input type="button" value="Cancel" onclick="history.go(-1);" tabindex="15"  />
 		</div>
 	</div>
 }
