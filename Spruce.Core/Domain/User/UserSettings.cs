@@ -26,6 +26,8 @@ namespace Spruce.Core
 		public string TaskView { get; set; }
 		public FilterType FilterType { get; set; }
 
+		public int PageSize { get; set; }
+
 		static UserSettings()
 		{
 			_cacheFolder = string.Format(@"{0}\App_Data\usersettings\", AppDomain.CurrentDomain.BaseDirectory);

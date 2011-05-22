@@ -76,7 +76,19 @@ namespace Spruce.Core.Controllers
 			// Page the list
 			//
 			int currentPage = page.HasValue ? page.Value : 1;
-			int pageSizeVal = pageSize.HasValue ? pageSize.Value : 10;
+
+			int pageSizeVal = SpruceContext.Current.UserSettings.PageSize;
+			if (pageSizeVal == 0 || pageSize != pageSizeVal)
+			{
+				if (pageSize.HasValue)
+					pageSizeVal = pageSize.Value;
+
+				if (pageSizeVal < 10)
+					pageSizeVal = 100;
+
+				SpruceContext.Current.UserSettings.PageSize = pageSizeVal;
+				SpruceContext.Current.UpdateUserSettings();
+			}
 
 			Pager pager = new Pager(isHeatMap, sortBy, descending == true, pageSizeVal);
 			list = pager.Page<WorkItemSummary>(list, currentPage);
@@ -332,9 +344,13 @@ namespace Spruce.Core.Controllers
 			}
 		}
 
-		public ActionResult Rss()
+		public ActionResult Rss(string projectName, string areaPath,string iterationPath,string filter)
 		{
-			IEnumerable<WorkItemSummary> list = GetList("", true, "CreatedDate", true, 1, 10000);
+			SetHighlightedFilter(filter.FromBase64());
+			SetHighlightedArea(areaPath.FromBase64());
+			SetHighlightedIteration(iterationPath.FromBase64());
+
+			IEnumerable<WorkItemSummary> list = GetList(projectName, true, "CreatedDate", true, 1, 10000);
 
 			RssActionResult result = new RssActionResult();
 			result.Feed = GetRssFeed(list,"Bugs");

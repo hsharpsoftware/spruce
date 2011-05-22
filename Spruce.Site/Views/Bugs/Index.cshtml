@@ -7,7 +7,12 @@
 <!-- Excel export -->
 <div class="right">
 	<a href="@Url.Action("Excel")" title="Export to current list an Excel 2007 spreadsheet"><img src="@Url.Content("~/Assets/Images/excel_icon.png")" border="0" alt="Export to excel" /></a>
-	<a href="@Url.Action("Rss")" title="View the current list as an RSS feed"><img src="@Url.Content("~/Assets/Images/rss_icon.png")" border="0" alt="RSS" /></a>
+	<a href="@Url.Action("Rss", new { projectName = ViewData["CurrentProjectName"], 
+		 areaPath = ViewData["CurrentAreaPath"].ToString().ToBase64(), 
+		 iteration = ViewData["CurrentIterationPath"].ToString().ToBase64(),
+		 filter = ViewData["CurrentFilter"].ToString().ToBase64()})" title="View the current list as an RSS feed">
+		 <img src="@Url.Content("~/Assets/Images/rss_icon.png")" border="0" alt="RSS" />
+	</a>
 </div>
 
 <table id="list-table">
