@@ -24,7 +24,7 @@ namespace Spruce.Core
 		/// This should map to an action name in TaskController
 		/// </summary>
 		public string TaskView { get; set; }
-		public FilterType FilterType { get; set; }
+		public FilterOptions FilterOptions { get; set; }
 
 		public int PageSize { get; set; }
 
@@ -43,6 +43,11 @@ namespace Spruce.Core
 			{
 				// TODO: Warn
 			}
+		}
+
+		public UserSettings()
+		{
+			FilterOptions = new FilterOptions();
 		}
 
 		/// <summary>
@@ -93,7 +98,7 @@ namespace Spruce.Core
 
 			try
 			{
-				using (FileStream stream = new FileStream(filename, FileMode.OpenOrCreate, FileAccess.Write))
+				using (FileStream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
 					serializer.Serialize(stream,settings);

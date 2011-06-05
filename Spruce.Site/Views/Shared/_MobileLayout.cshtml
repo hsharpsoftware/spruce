@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Project @ViewData["CurrentProjectName"]</title>
+	<title>Project @UserContext.Current.CurrentProject.Name</title>
 	<link href="@Url.Content("~/Assets/CSS/spruce.mobile.css")" rel="stylesheet" type="text/css" />
 	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery-1.4.1.min.js")"></script>
 	<script type="text/javascript">
@@ -30,7 +30,7 @@
 
 <body>
 
-<span class="smaller">Logged in as @ViewData["CurrentUser"]</span>
+<span class="smaller">Logged in as @UserContext.Current.Name</span>
 
 <div id="navigation-container">
 	<div id="navigation-header" class="header"><a href="javascript:;">&#187; Navigation</a></div>
@@ -53,9 +53,9 @@
 		<div class="block">
 			<div id="projects-header" class="header"><a href="javascript:;">Projects</a></div>
 			<div id="projects" class="hidden">
-			@foreach (string projectName in (List<string>)ViewData["Projects"])
+			@foreach (string projectName in UserContext.Current.ProjectNames)
 			{
-				if (projectName != (string)ViewData["CurrentProjectName"])
+				if (projectName != UserContext.Current.CurrentProject.Name)
 				{
 					@Html.ActionLink(projectName, "SetProject", "Home", new { id = projectName.ToBase64(), fromUrl = Request.Url }, null) <br />
 				}
@@ -70,9 +70,9 @@
 		<div class="block">
 			<div id="iterations-header" class="header"><a href="javascript:;">Iterations</a></div>
 			<div id="iterations" class="hidden">
-			@foreach (IterationSummary summary in (List<IterationSummary>)ViewData["Iterations"])
+			@foreach (IterationSummary summary in UserContext.Current.CurrentProject.Iterations)
 			{
-				if (summary.Path != (string)ViewData["CurrentIterationPath"])
+				if (summary.Path != UserContext.Current.Settings.IterationPath)
 				{
 					@Html.ActionLink(summary.Name, "SetIteration", "Home", new { id = summary.Path.ToBase64(), fromUrl = Request.Url }, null)<br />
 				}
@@ -87,9 +87,9 @@
 		<div class="block" id="areascontainer">
 			<div id="areas-header" class="header"><a href="javascript:;">Areas</a></div>
 			<div id="areas" class="hidden">
-			@foreach (AreaSummary area in (List<AreaSummary>)ViewData["Areas"])
+			@foreach (AreaSummary area in UserContext.Current.CurrentProject.Areas)
 			{
-				if (area.Path != (string)ViewData["CurrentAreaPath"])
+				if (area.Path != UserContext.Current.Settings.AreaPath)
 				{
 					@Html.ActionLink(area.Name, "SetArea", "Home", new { id = area.Path.ToBase64(), fromUrl = Request.Url })<br />
 				}

@@ -2,13 +2,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Project @ViewData["CurrentProjectName"]</title>
+	<title>Project @UserContext.Current.CurrentProject.Name</title>
 	<link rel="shortcut icon" href="@Url.Content("~/Assets/Images/favicon.png")" />
 
-	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery-1.4.1.min.js")"></script>
+	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery-1.5.1.min.js")"></script>
+	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery-ui-1.8.13.custom.min.js")"></script>
 	<script type="text/javascript" language="javascript" src="@Url.Action("GlobalJsVars","Home")"></script>
 	<script type="text/javascript" src="@Url.Content("~/Assets/Scripts/spruce.js")"></script>
 
+	<link href="@Url.Content("~/Assets/CSS/custom-theme/jquery-ui-1.8.13.custom.css")" rel="stylesheet" type="text/css" media="Screen" />
 	<link href="@Url.Content("~/Assets/CSS/spruce.css")" rel="stylesheet" type="text/css" media="Screen" />
 	<link href="@Url.Content("~/Assets/CSS/spruce.mobile.css")" rel="stylesheet" type="text/css" media="handheld" />
 	<link href="@Url.Content("~/Assets/CSS/spruce.print.css")" rel="stylesheet" type="text/css" media="print" />
@@ -18,28 +20,24 @@
 @using (Html.BeginForm("Index","Search", FormMethod.Get))
 {
 	<div id="header">		
-		<div class="left">
-			<a href="javascript:;" id="togglemenu"><img src="@Url.Content("~/Assets/Images/arrow-down.png")" border="0" alt="toggle" /></a>
-			@Html.ActionLink("Dashboard","Index","Home")
-			&nbsp;|&nbsp;@Html.ActionLink("Bugs", ViewData["CurrentBugView"].ToString(), "Bugs")
-			&nbsp;|&nbsp;@Html.ActionLink("Tasks", ViewData["CurrentTaskView"].ToString(), "Tasks")
+		<div class="left" style="padding-left:15px">
+			@Html.ActionLink("Home","Index","Home")
+			&nbsp;|&nbsp;@Html.ActionLink("Projects", "Projects","Home")
+			&nbsp;|&nbsp;@Html.ActionLink("Stored queries", "StoredQueries","Home")
+			&nbsp;|&nbsp;@Html.ActionLink("Bugs", UserContext.Current.Settings.BugView, "Bugs")
+			&nbsp;|&nbsp;@Html.ActionLink("Tasks", UserContext.Current.Settings.TaskView, "Tasks")
 			&nbsp;|&nbsp;@Html.ActionLink("New task","New","Tasks")
 			&nbsp;|&nbsp;@Html.ActionLink("New bug","New","Bugs")
 		</div>
 		
 		<div class="right">
-			Logged in as @ViewData["CurrentUser"]
+			Logged in as @UserContext.Current.Name
 			&nbsp;|&nbsp;Search: @Html.TextBox("q", null, new { placeholder = "Enter text to search" })
 		</div>
 	</div>
 }
 
-	@Html.Partial("PopoutBlock")
-
 	<div id="main-container">
-			<div id="project-name">Project @ViewData["CurrentProjectName"]</div>
-			<div id="areaiteration-name">@Html.FormatAreaAndIterationName(ViewData["CurrentIterationName"], ViewData["CurrentAreaName"])</div>
-
 			@RenderBody()
 	</div>
 </body>

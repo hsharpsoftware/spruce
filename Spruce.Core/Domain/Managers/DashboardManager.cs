@@ -11,21 +11,27 @@ namespace Spruce.Core
 	{
 		public static DashboardSummary GetSummary()
 		{
-			IList<WorkItemSummary> allbugs = BugManager.AllBugs();
-			IList<WorkItemSummary> allTasks = TaskManager.AllTasks();
+			BugManager bugManager = new BugManager();
+			TaskManager taskManager = new TaskManager();
+
+			IList<WorkItemSummary> allbugs = bugManager.ExecuteQuery();
+			IList<WorkItemSummary> allTasks = taskManager.ExecuteQuery();
 
 			DashboardSummary summary = new DashboardSummary();
 			summary.RecentCheckins = RecentCheckins();
-			summary.ActiveBugs = BugManager.AllActiveBugs().Count;
-			summary.ActiveTasks = allTasks.Count;
-			summary.BugCount = allbugs.Count;
-			summary.TaskCount = allTasks.Count;
-			summary.MyActiveBugCount = allbugs.Where(b => b.State == "Active").ToList().Count;
 
-			summary.MyActiveBugs = allbugs.Where(b => b.State == "Active" && b.CreatedBy == SpruceContext.Current.CurrentUser)
+			bugManager.Active();
+			
+			summary.ActiveBugs = bugManager.ExecuteQuery().Count;
+			summary.BugCount = allbugs.Count;
+			summary.MyActiveBugCount = allbugs.Where(b => b.State == "Active").ToList().Count;
+			summary.MyActiveBugs = allbugs.Where(b => b.State == "Active" && b.CreatedBy == UserContext.Current.Name)
 				.OrderByDescending(b => b.CreatedDate).Take(5).ToList();
 
-			summary.MyActiveTasks = allTasks.Where(b => b.State == "Active" && b.CreatedBy == SpruceContext.Current.CurrentUser)
+			taskManager.Active();
+			summary.ActiveTasks = allTasks.Count;
+			summary.TaskCount = allTasks.Count;
+			summary.MyActiveTasks = allTasks.Where(b => b.State == "Active" && b.CreatedBy == UserContext.Current.Name)
 				.OrderByDescending(b => b.CreatedDate).Take(5).ToList();
 
 			return summary;
@@ -33,8 +39,8 @@ namespace Spruce.Core
 
 		public static List<ChangesetSummary> RecentCheckins()
 		{
-			string path = SpruceContext.Current.CurrentProject.Path;
-			var checkins = SpruceContext.Current.VersionControlServer.QueryHistory(
+			string path = UserContext.Current.CurrentProject.Path;
+			var checkins = UserContext.Current.VersionControlServer.QueryHistory(
 							path,
 							VersionSpec.Latest,
 							0,

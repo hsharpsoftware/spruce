@@ -1,19 +1,5 @@
 $(document).ready(function ()
 {
-	$("#togglemenu").click(function ()
-	{
-		if($("#popoutmenu").is(":visible"))
-		{
-			$("#togglemenu img").attr("src", SPRUCE_IMAGEPATH + "/arrow-down.png");
-			$("#popoutmenu").slideUp();
-		}
-		else
-		{
-			$("#togglemenu img").attr("src", SPRUCE_IMAGEPATH + "/arrow-up.png");
-			$("#popoutmenu").slideDown();
-		}
-	});
-
 	$("#item-actionmenulink").click(function ()
 	{
 		if($("#item-menu").is(":visible"))
@@ -42,6 +28,21 @@ $(document).ready(function ()
 		}
 	});
 
+	// Right side areas,iterations,filters - turn into buttons using jQuery UI.
+	//$("#areas").buttonset();
+	//$("#iterations").buttonset();
+	$("#areas input").each(function ()
+	{
+		$(this).button();
+	});
+	$("#iterations input").each(function ()
+	{
+		$(this).button();
+	});
+	$("#filters input").each(function ()
+	{
+		$(this).button();
+	});
 });
 
 //

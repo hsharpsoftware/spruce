@@ -13,26 +13,52 @@ namespace Spruce.Core.Controllers
 		public ActionResult Index(string id)
 		{
 			if (!string.IsNullOrEmpty(id))
-				SetHighlightedProject(id);
+				SetProject(id);
 
 			// Dashboard
 			return View("Index", DashboardManager.GetSummary());
 		}
 
-		public ActionResult SetProject(string id, string fromUrl)
+		public ActionResult StoredQueries()
 		{
-			TempData["RedirectedFromHomeController"] = true;
-			id = Encoding.Default.GetString(Convert.FromBase64String(id));
-			SetHighlightedProject(id);
+			ViewData["pageCount"] = 0;
+			ViewData["currentPage"] = 1;
+			ViewData["pageSize"] = 1;
+			ViewData["desc"] = true;
+			ViewData["CurrentQuery"] = Guid.Empty;
+			return View(new List<WorkItemSummary>());
+		}
 
-			return Redirect(fromUrl);
+		public ActionResult StoredQuery(Guid id, string sortBy, bool? desc,int? page,int? pageSize)
+		{
+			IEnumerable<WorkItemSummary> list = WorkItemManager.StoredQuery(id);
+			list = PageList(list, false, sortBy, desc, page, pageSize);
+			ViewData["CurrentQuery"] = id;
+			
+			return View("StoredQueries",list);
+		}
+
+		public ActionResult Projects()
+		{
+			return View(UserContext.Current.ProjectNames);
+		}
+
+		public ActionResult SetCurrentProject(string id)
+		{
+			if (!string.IsNullOrEmpty(id))
+			{
+				id = id.FromBase64();
+				SetProject(id);
+			}
+
+			return View("Projects", UserContext.Current.ProjectNames);
 		}
 
 		public ActionResult SetIteration(string id,string fromUrl)
 		{
 			TempData["RedirectedFromHomeController"] = true;
 			id = Encoding.Default.GetString(Convert.FromBase64String(id));
-			SetHighlightedIteration(id);
+			SetIteration(id);
 
 			return Redirect(fromUrl);
 		}
@@ -41,7 +67,7 @@ namespace Spruce.Core.Controllers
 		{
 			TempData["RedirectedFromHomeController"] = true;
 			id = Encoding.Default.GetString(Convert.FromBase64String(id));
-			SetHighlightedArea(id);
+			SetArea(id);
 
 			return Redirect(fromUrl);
 		}
@@ -49,7 +75,6 @@ namespace Spruce.Core.Controllers
 		public ActionResult SetFilter(string id, string fromUrl)
 		{
 			TempData["RedirectedFromHomeController"] = true;
-			SetHighlightedFilter(id);
 
 			return Redirect(fromUrl);
 		}

@@ -80,6 +80,22 @@ namespace Spruce.Core
 			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
+		public static MvcHtmlString DropDownBoxForStoredQueries(this HtmlHelper helper, string name, IList<StoredQuerySummary> items, Guid selectedValue, int tabIndex)
+		{
+			List<SelectListItem> selectList = new List<SelectListItem>();
+
+			foreach (StoredQuerySummary item in items)
+			{
+				SelectListItem selectListItem = new SelectListItem() { Text = item.Name, Value = item.Id.ToString() };
+				if (item.Id == selectedValue)
+					selectListItem.Selected = true;
+
+				selectList.Add(selectListItem);
+			}
+
+			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
+		}
+
 		/// <summary>
 		/// Limits the length of string by the provided maximum length, returning the string with "..." if it's longer.
 		/// </summary>

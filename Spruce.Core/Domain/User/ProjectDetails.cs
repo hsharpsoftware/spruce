@@ -29,6 +29,7 @@ namespace Spruce.Core
 		public List<string> Users { get; private set; }
 		public IList<AreaSummary> Areas { get; internal set; }
 		public IList<IterationSummary> Iterations { get; private set; }
+		public IList<StoredQuerySummary> StoredQueries { get; private set; }
 
 		public WorkItemType WorkItemTypeForBug { get; private set; }
 		public WorkItemType WorkItemTypeForTask { get; private set; }
@@ -38,7 +39,6 @@ namespace Spruce.Core
 			_project = project;
 			Id = project.Id;
 			Name = project.Name;
-			string p = project.QueryHierarchy.Path;
 			Path = "$/" + Name; // TODO: check this is correct.
 			TemplateName = "";
 
@@ -52,6 +52,7 @@ namespace Spruce.Core
 			Users = new List<string>();
 			Areas = new List<AreaSummary>();
 			Iterations = new List<IterationSummary>();
+			StoredQueries = new List<StoredQuerySummary>();
 
 			AddWorkItemTypes();
 			AddWorkItemTypesAsStrings();
@@ -67,6 +68,7 @@ namespace Spruce.Core
 
 			AddAreas();
 			AddIterations();
+			AddStoredQueries();
 		}
 
 		private void AddAreas()
@@ -160,6 +162,14 @@ namespace Spruce.Core
 			}
 
 			return list;
+		}
+
+		private void AddStoredQueries()
+		{
+			foreach (StoredQuery item in _project.StoredQueries)
+			{
+				StoredQueries.Add(new StoredQuerySummary() { Id = item.QueryGuid, Name = item.Name });
+			}
 		}
 	}
 }

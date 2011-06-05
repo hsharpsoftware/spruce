@@ -15,7 +15,7 @@ namespace Spruce.Core.Controllers
 		public ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize)
 		{
 			SetTaskView("Index");
-			IEnumerable<WorkItemSummary> list = GetList(id, true, sortBy, desc, page, pageSize);
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, true, sortBy, desc, page, pageSize, new TaskManager());
 
 			return View(list);
 		}
@@ -23,78 +23,9 @@ namespace Spruce.Core.Controllers
 		public ActionResult List(string id, string sortBy, bool? desc, int? page, int? pageSize)
 		{
 			SetTaskView("List");
-			IEnumerable<WorkItemSummary> list = GetList(id, true, sortBy, desc, page, pageSize);
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, true, sortBy, desc, page, pageSize, new TaskManager());
 
 			return View(list);
-		}
-
-		private IEnumerable<WorkItemSummary> GetList(string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize)
-		{
-			if (!string.IsNullOrEmpty(projectName))
-				SetHighlightedProject(projectName);
-
-			IEnumerable<WorkItemSummary> list;
-
-			switch (SpruceContext.Current.UserSettings.FilterType)
-			{
-				case FilterType.Active:
-					list = TaskManager.AllActiveTasks();
-					break;
-
-				case FilterType.Resolved:
-				case FilterType.Closed:
-					list = TaskManager.AllClosedTasks();
-					break;
-
-				case FilterType.AssignedToMe:
-					list = TaskManager.TasksAssignedToMe();
-					break;
-
-				case FilterType.Today:
-					list = TaskManager.Today();
-					break;
-
-				case FilterType.Yesterday:
-					list = TaskManager.Yesterday();
-					break;
-
-				case FilterType.ThisWeek:
-					list = TaskManager.ThisWeek();
-					break;
-
-				case FilterType.All:
-				default:
-					list = TaskManager.AllTasks();
-					break;
-			}
-
-			//
-			// Page the list
-			//
-			int currentPage = page.HasValue ? page.Value : 1;
-
-			int pageSizeVal = SpruceContext.Current.UserSettings.PageSize;
-			if (pageSizeVal == 0 || pageSize != pageSizeVal)
-			{
-				if (pageSize.HasValue)
-					pageSizeVal = pageSize.Value;
-
-				if (pageSizeVal < 10)
-					pageSizeVal = 100;
-
-				SpruceContext.Current.UserSettings.PageSize = pageSizeVal;
-				SpruceContext.Current.UpdateUserSettings();
-			}
-
-			Pager pager = new Pager(isHeatMap, sortBy, descending == true, pageSizeVal);
-			list = pager.Page<WorkItemSummary>(list, currentPage);
-
-			ViewData["pageCount"] = pager.PageCount;
-			ViewData["currentPage"] = currentPage;
-			ViewData["pageSize"] = pageSizeVal;
-			ViewData["desc"] = (descending == true);
-
-			return list;
 		}
 
 		public ActionResult View(int id)
@@ -104,9 +35,9 @@ namespace Spruce.Core.Controllers
 			if (TempData["RedirectedFromHomeController"] == null)
 			{
 				// Only set these if the user hasn't previously just clicked the right side area/iteration/project
-				SetHighlightedProject(item.ProjectName);
-				SetHighlightedArea(item.AreaPath);
-				SetHighlightedIteration(item.IterationPath);
+				SetProject(item.ProjectName);
+				SetArea(item.AreaPath);
+				SetIteration(item.IterationPath);
 			}
 
 			return View(item);
@@ -124,9 +55,7 @@ namespace Spruce.Core.Controllers
 			ViewData["States"] = item.ValidStates;
 			ViewData["Priorities"] = item.ValidPriorities;
 			ViewData["Severities"] = item.ValidSeverities;
-			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
-			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
-			ViewData["Users"] = SpruceContext.Current.Users;
+			ViewData["Users"] = UserContext.Current.Users;
 
 			return View("Edit", item);
 		}
@@ -137,7 +66,7 @@ namespace Spruce.Core.Controllers
 		{
 			try
 			{
-				item.CreatedBy = SpruceContext.Current.CurrentUser;
+				item.CreatedBy = UserContext.Current.Name;
 				item.IsNew = true;
 				WorkItemManager.SaveTask(item);
 
@@ -175,9 +104,9 @@ namespace Spruce.Core.Controllers
 				}
 
 				// Set the project/iteration/area to the previously edited item
-				SetHighlightedProject(item.ProjectName);
-				SetHighlightedArea(item.AreaPath);
-				SetHighlightedIteration(item.IterationPath);
+				SetProject(item.ProjectName);
+				SetArea(item.AreaPath);
+				SetIteration(item.IterationPath);
 
 				return RedirectToAction("Index");
 			}
@@ -203,9 +132,7 @@ namespace Spruce.Core.Controllers
 			ViewData["PageName"] = "Task " + id;
 			ViewData["States"] = item.ValidStates;
 			ViewData["Priorities"] = item.ValidPriorities;
-			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
-			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
-			ViewData["Users"] = SpruceContext.Current.Users;
+			ViewData["Users"] = UserContext.Current.Users;
 			ViewData["Error"] = TempData["Error"];
 
 			return View(item);
@@ -253,9 +180,9 @@ namespace Spruce.Core.Controllers
 				}
 
 				// Set the project/iteration/area to the previously edited item
-				SetHighlightedProject(item.ProjectName);
-				SetHighlightedArea(item.AreaPath);
-				SetHighlightedIteration(item.IterationPath);
+				SetProject(item.ProjectName);
+				SetArea(item.AreaPath);
+				SetIteration(item.IterationPath);
 
 				return RedirectToAction("View", new { id = item.Id });
 			}
@@ -289,7 +216,7 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult Excel()
 		{
-			IEnumerable<WorkItemSummary> list = GetList("", true, "CreatedDate", true, 1, 10000);
+			IEnumerable<WorkItemSummary> list = FilterAndPageList("", true, "CreatedDate", true, 1, 10000,new TaskManager());
 
 			StringBuilder builder = new StringBuilder();
 			using (StringWriter writer = new StringWriter(builder))
@@ -310,11 +237,10 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult Rss(string projectName, string areaPath, string iterationPath, string filter)
 		{
-			SetHighlightedFilter(filter.FromBase64());
-			SetHighlightedArea(areaPath.FromBase64());
-			SetHighlightedIteration(iterationPath.FromBase64());
+			SetArea(areaPath.FromBase64());
+			SetIteration(iterationPath.FromBase64());
 
-			IEnumerable<WorkItemSummary> list = GetList(projectName, true, "CreatedDate", true, 1, 10000);
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(projectName, true, "CreatedDate", true, 1, 10000,new TaskManager());
 
 			RssActionResult result = new RssActionResult();
 			result.Feed = GetRssFeed(list, "Tasks");

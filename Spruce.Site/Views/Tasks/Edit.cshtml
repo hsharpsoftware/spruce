@@ -44,12 +44,12 @@
 
 			<div class="left edit-field">
 				<div class="left label">Area:</div>
-				<div class="left value">@Html.DropDownBoxForAreas("AreaPath", (List<AreaSummary>)ViewData["Areas"], Model.AreaPath,4)</div>
+				<div class="left value">@Html.DropDownBoxForAreas("AreaPath", UserContext.Current.CurrentProject.Areas, Model.AreaPath, 4)</div>
 			</div>
 
 			<div class="left edit-field">
 				<div class="left label">Iteration:</div>
-				<div class="left value">@Html.DropDownBoxForIterations("IterationPath", (List<IterationSummary>)ViewData["Iterations"], Model.IterationPath,5)</div>
+				<div class="left value">@Html.DropDownBoxForIterations("IterationPath", UserContext.Current.CurrentProject.Iterations, Model.IterationPath, 5)</div>
 			</div>
 
 			@if (Model.Priority != null)

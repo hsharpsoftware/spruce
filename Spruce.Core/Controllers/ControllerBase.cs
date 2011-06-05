@@ -11,76 +11,39 @@ namespace Spruce.Core.Controllers
 	{
 		protected override void OnActionExecuting(ActionExecutingContext filterContext)
 		{
-			ViewData["CurrentUser"] = SpruceContext.Current.CurrentUser;
-			ViewData["CurrentProjectName"] = SpruceContext.Current.CurrentProject.Name;
-
-			ViewData["CurrentIterationName"] = SpruceContext.Current.UserSettings.IterationName;
-			ViewData["CurrentIterationPath"] = SpruceContext.Current.UserSettings.IterationPath;
-			ViewData["CurrentAreaName"] = SpruceContext.Current.UserSettings.AreaName;
-			ViewData["CurrentAreaPath"] = SpruceContext.Current.UserSettings.AreaPath;
-			ViewData["CurrentFilter"] = SpruceContext.Current.UserSettings.FilterType.GetDescription();
-			ViewData["CurrentBugView"] = SpruceContext.Current.UserSettings.BugView;
-			ViewData["CurrentTaskView"] = SpruceContext.Current.UserSettings.TaskView;
-
-			ViewData["Projects"] = SpruceContext.Current.ProjectNames;
-			ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
-			ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
-			ViewData["Filters"] = SpruceContext.Current.FilterTypes;	
 		}
 
-		protected void SetHighlightedProject(string project)
+		protected void SetProject(string project)
 		{
 			if (!string.IsNullOrEmpty(project))
 			{
-				if (project != SpruceContext.Current.CurrentProject.Name)
+				if (project != UserContext.Current.CurrentProject.Name)
 				{
-					SpruceContext.Current.SetCurrentProject(project);
-					ViewData["CurrentProjectName"] = project;
+					UserContext.Current.ChangeCurrentProject(project);
+					UserContext.Current.UpdateSettings();
 				}
 			}	
 		}
 
-		protected void SetHighlightedArea(string areaPath)
+		protected void SetArea(string areaPath)
 		{		
 			if (!string.IsNullOrEmpty(areaPath))
 			{
-				AreaSummary summary = SpruceContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == areaPath);
-				SpruceContext.Current.UserSettings.AreaName = summary.Name;
-				SpruceContext.Current.UserSettings.AreaPath = summary.Path;
-
-				ViewData["CurrentAreaName"] = summary.Name;
-				ViewData["CurrentAreaPath"] = summary.Path;
-				ViewData["Areas"] = SpruceContext.Current.CurrentProject.Areas;
-				SpruceContext.Current.UpdateUserSettings();
+				AreaSummary summary = UserContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == areaPath);
+				UserContext.Current.Settings.AreaName = summary.Name;
+				UserContext.Current.Settings.AreaPath = summary.Path;
+				UserContext.Current.UpdateSettings();
 			}
 		}
 
-		protected void SetHighlightedIteration(string iterationPath)
+		protected void SetIteration(string iterationPath)
 		{
 			if (!string.IsNullOrEmpty(iterationPath))
 			{
-				IterationSummary summary = SpruceContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iterationPath);
-				SpruceContext.Current.UserSettings.IterationName = summary.Name;
-				SpruceContext.Current.UserSettings.IterationPath = summary.Path;
-
-				ViewData["CurrentIterationName"] = summary.Name;
-				ViewData["CurrentIterationPath"] = summary.Path;
-				ViewData["Iterations"] = SpruceContext.Current.CurrentProject.Iterations;
-				SpruceContext.Current.UpdateUserSettings();
-			}
-		}
-
-		protected void SetHighlightedFilter(string filter)
-		{
-			if (!string.IsNullOrEmpty(filter))
-			{
-				FilterType filterType;
-				if (Enum.TryParse<FilterType>(filter, out filterType))
-				{
-					SpruceContext.Current.UserSettings.FilterType = filterType;	
-					ViewData["CurrentFilter"] = filterType.ToString();
-					SpruceContext.Current.UpdateUserSettings();
-				}
+				IterationSummary summary = UserContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iterationPath);
+				UserContext.Current.Settings.IterationName = summary.Name;
+				UserContext.Current.Settings.IterationPath = summary.Path;
+				UserContext.Current.UpdateSettings();
 			}
 		}
 
@@ -90,8 +53,8 @@ namespace Spruce.Core.Controllers
 		/// <param name="actionName"></param>
 		protected void SetBugView(string actionName)
 		{
-			SpruceContext.Current.UserSettings.BugView = actionName;
-			SpruceContext.Current.UpdateUserSettings();
+			UserContext.Current.Settings.BugView = actionName;
+			UserContext.Current.UpdateSettings();
 		}
 
 		/// <summary>
@@ -100,15 +63,15 @@ namespace Spruce.Core.Controllers
 		/// <param name="actionName"></param>
 		protected void SetTaskView(string actionName)
 		{
-			SpruceContext.Current.UserSettings.TaskView = actionName;
-			SpruceContext.Current.UpdateUserSettings();
+			UserContext.Current.Settings.TaskView = actionName;
+			UserContext.Current.UpdateSettings();
 		}
 
 		protected SyndicationFeed GetRssFeed(IEnumerable<WorkItemSummary> list,string controller)
 		{
 			SyndicationFeed feed = new SyndicationFeed();
 
-			string title = string.Format("Bugs ({0} - {1})", ViewData["CurrentProjectName"], ViewData["CurrentFilter"]);
+			string title = string.Format("Bugs ({0} - {1})", UserContext.Current.CurrentProject.Name, ViewData["CurrentFilter"]);
 			feed.Title = new TextSyndicationContent(title);
 
 			List<SyndicationItem> items = new List<SyndicationItem>();
@@ -129,6 +92,82 @@ namespace Spruce.Core.Controllers
 
 			feed.Items = items;
 			return feed;
+		}
+
+		protected IEnumerable<WorkItemSummary> FilterAndPageList(string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize, WorkItemManager manager)
+		{
+			if (!string.IsNullOrEmpty(projectName))
+				SetProject(projectName);
+
+			if (UserContext.Current.Settings.FilterOptions.Active)
+			{
+				manager.Active();
+			}
+
+			if (UserContext.Current.Settings.FilterOptions.AssignedToMe)
+			{
+				manager.AssignedToMe();
+			}
+
+			if (UserContext.Current.Settings.FilterOptions.Closed)
+			{
+				manager.Closed();
+			}
+
+			if (UserContext.Current.Settings.FilterOptions.Resolved)
+			{
+				manager.Resolved();
+			}
+
+			if (UserContext.Current.Settings.FilterOptions.ThisMonth)
+			{
+				manager.ThisMonth();
+			}
+
+			if (UserContext.Current.Settings.FilterOptions.ThisWeek)
+			{
+				manager.ThisWeek();
+			}
+
+			if (UserContext.Current.Settings.FilterOptions.Today)
+			{
+				manager.Today();
+			}
+
+			IEnumerable<WorkItemSummary> list = manager.ExecuteQuery();
+
+			return PageList(list,isHeatMap,sortBy,descending,page,pageSize);
+		}
+
+		protected IEnumerable<WorkItemSummary> PageList(IEnumerable<WorkItemSummary> list,bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize)
+		{
+			//
+			// Page the list
+			//
+			int currentPage = page.HasValue ? page.Value : 1;
+
+			int pageSizeVal = UserContext.Current.Settings.PageSize;
+			if (pageSizeVal == 0 || pageSize != pageSizeVal)
+			{
+				if (pageSize.HasValue)
+					pageSizeVal = pageSize.Value;
+
+				if (pageSizeVal < 10)
+					pageSizeVal = 100;
+
+				UserContext.Current.Settings.PageSize = pageSizeVal;
+				UserContext.Current.UpdateSettings();
+			}
+
+			Pager pager = new Pager(isHeatMap, sortBy, descending == true, pageSizeVal);
+			list = pager.Page<WorkItemSummary>(list, currentPage);
+
+			ViewData["pageCount"] = pager.PageCount;
+			ViewData["currentPage"] = currentPage;
+			ViewData["pageSize"] = pageSizeVal;
+			ViewData["desc"] = (descending == true);
+
+			return list;
 		}
 	}
 }

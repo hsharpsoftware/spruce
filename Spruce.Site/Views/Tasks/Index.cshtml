@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<WorkItemSummary>
 
-<h3>Tasks (@ViewData["CurrentFilter"])</h3>
+<h3>Tasks</h3>
 @Html.ActionLink("View as list","List")
 <br /><br />
 
@@ -33,3 +33,8 @@
 <div style="width:90%;margin-left:20px;">
 @Html.Partial("PagingBar", new int[] { int.Parse(ViewData["pageCount"].ToString()), int.Parse(ViewData["currentPage"].ToString()) })
 </div>
+
+<!--
+Query:
+@Html.Raw(HttpContext.Current.Items["Query"].ToString())
+-->

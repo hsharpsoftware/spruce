@@ -31,7 +31,7 @@ namespace Spruce.Core
 		{
 			get
 			{
-				if (SpruceContext.IsWeb)
+				if (UserContext.IsWeb)
 					return HttpContext.Current.Server.MapPath("~/App_Data/Attachments/");
 				else
 					return @"Attachments\";

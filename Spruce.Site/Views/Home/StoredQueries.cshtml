@@ -1,22 +1,13 @@
 ﻿@model IEnumerable<WorkItemSummary>
 
-<h3>Bugs</h3>
-@Html.ActionLink("View as heat map","Heatmap")
+<h3>Saved TFS queries</h3>
+
+@using (Html.BeginForm("StoredQuery", "Home", FormMethod.Get))
+{
+	@Html.DropDownBoxForStoredQueries("id", UserContext.Current.CurrentProject.StoredQueries, (Guid) ViewData["CurrentQuery"], 0)
+	<input type="submit" value="Display" />
+}
 <br /><br />
-
-<!-- Excel export -->
-<div class="left">
-	<a href="@Url.Action("Excel")" title="Export to current list an Excel 2007 spreadsheet"><img src="@Url.Content("~/Assets/Images/excel_icon.png")" border="0" alt="Export to excel" /></a>
-
-	<!-- Explicitly give the project, area, iteration for RSS readers that will login anonymously -->
-	<a href="@Url.Action("Rss", new { projectName = UserContext.Current.CurrentProject.Name, 
-		 areaPath = UserContext.Current.Settings.AreaPath.ToBase64(), 
-		 iteration = UserContext.Current.Settings.IterationPath.ToBase64(),
-		 filter = ""})" title="View the current list as an RSS feed">
-		 <img src="@Url.Content("~/Assets/Images/rss_icon.png")" border="0" alt="RSS" />
-	</a>
-</div>
-<br class="clear" />
 
 <div style="width:100%">
 	<div class="left" style="width:75%">
@@ -84,13 +75,6 @@
 			</tbody>
 		</table>
 	</div>
-
-	@Html.Partial("Filters")
 </div>
 <br class="clear" /><br />
 @Html.Partial("PagingBar", new int[] { int.Parse(ViewData["pageCount"].ToString()), int.Parse(ViewData["currentPage"].ToString()) })
-
-<!--
-Query:
-@Html.Raw(HttpContext.Current.Items["Query"].ToString())
--->

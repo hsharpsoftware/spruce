@@ -1,6 +1,8 @@
 ﻿@model DashboardSummary
 
 <div id="dashboard">
+	<h2>@UserContext.Current.CurrentProject.Name</h2>
+
 	<div class="left bold" style="width:100px">Bug count:</div>
 	<div class="left">@Model.BugCount</div>
 	<br class="clear" />

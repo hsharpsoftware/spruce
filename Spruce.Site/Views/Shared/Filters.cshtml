@@ -1,0 +1,69 @@
+﻿@using (Html.BeginForm("Index","Filter", FormMethod.Get))
+{
+@Html.Hidden("fromUrl",Request.Url)	
+<div class="right rounded" id="rightbox">
+	<b>Iteration</b>
+	<div id="iterations" style="font-size:0.6em;">
+		@{ int i = 0; }
+		@foreach (IterationSummary summary in UserContext.Current.CurrentProject.Iterations)
+		{
+			<label for="iteration@(i)">@summary.Name</label>
+			@Html.RadioButton("iterationPath", summary.Path.ToBase64(), summary.Path == UserContext.Current.Settings.IterationPath, new { id = "iteration" + (i++) })
+			<br />
+		}
+	</div>
+	<br />
+
+	<b>Area</b>
+	<div id="areas" style="font-size:0.6em;">
+		@{ i = 0; }
+		@foreach (AreaSummary summary in UserContext.Current.CurrentProject.Areas)
+		{
+			<label for="area@(i)">@summary.Name</label>
+			@Html.RadioButton("areaPath", summary.Path.ToBase64(), summary.Path == UserContext.Current.Settings.AreaPath, new { id = "area" + (i++) })
+			<br />
+		}
+	</div>
+	<br />
+
+	<b>Filter</b>
+	<div id="filters" style="font-size:0.6em;">
+			<label for="filter-active">Active</label>
+			@Html.CheckBox("Active", UserContext.Current.Settings.FilterOptions.Active, new { id = "filter-active" })
+			<br />
+
+			<label for="filter-resolved">Resolved</label>
+			@Html.CheckBox("Resolved",UserContext.Current.Settings.FilterOptions.Resolved,new { id = "filter-resolved"})
+			<br />
+
+			<label for="filter-closed">Closed</label>
+			@Html.CheckBox("Closed", UserContext.Current.Settings.FilterOptions.Closed, new { id = "filter-closed" })
+			<br />
+
+			<label for="filter-assignedtome">Assigned to me</label>
+			@Html.CheckBox("AssignedToMe", UserContext.Current.Settings.FilterOptions.AssignedToMe, new { id = "filter-assignedtome" })
+			<br />
+
+			<label for="filter-today">Today</label>
+			@Html.CheckBox("Today", UserContext.Current.Settings.FilterOptions.Today, new { id = "filter-today" })
+			<br />
+
+			<label for="filter-yesterday">Yesterday</label>
+			@Html.CheckBox("Yesterday", UserContext.Current.Settings.FilterOptions.Yesterday, new { id = "filter-yesterday" })
+			<br />
+
+			<label for="filter-thisweek">This week</label>
+			@Html.CheckBox("ThisWeek", UserContext.Current.Settings.FilterOptions.ThisWeek, new { id = "filter-thisweek" })
+			<br />
+
+			<label for="filter-thismonth">This month</label>
+			@Html.CheckBox("ThisMonth", UserContext.Current.Settings.FilterOptions.ThisMonth, new { id = "filter-thismonth" })
+			<br />
+	</div>
+
+
+	<br class="clear" />
+	<input type="submit" value="Apply" class="button" />
+</div>
+
+}
