@@ -15,5 +15,6 @@ namespace Spruce.Core
 		public bool Yesterday { get; set; }
 		public bool ThisWeek { get; set; }
 		public bool ThisMonth { get; set; }
+		public bool LastMonth { get; set; }
 	}
 }

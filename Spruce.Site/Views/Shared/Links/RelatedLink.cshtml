@@ -1,0 +1,7 @@
+﻿@model RelatedLink
+
+@Model.LinkTypeEnd.Name work item @Html.ActionLink(Model.RelatedWorkItemId.ToString(),"View",new { id = Model.RelatedWorkItemId })
+@if (!string.IsNullOrEmpty(Model.Comment))
+{
+	<br />@Model.Comment
+}

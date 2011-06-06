@@ -20,6 +20,7 @@ namespace Spruce.Core
 		public TfsTeamProjectCollection TfsCollection { get; private set; }
 		public WorkItemStore WorkItemStore { get; private set; }
 		public VersionControlServer VersionControlServer { get; private set; }
+		public RegisteredLinkTypeCollection RegisteredLinkTypes { get; private set; }
 
 		public ProjectDetails CurrentProject { get; private set; }
 		public List<string> ProjectNames { get; private set; }
@@ -162,6 +163,7 @@ namespace Spruce.Core
 			TfsCollection.Authenticate();
 			WorkItemStore = new WorkItemStore(TfsCollection);
 			VersionControlServer = TfsCollection.GetService<VersionControlServer>();
+			RegisteredLinkTypes = WorkItemStore.RegisteredLinkTypes;
 
 			// Get the current username, and load their settings
 			Name = TfsCollection.AuthorizedIdentity.DisplayName;

@@ -37,6 +37,57 @@
 		}
 		</ul>
 	</div>
+	}	
+
+	@if (Model.Links.Count > 0)
+	{
+	<div id="item-links">	
+		<b>Links</b>
+		<ul>
+		@foreach(Link link in Model.Links)
+		{
+			<li>
+				@Html.Partial("Links/" + link.BaseType, link)
+			</li>
+		}
+		</ul>
+	</div>
+	}
+	
+	@if (Model.Revisions.Count > 1)
+	{
+	<div id="item-revisions">	
+		<b>History</b>
+		<ul>
+		@foreach(Revision revision in Model.Revisions.Cast<Revision>().Reverse())
+		{
+			<li>
+					@if (revision.Index == 0)
+					{
+						<a href="javascript:;" title="revision@(revision.Index)">Created on @revision.Fields["Changed Date"].Value by @revision.Fields["Changed By"].Value</a>
+					}
+					else
+					{
+						<a href="javascript:;" title="revision@(revision.Index)">Changed on @revision.Fields["Changed Date"].Value by @revision.Fields["Changed By"].Value</a>
+					}
+				<br />
+
+				<table style="display:none;border:solid 1px #AAA;font-size:0.8em;margin:10px 0px;" id="revision@(revision.Index)">
+				@foreach(Field field in revision.Fields.Cast<Field>().OrderBy(f => f.Name))
+				{					
+					if (Html.GetPreviousFieldValue(Model,field.Name,revision.Index) != field.Value.SafeToString())
+					{
+						<tr>
+							<td><b>@field.Name</b></td>
+							<td>@field.Value </td>
+						</tr>
+					}
+				}
+				</table>
+			</li>
+		}
+		</ul>
+	</div>
 	}
 
 	<div id="item-details">

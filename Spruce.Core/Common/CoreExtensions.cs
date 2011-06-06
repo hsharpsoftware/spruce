@@ -54,6 +54,20 @@ namespace Spruce.Core
 				return "";
 		}
 
+		public static string SafeToString(this object value)
+		{
+			if (value != null)
+				return value.ToString();
+			else
+				return "";
+		}
+
+		public static string ParseChangesetLink(this string value)
+		{
+			// vstfs:///VersionControl/Changeset/28
+			return value.Replace("vstfs:///VersionControl/Changeset/", "");
+		}
+
 		public static string GetDescription(this Enum value)
 		{
 			Type type = value.GetType();

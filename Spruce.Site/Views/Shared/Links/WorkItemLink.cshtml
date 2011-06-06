@@ -1,0 +1,12 @@
+﻿@model WorkItemLink
+
+<b>Work item link</b>
+@Model.AddedBy<br />
+@Model.SourceId<br />
+@Model.TargetId<br />
+
+@Model.LinkTypeEnd
+@if (!string.IsNullOrEmpty(Model.Comment))
+{
+	<br />@Model.Comment
+}

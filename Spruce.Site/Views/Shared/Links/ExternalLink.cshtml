@@ -1,0 +1,7 @@
+﻿@model ExternalLink
+
+@Model.ArtifactLinkType.Name @Model.LinkedArtifactUri.ParseChangesetLink()
+@if (!string.IsNullOrEmpty(Model.Comment))
+{
+	<br />@Model.Comment
+}

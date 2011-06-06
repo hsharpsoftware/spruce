@@ -24,6 +24,8 @@ namespace Spruce.Core
 		public string ResolvedBy { get; set; }
 		public FieldCollection Fields { get; internal set; }
 		public AttachmentCollection Attachments { get; set; }
+		public LinkCollection Links { get; set; }
+		public RevisionCollection Revisions { get; set; }
 
 		// For bugs
 		public int? Priority { get; set; }

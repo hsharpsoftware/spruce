@@ -29,8 +29,6 @@ $(document).ready(function ()
 	});
 
 	// Right side areas,iterations,filters - turn into buttons using jQuery UI.
-	//$("#areas").buttonset();
-	//$("#iterations").buttonset();
 	$("#areas input").each(function ()
 	{
 		$(this).button();
@@ -43,7 +41,19 @@ $(document).ready(function ()
 	{
 		$(this).button();
 	});
+
+	// Revisions table toggle links
+	$("#item-revisions a").click(function ()
+	{
+		var tableId = $(this).attr("title");
+		$("#" + tableId).toggle();
+	});
 });
+
+function toggleRevisionTable(index)
+{
+	$("#revision" + index).toggle();
+}
 
 //
 // Primitive form error handling (for now).

@@ -1,0 +1,7 @@
+﻿@model Hyperlink
+
+<a href="@Model.Location" target="_blank">@Model.Location</a>
+@if (!string.IsNullOrEmpty(Model.Comment))
+{
+	<br />@Model.Comment
+}

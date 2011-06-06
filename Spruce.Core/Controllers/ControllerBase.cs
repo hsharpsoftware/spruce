@@ -134,6 +134,11 @@ namespace Spruce.Core.Controllers
 				manager.Today();
 			}
 
+			if (UserContext.Current.Settings.FilterOptions.LastMonth)
+			{
+				manager.LastMonth();
+			}
+
 			IEnumerable<WorkItemSummary> list = manager.ExecuteQuery();
 
 			return PageList(list,isHeatMap,sortBy,descending,page,pageSize);

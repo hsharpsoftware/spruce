@@ -73,7 +73,7 @@ namespace Spruce.Core
 
 		private void AddAreas()
 		{
-			// Add a "none" option - TFS stores the area name as the project name
+			// Add a "none" option - TFS stores the iteration name as the project name
 			Areas.Add(new AreaSummary()
 			{
 				Name = "None",

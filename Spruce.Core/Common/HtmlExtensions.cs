@@ -11,6 +11,14 @@ namespace Spruce.Core
 {
 	public static class HtmlExtensions
 	{
+		public static string GetPreviousFieldValue(this HtmlHelper helper, WorkItemSummary model, string fieldName,int revisionNumber)
+		{
+			if (revisionNumber > 0 && model.Revisions[revisionNumber - 1].Fields[fieldName].Value != null)
+				return model.Revisions[revisionNumber - 1].Fields[fieldName].Value.ToString();
+
+			return "";
+		}
+
 		public static MvcHtmlString FormatAreaAndIterationName(this HtmlHelper helper, object iteration, object area)
 		{
 			string iterationName = iteration.ToString();

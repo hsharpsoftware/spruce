@@ -121,6 +121,13 @@ namespace Spruce.Core
 			_andFilters.Add("[System.CreatedDate] >= @thismonth");
 		}
 
+		public void LastMonth()
+		{
+			_parameters.Add("lastmonth", DateTime.Today.StartOfLastMonth());
+			_parameters.Add("lastmonthend", DateTime.Today.StartOfThisMonth());
+			_andFilters.Add("[System.CreatedDate] >= @lastmonth AND [System.CreatedDate] < @lastmonthend");
+		}
+
 		#region Statics
 		public static IList<WorkItemSummary> ExecuteWiqlQuery(string query, Dictionary<string, object> parameters, bool useDefaultProject)
 		{
@@ -256,7 +263,9 @@ namespace Spruce.Core
 				IsBug = (item.Type.Name.ToLower() == "bug"),
 				ProjectName = item.Project.Name,
 				Fields = item.Fields,
-				Attachments = item.Attachments
+				Attachments = item.Attachments,
+				Links = item.Links,
+				Revisions = item.Revisions,
 			};
 
 			if (item.Fields.Contains("Priority"))

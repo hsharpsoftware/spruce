@@ -69,7 +69,9 @@ a:visted	{ color:#1173a6; }
 #item-header		{ padding:5px;border-bottom:1px dotted #444;font-weight:bold; }
 #item-id			{ color:#737373;padding-right:10px; }
 #item-description	{ margin:5px 0px;padding:5px;min-height:200px;font-size:0.8em;color:#101010; }
-#item-attachments	{ padding:10px 5px 5px 5px;font-size:0.8em;border-top:1px dotted #CCC; }
+#item-attachments,#item-links,#item-revisions
+					{ padding:10px 5px 5px 5px;font-size:0.8em;border-top:1px dotted #CCC; }
+					
 #item-details		{ padding:10px 5px 5px 5px;font-size:0.8em;border-top:1px dotted #CCC; }
 #item-menucontainer	{ color:#0391da;text-align:right;width:100px;font-size:0.8em; }
 #item-arrowimg		{ margin:0;padding:2px; }

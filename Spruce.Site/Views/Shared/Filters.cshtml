@@ -7,7 +7,14 @@
 		@{ int i = 0; }
 		@foreach (IterationSummary summary in UserContext.Current.CurrentProject.Iterations)
 		{
+			if (summary.Name != "None")
+			{
 			<label for="iteration@(i)">@summary.Name</label>
+			}
+			else
+			{
+			<label for="iteration@(i)">All</label>
+			}
 			@Html.RadioButton("iterationPath", summary.Path.ToBase64(), summary.Path == UserContext.Current.Settings.IterationPath, new { id = "iteration" + (i++) })
 			<br />
 		}
@@ -19,7 +26,14 @@
 		@{ i = 0; }
 		@foreach (AreaSummary summary in UserContext.Current.CurrentProject.Areas)
 		{
+			if (summary.Name != "None")
+			{
 			<label for="area@(i)">@summary.Name</label>
+			}
+			else
+			{
+			<label for="area@(i)">All</label>
+			}
 			@Html.RadioButton("areaPath", summary.Path.ToBase64(), summary.Path == UserContext.Current.Settings.AreaPath, new { id = "area" + (i++) })
 			<br />
 		}
@@ -33,7 +47,7 @@
 			<br />
 
 			<label for="filter-resolved">Resolved</label>
-			@Html.CheckBox("Resolved",UserContext.Current.Settings.FilterOptions.Resolved,new { id = "filter-resolved"})
+			@Html.CheckBox("Resolved", UserContext.Current.Settings.FilterOptions.Resolved, new { id = "filter-resolved" })
 			<br />
 
 			<label for="filter-closed">Closed</label>
@@ -58,6 +72,10 @@
 
 			<label for="filter-thismonth">This month</label>
 			@Html.CheckBox("ThisMonth", UserContext.Current.Settings.FilterOptions.ThisMonth, new { id = "filter-thismonth" })
+			<br />
+
+			<label for="filter-lastmonth">Last month</label>
+			@Html.CheckBox("LastMonth", UserContext.Current.Settings.FilterOptions.LastMonth, new { id = "filter-lastmonth" })
 			<br />
 	</div>
 
