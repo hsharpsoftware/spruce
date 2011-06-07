@@ -9,7 +9,7 @@
 		<table id="list-table">
 			<thead>
 				<tr id="list-table-header">
-					<th>
+					<th style="width:40%">
 						<div>@Html.ActionLink("Title","Heatmap",new { sortBy = "Title", desc = !(bool)ViewData["desc"]})</div>
 					</th>
 					<th style="width:8%;">
@@ -24,7 +24,7 @@
 					<th style="width:12%">
 						<div>@Html.ActionLink("Status", "Heatmap", new { sortBy = "State", desc = !(bool)ViewData["desc"] })</div>
 					</th>
-					<th style="width:12%">
+					<th style="width:10%">
 						<div>Priority</div>
 					</th>
 					<th style="width:12%">
@@ -39,7 +39,7 @@
 			@foreach (WorkItemSummary item in Model)
 			{
 				<tr id="list-table-row" class="priority@(item.Priority)">
-					<td>
+					<tdstyle="width:40%">
 						<div>@item.Title</div>
 					</td>
 					<td>
@@ -54,7 +54,7 @@
 					<td>
 						<div>@item.State</div>
 					</td>
-					<td>
+					<td style="width:10%">
 						<div>@item.Priority</div>
 					</td>
 					<td>

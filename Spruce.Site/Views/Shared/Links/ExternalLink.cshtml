@@ -1,6 +1,6 @@
 ﻿@model ExternalLink
 
-@Model.ArtifactLinkType.Name @Model.LinkedArtifactUri.ParseChangesetLink()
+@Model.ArtifactLinkType.Name @Html.ActionLink(Model.LinkedArtifactUri.ParseChangesetLink(),"Changeset","Home",new { id=Model.LinkedArtifactUri.ParseChangesetLink()},null)
 @if (!string.IsNullOrEmpty(Model.Comment))
 {
 	<br />@Model.Comment

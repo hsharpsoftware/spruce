@@ -27,7 +27,7 @@ a:visted	{ color:#1173a6; }
 #header	a		{ color:White;text-decoration:none; }
 #header	a:hover	{ color:#AAA; }
 #header input	{ font-family:Arial,helvetica;font-size:0.9em; }
-#rightbox		{ margin-left:10px;text-align:center;border:1px solid #CCC;padding:10px; }
+#rightbox		{ text-align:center;border:1px solid #CCC;padding:10px;position:fixed;right:30px;top:100px }
 
 #dashboard			{ margin:10px; }
 #dashboard p		{ margin:0; }

@@ -23,7 +23,7 @@
 		<table id="list-table">
 			<thead>
 				<tr id="list-table-header">
-					<th>
+					<th style="width:40%">
 						<div>@Html.ActionLink("Title", "List", new { sortBy = "Title", desc = !(bool)ViewData["desc"] })</div>
 					</th>
 					<th style="width:8%;">
@@ -47,7 +47,7 @@
 			@foreach (WorkItemSummary item in Model)
 			{
 				<tr id="list-table-row">
-					<td>
+					<td style="width:40%">
 						<div>@item.Title</div>
 					</td>
 					<td>

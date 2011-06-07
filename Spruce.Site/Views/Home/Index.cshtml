@@ -3,24 +3,24 @@
 <div id="dashboard">
 	<h2>@UserContext.Current.CurrentProject.Name</h2>
 
-	<div class="left bold" style="width:100px">Bug count:</div>
-	<div class="left">@Model.BugCount</div>
+	<div class="left bold smaller" style="width:100px;margin-right:20px">Bug count:</div>
+	<div class="left smaller">@Model.BugCount</div>
 	<br class="clear" />
 
-	<div class="left bold" style="width:100px">Active bugs:</div>
-	<div class="left">@Model.ActiveBugs</div>
+	<div class="left bold smaller" style="width:100px;margin-right:20px">Active bugs:</div>
+	<div class="left smaller">@Model.ActiveBugs</div>
 	<br class="clear" />
 
-	<div class="left bold" style="width:100px">Tasks count:</div>
-	<div class="left">@Model.TaskCount</div>
+	<div class="left bold smaller" style="width:100px;margin-right:20px">Tasks count:</div>
+	<div class="left smaller">@Model.TaskCount</div>
 	<br class="clear" />
 
-	<div class="left bold" style="width:100px">Active tasks:</div>
-	<div class="left">@Model.ActiveTasks</div>
+	<div class="left bold smaller" style="width:100px;margin-right:20px">Active tasks:</div>
+	<div class="left smaller">@Model.ActiveTasks</div>
 	<br class="clear" />
 
-	<div class="left bold" style="width:160px">My active bug count:</div>
-	<div class="left">@Model.MyActiveBugCount</div>
+	<div class="left bold smaller" style="width:100px;margin-right:20px">My active bugs:</div>
+	<div class="left smaller">@Model.MyActiveBugCount</div>
 	<br class="clear" />
 	<br />
 
@@ -66,10 +66,10 @@
 	}
 	else
 	{
-		foreach (ChangesetSummary summary in Model.RecentCheckins)
+		foreach (Spruce.Core.ChangesetSummary summary in Model.RecentCheckins)
 		{
-		<div class="left bold" style="width:80px">@summary.Id</div>
-		<div class="left">@summary.Date.ToString("ddd dd MMMM yyyy") - @(!string.IsNullOrEmpty(summary.Message) ? summary.Message : "(No message)")</div>
+		<div class="left bold" style="width:80px">@Html.ActionLink(summary.Id.ToString(),"Changeset",new {id=summary.Id})</div>
+		<div class="left"><span class="timeago" title="@summary.Date.ToString("U")">@summary.Date.ToString("U")</span> - @(!string.IsNullOrEmpty(summary.Message) ? summary.Message : "(No message)")</div>
 		<br class="clear" />
 		<div class="smaller dimmed" style="margin-left:80px">by @summary.User</div>
 		<br class="clear" />

@@ -61,7 +61,8 @@ namespace Spruce.Core
 					Id = item.ChangesetId,
 					Date = item.CreationDate,
 					Message = item.Comment,
-					User = item.Committer
+					User = item.Committer,
+					Changes = null
 				};
 
 				foreach (Change change in item.Changes)
@@ -73,6 +74,21 @@ namespace Spruce.Core
 			}
 
 			return list;
+		}
+
+		public static ChangesetSummary GetChangeSet(int id)
+		{
+			Changeset changeset = UserContext.Current.VersionControlServer.GetChangeset(id);
+			ChangesetSummary summary = new ChangesetSummary()
+			{
+				Id = changeset.ChangesetId,
+				Date = changeset.CreationDate,
+				Message = changeset.Comment,
+				User = changeset.Committer,
+				Changes = changeset.Changes
+			};
+
+			return summary;
 		}
 	}
 }

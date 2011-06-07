@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Text;
 using Spruce.Core;
+using Microsoft.TeamFoundation.VersionControl.Client;
+using System.IO;
 
 namespace Spruce.Core
 {
@@ -17,6 +19,35 @@ namespace Spruce.Core
 				return model.Revisions[revisionNumber - 1].Fields[fieldName].Value.ToString();
 
 			return "";
+		}
+
+		public static MvcHtmlString ChangesetIcon(this UrlHelper helper, Change change)
+		{
+			string icon = "";
+
+			if ((change.ChangeType & ChangeType.Add) == ChangeType.Add)
+			{
+				icon = helper.Content("~/Assets/Images/changeset_add.png");
+			}
+			else if ((change.ChangeType & ChangeType.Delete) == ChangeType.Delete)
+			{
+				icon = helper.Content("~/Assets/Images/changeset_delete.png");
+			}
+			else if ((change.ChangeType & ChangeType.Edit) == ChangeType.Edit)
+			{
+				icon = helper.Content("~/Assets/Images/changeset_edit.png");
+			}
+			else
+			{
+				icon = helper.Content("~/Assets/Images/changeset_unknown.png");
+			}
+
+			return MvcHtmlString.Create(string.Format("<img src=\"{0}\" alt=\"{1}\" border=\"0\">",icon,change.ChangeType));
+		}
+
+		public static MvcHtmlString ParseChangesetFile(this HtmlHelper helper, string value)
+		{
+			return MvcHtmlString.Create(Path.GetFileName(value));
 		}
 
 		public static MvcHtmlString FormatAreaAndIterationName(this HtmlHelper helper, object iteration, object area)

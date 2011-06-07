@@ -2,7 +2,7 @@ $(document).ready(function ()
 {
 	$("#item-actionmenulink").click(function ()
 	{
-		if($("#item-menu").is(":visible"))
+		if ($("#item-menu").is(":visible"))
 		{
 			$("#item-actionmenulink img").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-down.png");
 			$("#item-menu").slideUp(100);
@@ -16,7 +16,7 @@ $(document).ready(function ()
 
 	$("#attachments-link").click(function ()
 	{
-		if($("#edit-attachments").is(":visible"))
+		if ($("#edit-attachments").is(":visible"))
 		{
 			$("#attachments-link img").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-down.png");
 			$("#edit-attachments").slideUp(100);
@@ -47,6 +47,39 @@ $(document).ready(function ()
 	{
 		var tableId = $(this).attr("title");
 		$("#" + tableId).toggle();
+	});
+
+	// Remove the domain portion of all logins, e.g. Company.us\Fred Jones becomes Fred Jones
+	$("td>div,#header>div.right,.smaller").each(function (index, value)
+	{
+		var html = $(this).html();
+
+		if (html.indexOf("\\") != -1)
+		{
+			html = html.replace(/\(.*?\.*?\)/g, "");
+			$(this).html(html);
+		}
+	});
+
+	// Format XML inside <pre> tags so that it displays
+	$("pre").each(function (index)
+	{
+		var current = $(this);
+		var html = current.html();
+		html = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+		current.html(html);
+	});
+
+	// Areas/iterations/filter checkbox/radioboxes automatically postback
+	$("#areas input,#iterations input,#filters input").change(function ()
+	{
+		$("form").submit();
+	});
+
+	// Set all .timeago classes to friendly dates.
+	$(".timeago").each(function ()
+	{
+		$(this).timeago();
 	});
 });
 

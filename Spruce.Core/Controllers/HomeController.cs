@@ -54,6 +54,11 @@ namespace Spruce.Core.Controllers
 			return View("Projects", UserContext.Current.ProjectNames);
 		}
 
+		public ActionResult Changeset(int id)
+		{
+			return View(DashboardManager.GetChangeSet(id));
+		}
+
 		public ActionResult SetIteration(string id,string fromUrl)
 		{
 			TempData["RedirectedFromHomeController"] = true;
