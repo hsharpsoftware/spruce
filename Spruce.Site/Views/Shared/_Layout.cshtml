@@ -7,36 +7,44 @@
 
 	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery-1.5.1.min.js")"></script>
 	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery.timeago.js")"></script>
-	<script type="text/javascript" language="javascript" src="@Url.Content("~/Assets/Scripts/jquery-ui-1.8.13.custom.min.js")"></script>
-	<script type="text/javascript" language="javascript" src="@Url.Action("GlobalJsVars","Home")"></script>
+	<script type="text/javascript" language="javascript" src="@Url.Action("GlobalJsVars", "Home")"></script>
 	<script type="text/javascript" src="@Url.Content("~/Assets/Scripts/spruce.js")"></script>
 
-	<link href="@Url.Content("~/Assets/CSS/custom-theme/jquery-ui-1.8.13.custom.css")" rel="stylesheet" type="text/css" media="Screen" />
 	<link href="@Url.Content("~/Assets/CSS/spruce.css")" rel="stylesheet" type="text/css" media="Screen" />
-	<link href="@Url.Content("~/Assets/CSS/spruce.mobile.css")" rel="stylesheet" type="text/css" media="handheld" />
 	<link href="@Url.Content("~/Assets/CSS/spruce.print.css")" rel="stylesheet" type="text/css" media="print" />
 </head>
 
 <body>
-@using (Html.BeginForm("Index","Search", FormMethod.Get))
-{
-	<div id="header">		
-		<div class="left" style="padding-left:15px">
-			@Html.ActionLink("Home","Index","Home")
-			&nbsp;|&nbsp;@Html.ActionLink("Projects", "Projects","Home")
-			&nbsp;|&nbsp;@Html.ActionLink("Stored queries", "StoredQueries","Home")
-			&nbsp;|&nbsp;@Html.ActionLink("Bugs", UserContext.Current.Settings.BugView, "Bugs")
-			&nbsp;|&nbsp;@Html.ActionLink("Tasks", UserContext.Current.Settings.TaskView, "Tasks")
-			&nbsp;|&nbsp;@Html.ActionLink("New task","New","Tasks")
-			&nbsp;|&nbsp;@Html.ActionLink("New bug","New","Bugs")
+	<div id="header-first" class="header">
+		@using (Html.BeginForm("ChangeProject", "Home", FormMethod.Get))
+		{
+		<div class="left">		
+			
+				@Html.Hidden("fromUrl",Request.Url)	
+				@Html.ActionLink("Home", "Index", "Home")
+				&nbsp;|&nbsp;@Html.DropDownBoxForProjects(1)
+				&nbsp;|&nbsp;@Html.DropDownBoxForAreas("area",UserContext.Current.CurrentProject.Areas,UserContext.Current.Settings.AreaPath,2)
+				&nbsp;|&nbsp;@Html.DropDownBoxForIterations("iteration", UserContext.Current.CurrentProject.Iterations, UserContext.Current.Settings.IterationPath, 3)
 		</div>
-		
+		}
+		@using (Html.BeginForm("Search", "Home", FormMethod.Get))
+		{
 		<div class="right">
 			Logged in as @UserContext.Current.Name
 			&nbsp;|&nbsp;Search: @Html.TextBox("q", null, new { placeholder = "Enter text to search" })
 		</div>
+		}
 	</div>
-}
+
+	<div id="header-second" class="header">
+		<div class="left">
+			@Html.ActionLink("Stored queries", "StoredQueries", "Home")
+			&nbsp;|&nbsp;@Html.ActionLink("Bugs", UserContext.Current.Settings.BugView, "Bugs")
+			&nbsp;|&nbsp;@Html.ActionLink("Tasks", "Index", "Tasks")
+			&nbsp;|&nbsp;@Html.ActionLink("New task", "New", "Tasks")
+			&nbsp;|&nbsp;@Html.ActionLink("New bug", "New", "Bugs")
+		</div>
+	</div>
 
 	<div id="main-container">
 			@RenderBody()

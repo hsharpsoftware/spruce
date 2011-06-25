@@ -1,5 +1,14 @@
 $(document).ready(function ()
 {
+	// Projects, areas, iterations drop downs in the header
+	$("#header-first select").change(function ()
+	{
+		$(this).parent().parent().submit();
+	});
+
+	//
+	// Close/resolve drop out and attachments drop out.
+	//
 	$("#item-actionmenulink").click(function ()
 	{
 		if ($("#item-menu").is(":visible"))
@@ -26,20 +35,6 @@ $(document).ready(function ()
 			$("#attachments-linkimg").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-up.png");
 			$("#edit-attachments").slideDown(100);
 		}
-	});
-
-	// Right side areas,iterations,filters - turn into buttons using jQuery UI.
-	$("#areas input").each(function ()
-	{
-		$(this).button();
-	});
-	$("#iterations input").each(function ()
-	{
-		$(this).button();
-	});
-	$("#filters input").each(function ()
-	{
-		$(this).button();
 	});
 
 	// Revisions table toggle links

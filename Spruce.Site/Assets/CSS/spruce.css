@@ -1,4 +1,4 @@
-﻿body		{ font-family: Arial,helvetica;margin:0;color:#000000;}
+﻿	body		{ font-family: Arial,helvetica;margin:0;color:#000000;}
 
 h2			{ font-weight:normal; }
 a			{ color:#1173a6; }
@@ -22,23 +22,48 @@ a:visted	{ color:#1173a6; }
 .smallest	{ font-size:0.7em; }
 .ui-button	{ min-width:100px !important;margin:2px; }
 
-#header			{ font-family:Myriad Web Pro,helvetica;background-color:#42622a;width:100%;height:32px;color:#FFF;font-size:0.8em; }
-#header div		{ margin:0 5px;color:White;height:32px;line-height:33px;margin-right:20px; }
-#header	a		{ color:White;text-decoration:none; }
-#header	a:hover	{ color:#AAA; }
-#header input	{ font-family:Arial,helvetica;font-size:0.9em; }
-#rightbox		{ text-align:center;border:1px solid #CCC;padding:10px;position:fixed;right:30px;top:100px }
+/* Header bars */
+.header			{ font-family:Myriad Web Pro,helvetica;width:100%;height:32px;color:#FFF;font-size:0.8em; }
+.header div		{ margin:0 5px;color:White;height:32px;line-height:33px;margin-right:20px;padding-left:15px; }
+.header	a		{ color:White; }
+.header	a:hover	{ color:#AAA; }
+.header input	{ font-family:Arial,helvetica;font-size:0.9em; }
+.header select { border:1px solid #848f75;font-size:0.9em;background-color:#42622a;color:#FFF;margin:2px;padding:1px;border-radius:1px;}
+#header-first	{ background-color:#42622a; }
+#header-second	{ background-color:#000000; }
 
-#dashboard			{ margin:10px; }
+#rightbox		{ margin-left:10px;text-align:center;border:1px solid #CCC;padding:10px; }
+
+/* Home (ashboard) page */
+#dashboard			{ margin:5px;width:75%; }
 #dashboard p		{ margin:0; }
-#dashboard h2		{ margin:0; margin-top:20px;margin-bottom:10px; }
+#dashboard h2		{ border-bottom:2px solid #42622a;margin:0; margin:20px 0px 10px 0px;font-size:1em;font-weight:bold;padding:5px;min-width:500px; }
+
+#dashboard	#summary	{ margin-left:5px; }
+#dashboard .number-row	{ padding: 2px 0px; }
+#dashboard .number		{ font-weight:bold;display:inline; }
+.dashboarditem		{ border-bottom:1px dotted #CCC;min-width:50px;margin-bottom:5px; }
+.dashboarditem div	{ padding:5px;min-width:100px; }
+
+.dashbord-checkintem { border-bottom:1px dotted #CCC;min-width:50px;margin-bottom:5px;padding-bottom:5px; }
+.dashbord-checkintem .changesetid { padding:5px;width:10%;min-width:100px;  }
+.dashbord-checkintem .changesetdetails	{ padding:5px;width:70%; }
+.dashbord-checkintem .changesetuser		{ padding:0px }
 
 #main-container		{ margin:20px; }
-
 #project-name		{ font-size:1.5em;margin:20px 0 0px 0px;display:inline; }
 #areaiteration-name	{ font-size:1.3em;margin:0; }
-
 .filter-radiobox	{ }
+
+/* Changeset page */
+#changeset			{ width:75%; }
+#changeset h2		{ border-bottom:1px solid #42622a;margin:0; margin:20px 0px 10px 0px;font-size:1.1em;font-weight:bold;padding:0px;min-width:500px; }
+#changeset h3		{ border-bottom:1px dotted #CCC;font-size:1em; }
+
+/* Bottom query link */
+#query-container	{ font-size:0.8em; }
+#query				{ display:none; }
+#query pre			{ min-height:25px;font-size:1em;padding:10px;background-color:#CCC; }
 
 /* List items */
 #list-table					{ padding:0;border-collapse:collapse;font-family:Arial;font-size:0.8em;width:100%; }

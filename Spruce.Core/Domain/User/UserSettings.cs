@@ -20,10 +20,6 @@ namespace Spruce.Core
 		/// This should map to an action name in BugController
 		/// </summary>
 		public string BugView { get; set; }
-		/// <summary>
-		/// This should map to an action name in TaskController
-		/// </summary>
-		public string TaskView { get; set; }
 		public FilterOptions FilterOptions { get; set; }
 
 		public int PageSize { get; set; }
@@ -67,7 +63,7 @@ namespace Spruce.Core
 				using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
-					UserSettings settings = (UserSettings) serializer.Deserialize(stream);
+					UserSettings settings = (UserSettings)serializer.Deserialize(stream);
 
 					if (settings == null)
 						return new UserSettings();
@@ -92,7 +88,7 @@ namespace Spruce.Core
 			}
 		}
 
-		public static void Save(Guid userId,UserSettings settings)
+		public static void Save(Guid userId, UserSettings settings)
 		{
 			string filename = string.Format(@"{0}\{1}.xml", _cacheFolder, userId);
 
@@ -101,7 +97,7 @@ namespace Spruce.Core
 				using (FileStream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
 				{
 					XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
-					serializer.Serialize(stream,settings);
+					serializer.Serialize(stream, settings);
 				}
 			}
 			catch (IOException)

@@ -13,12 +13,28 @@ namespace Spruce.Core
 {
 	public static class HtmlExtensions
 	{
-		public static string GetPreviousFieldValue(this HtmlHelper helper, WorkItemSummary model, string fieldName,int revisionNumber)
+		public static string GetPreviousFieldValue(this HtmlHelper helper, WorkItemSummary model, string fieldName, int revisionNumber)
 		{
 			if (revisionNumber > 0 && model.Revisions[revisionNumber - 1].Fields[fieldName].Value != null)
 				return model.Revisions[revisionNumber - 1].Fields[fieldName].Value.ToString();
 
 			return "";
+		}
+
+		public static string RssLink(this UrlHelper helper)
+		{
+			return helper.Action("Rss", new
+			{
+				projectName = helper.Encode(UserContext.Current.CurrentProject.Name),
+				areaPath = helper.Encode(UserContext.Current.Settings.AreaPath),
+				iteration = helper.Encode(UserContext.Current.Settings.IterationPath),
+				filter = ""
+			});
+		}
+
+		public static MvcHtmlString ParseChangesetFile(this HtmlHelper helper, string value)
+		{
+			return MvcHtmlString.Create(Path.GetFileName(value));
 		}
 
 		public static MvcHtmlString ChangesetIcon(this UrlHelper helper, Change change)
@@ -42,12 +58,7 @@ namespace Spruce.Core
 				icon = helper.Content("~/Assets/Images/changeset_unknown.png");
 			}
 
-			return MvcHtmlString.Create(string.Format("<img src=\"{0}\" alt=\"{1}\" border=\"0\">",icon,change.ChangeType));
-		}
-
-		public static MvcHtmlString ParseChangesetFile(this HtmlHelper helper, string value)
-		{
-			return MvcHtmlString.Create(Path.GetFileName(value));
+			return MvcHtmlString.Create(string.Format("<img src=\"{0}\" alt=\"{1}\" border=\"0\">", icon, change.ChangeType));
 		}
 
 		public static MvcHtmlString FormatAreaAndIterationName(this HtmlHelper helper, object iteration, object area)
@@ -86,10 +97,30 @@ namespace Spruce.Core
 			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
+		public static MvcHtmlString DropDownBoxForProjects(this HtmlHelper helper, int tabIndex)
+		{
+			List<SelectListItem> selectList = new List<SelectListItem>();
+
+			selectList.Add(new SelectListItem() { Text = "Select a project...", Value = "" });
+
+			foreach (string project in UserContext.Current.ProjectNames)
+			{
+				SelectListItem selectListItem = new SelectListItem() { Text = project, Value = project };
+				if (project == UserContext.Current.CurrentProject.Name)
+					selectListItem.Selected = true;//
+
+				selectList.Add(selectListItem);
+			}
+
+			return helper.DropDownList("project", selectList, new { tabindex = tabIndex });
+		}
+
 
 		public static MvcHtmlString DropDownBoxForAreas(this HtmlHelper helper, string name, IList<AreaSummary> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
+
+			selectList.Add(new SelectListItem() { Text = "Select an area...", Value = "" });
 
 			foreach (AreaSummary item in items)
 			{
@@ -106,6 +137,8 @@ namespace Spruce.Core
 		public static MvcHtmlString DropDownBoxForIterations(this HtmlHelper helper, string name, IList<IterationSummary> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
+
+			selectList.Add(new SelectListItem() { Text = "Select an iteration...", Value = "" });
 
 			foreach (IterationSummary item in items)
 			{
@@ -171,13 +204,13 @@ namespace Spruce.Core
 				{
 					if (!string.IsNullOrEmpty(key) && key != name)
 					{
-						newUrl += string.Format("{0}{1}={2}",hasQuery ? "&" : "", key, nameValues[key]);
+						newUrl += string.Format("{0}{1}={2}", hasQuery ? "&" : "", key, nameValues[key]);
 						hasQuery = true;
 					}
 				}
 
 				// Append our querystring item to the end
-				newUrl += string.Format("{0}{1}={2}",hasQuery ? "&" : "",name,value);
+				newUrl += string.Format("{0}{1}={2}", hasQuery ? "&" : "", name, value);
 			}
 			else
 			{
@@ -193,7 +226,7 @@ namespace Spruce.Core
 
 			// Title
 			if (summary.Title.IndexOf(",") > -1)
-				builder.Append("\"" +summary.Title+ "\"");
+				builder.Append("\"" + summary.Title + "\"");
 			else
 				builder.Append(summary.Title);
 

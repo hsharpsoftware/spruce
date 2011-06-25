@@ -4,80 +4,74 @@
 @Html.ActionLink("View as list","Index")
 <br /><br />
 
-<div style="width:100%">
-	<div class="left" style="width:75%">
-		<table id="list-table">
-			<thead>
-				<tr id="list-table-header">
-					<th style="width:40%">
-						<div>@Html.ActionLink("Title","Heatmap",new { sortBy = "Title", desc = !(bool)ViewData["desc"]})</div>
-					</th>
-					<th style="width:8%;">
-						<div>@Html.ActionLink("ID","Heatmap",new { sortBy = "Id", desc = !(bool)ViewData["desc"]})</div>
-					</th>
-					<th style="width:15%">
-						<div>@Html.ActionLink("Assigned to", "Heatmap", new { sortBy = "AssignedTo", desc = !(bool)ViewData["desc"] })</div>
-					</th>
-					<th style="width:15%">
-						<div>@Html.ActionLink("Created on", "Heatmap", new { sortBy = "CreatedDate", desc = !(bool)ViewData["desc"] })</div>
-					</th>
-					<th style="width:12%">
-						<div>@Html.ActionLink("Status", "Heatmap", new { sortBy = "State", desc = !(bool)ViewData["desc"] })</div>
-					</th>
-					<th style="width:10%">
-						<div>Priority</div>
-					</th>
-					<th style="width:12%">
-						<div>Severity</div>
-					</th>
-					<th style="width:10%">
-						<div class="list-table-noborder"></div>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-			@foreach (WorkItemSummary item in Model)
-			{
-				<tr id="list-table-row" class="priority@(item.Priority)">
-					<tdstyle="width:40%">
-						<div>@item.Title</div>
-					</td>
-					<td>
-						<div>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</div>
-					</td>
-					<td style="width:15%">
-						<div>@item.AssignedTo</div>
-					</td>
-					<td style="width:15%">
-						<div>@item.CreatedDate.ToString("ddd dd MMM yyyy")</div>
-					</td>
-					<td>
-						<div>@item.State</div>
-					</td>
-					<td style="width:10%">
-						<div>@item.Priority</div>
-					</td>
-					<td>
-						<div>@item.Severity</div>
-					</td>
-					<td style="width:10%">
-						<div class="list-table-noborder">
-							@Html.ActionLink("Edit", "Edit", new { id = item.Id, fromUrl = Request.Url.PathAndQuery })
-						</div>
-					</td>
-				</tr>
-			}
-			</tbody>
-		</table>
-	</div>
-
-	@Html.Partial("Filters")
+<div>
+	<table id="list-table">
+		<thead>
+			<tr id="list-table-header">
+				<th>
+					<div>@Html.ActionLink("Title","Heatmap",new { sortBy = "Title", desc = !(bool)ViewData["desc"]})</div>
+				</th>
+				<th style="width:8%;">
+					<div>@Html.ActionLink("ID","Heatmap",new { sortBy = "Id", desc = !(bool)ViewData["desc"]})</div>
+				</th>
+				<th style="width:15%">
+					<div>@Html.ActionLink("Assigned to", "Heatmap", new { sortBy = "AssignedTo", desc = !(bool)ViewData["desc"] })</div>
+				</th>
+				<th style="width:15%">
+					<div>@Html.ActionLink("Created on", "Heatmap", new { sortBy = "CreatedDate", desc = !(bool)ViewData["desc"] })</div>
+				</th>
+				<th style="width:12%">
+					<div>@Html.ActionLink("Status", "Heatmap", new { sortBy = "State", desc = !(bool)ViewData["desc"] })</div>
+				</th>
+				<th style="width:12%">
+					<div>Priority</div>
+				</th>
+				<th style="width:12%">
+					<div>Severity</div>
+				</th>
+				<th style="width:10%">
+					<div class="list-table-noborder"></div>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+		@foreach (WorkItemSummary item in Model)
+		{
+			<tr id="list-table-row" class="priority@(item.Priority)">
+				<td>
+					<div>@item.Title</div>
+				</td>
+				<td>
+					<div>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</div>
+				</td>
+				<td style="width:15%">
+					<div>@item.AssignedTo</div>
+				</td>
+				<td style="width:15%">
+					<div>@item.CreatedDate.ToString("ddd dd MMM yyyy")</div>
+				</td>
+				<td>
+					<div>@item.State</div>
+				</td>
+				<td>
+					<div>@item.Priority</div>
+				</td>
+				<td>
+					<div>@item.Severity</div>
+				</td>
+				<td style="width:10%">
+					<div class="list-table-noborder">
+						@Html.ActionLink("Edit", "Edit", new { id = item.Id, fromUrl = Request.Url.PathAndQuery })
+					</div>
+				</td>
+			</tr>
+		}
+		</tbody>
+	</table>
 </div>
 <br style="clear:both" /><br />
 
 @Html.Partial("PagingBar", new int[] { int.Parse(ViewData["pageCount"].ToString()), int.Parse(ViewData["currentPage"].ToString()) })
 
-<!--
-Query:
-@Html.Raw(HttpContext.Current.Items["Query"].ToString())
--->
+<br /><br />
+@Html.Partial("QueryPanel")

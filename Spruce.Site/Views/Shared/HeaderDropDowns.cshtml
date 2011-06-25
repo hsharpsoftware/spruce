@@ -1,0 +1,6 @@
+﻿@using (Html.BeginForm("Index","Filter", FormMethod.Get))
+{
+	@Html.Hidden("fromUrl",Request.Url)	
+	@Html.DropDownBoxForAreas("areas",UserContext.Current.CurrentProject.Areas,UserContext.Current.Settings.AreaPath,1)
+	@Html.DropDownBoxForIterations("areas", UserContext.Current.CurrentProject.Iterations, UserContext.Current.Settings.IterationPath, 2)
+}

@@ -32,15 +32,6 @@ namespace Spruce.Core.Controllers
 		public ActionResult View(int id)
 		{
 			WorkItemSummary item = WorkItemManager.ItemById(id);
-
-			if (TempData["RedirectedFromHomeController"] == null)
-			{
-				// Only set these if the user hasn't previously just clicked the right side area/iteration/project
-				SetProject(item.ProjectName);
-				SetArea(item.AreaPath);
-				SetIteration(item.IterationPath);
-			}
-
 			return View(item);
 		}
 
@@ -138,11 +129,6 @@ namespace Spruce.Core.Controllers
 					}
 				}
 
-				// Set the project/iteration/area to the previously edited item
-				SetProject(item.ProjectName);
-				SetArea(item.AreaPath);
-				SetIteration(item.IterationPath);
-
 				return RedirectToAction("Index");
 			}
 			catch (SaveException e)
@@ -209,11 +195,6 @@ namespace Spruce.Core.Controllers
 					}
 				}
 
-				// Set the project/iteration/area to the previously edited item
-				SetProject(item.ProjectName);
-				SetArea(item.AreaPath);
-				SetIteration(item.IterationPath);
-
 				if (string.IsNullOrEmpty(fromUrl))
 					return RedirectToAction("View", new { id = item.Id });
 				else
@@ -270,8 +251,20 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult Rss(string projectName, string areaPath,string iterationPath,string filter)
 		{
-			SetArea(areaPath.FromBase64());
-			SetIteration(iterationPath.FromBase64());
+			if (!string.IsNullOrEmpty(areaPath))
+			{
+				AreaSummary summary = UserContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == areaPath);
+				UserContext.Current.Settings.AreaName = summary.Name;
+				UserContext.Current.Settings.AreaPath = summary.Path;
+				UserContext.Current.UpdateSettings();
+			}
+			else if (!string.IsNullOrEmpty(iterationPath))
+			{
+				IterationSummary summary = UserContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iterationPath);
+				UserContext.Current.Settings.IterationName = summary.Name;
+				UserContext.Current.Settings.IterationPath = summary.Path;
+				UserContext.Current.UpdateSettings();
+			}
 
 			IEnumerable<WorkItemSummary> list = FilterAndPageList(projectName, true, "CreatedDate", true, 1, 10000, new BugManager());
 

@@ -81,7 +81,6 @@
     <Compile Include="Controllers\FilterController.cs" />
     <Compile Include="Controllers\RssActionResult.cs" />
     <Compile Include="Controllers\ControllerBase.cs" />
-    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Domain\Managers\BugManager.cs" />
     <Compile Include="Domain\Managers\TaskManager.cs" />
     <Compile Include="Domain\Managers\DashboardManager.cs" />

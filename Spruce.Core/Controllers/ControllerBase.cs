@@ -9,44 +9,6 @@ namespace Spruce.Core.Controllers
 {
 	public class ControllerBase : Controller
 	{
-		protected override void OnActionExecuting(ActionExecutingContext filterContext)
-		{
-		}
-
-		protected void SetProject(string project)
-		{
-			if (!string.IsNullOrEmpty(project))
-			{
-				if (project != UserContext.Current.CurrentProject.Name)
-				{
-					UserContext.Current.ChangeCurrentProject(project);
-					UserContext.Current.UpdateSettings();
-				}
-			}	
-		}
-
-		protected void SetArea(string areaPath)
-		{		
-			if (!string.IsNullOrEmpty(areaPath))
-			{
-				AreaSummary summary = UserContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == areaPath);
-				UserContext.Current.Settings.AreaName = summary.Name;
-				UserContext.Current.Settings.AreaPath = summary.Path;
-				UserContext.Current.UpdateSettings();
-			}
-		}
-
-		protected void SetIteration(string iterationPath)
-		{
-			if (!string.IsNullOrEmpty(iterationPath))
-			{
-				IterationSummary summary = UserContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iterationPath);
-				UserContext.Current.Settings.IterationName = summary.Name;
-				UserContext.Current.Settings.IterationPath = summary.Path;
-				UserContext.Current.UpdateSettings();
-			}
-		}
-
 		/// <summary>
 		/// Sets the user settings for either heatmap or a normal list.
 		/// </summary>
@@ -54,16 +16,6 @@ namespace Spruce.Core.Controllers
 		protected void SetBugView(string actionName)
 		{
 			UserContext.Current.Settings.BugView = actionName;
-			UserContext.Current.UpdateSettings();
-		}
-
-		/// <summary>
-		/// Sets the user settings for either a post it note view or a normal list.
-		/// </summary>
-		/// <param name="actionName"></param>
-		protected void SetTaskView(string actionName)
-		{
-			UserContext.Current.Settings.TaskView = actionName;
 			UserContext.Current.UpdateSettings();
 		}
 
@@ -97,7 +49,13 @@ namespace Spruce.Core.Controllers
 		protected IEnumerable<WorkItemSummary> FilterAndPageList(string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize, WorkItemManager manager)
 		{
 			if (!string.IsNullOrEmpty(projectName))
-				SetProject(projectName);
+			{
+				if (projectName != UserContext.Current.CurrentProject.Name)
+				{
+					UserContext.Current.ChangeCurrentProject(projectName);
+					UserContext.Current.UpdateSettings();
+				}
+			}
 
 			if (UserContext.Current.Settings.FilterOptions.Active)
 			{
