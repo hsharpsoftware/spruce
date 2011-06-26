@@ -84,10 +84,6 @@ namespace Spruce.Core.Controllers
 			{
 				manager.Resolved();
 			}
-			else if (filterOptions.ThisMonth)
-			{
-				manager.ThisMonth();
-			}
 
 			//
 			// Dates
