@@ -103,7 +103,7 @@ namespace Spruce.Core
 			}
 
 			// Status
-			if (!string.IsNullOrEmpty(status))
+			if (!string.IsNullOrEmpty(status) && status != "All")
 			{
 				status = status.ToLower();
 
