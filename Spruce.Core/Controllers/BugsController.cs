@@ -253,6 +253,7 @@ namespace Spruce.Core.Controllers
 		{
 			if (!string.IsNullOrEmpty(areaPath))
 			{
+				areaPath = HttpUtility.UrlDecode(areaPath);
 				AreaSummary summary = UserContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == areaPath);
 				UserContext.Current.Settings.AreaName = summary.Name;
 				UserContext.Current.Settings.AreaPath = summary.Path;
@@ -260,6 +261,7 @@ namespace Spruce.Core.Controllers
 			}
 			else if (!string.IsNullOrEmpty(iterationPath))
 			{
+				areaPath = HttpUtility.UrlDecode(iterationPath);
 				IterationSummary summary = UserContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iterationPath);
 				UserContext.Current.Settings.IterationName = summary.Name;
 				UserContext.Current.Settings.IterationPath = summary.Path;

@@ -11,7 +11,7 @@ $(document).ready(function ()
 	//
 	$("#item-actionmenulink").click(function ()
 	{
-		if ($("#item-menu").is(":visible"))
+		if($("#item-menu").is(":visible"))
 		{
 			$("#item-actionmenulink img").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-down.png");
 			$("#item-menu").slideUp(100);
@@ -25,7 +25,7 @@ $(document).ready(function ()
 
 	$("#attachments-link").click(function ()
 	{
-		if ($("#edit-attachments").is(":visible"))
+		if($("#edit-attachments").is(":visible"))
 		{
 			$("#attachments-link img").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-down.png");
 			$("#edit-attachments").slideUp(100);
@@ -35,6 +35,12 @@ $(document).ready(function ()
 			$("#attachments-linkimg").attr("src", SPRUCE_IMAGEPATH + "/black-arrow-up.png");
 			$("#edit-attachments").slideDown(100);
 		}
+	});
+
+	// Pagesize drop down submits the form when the value changes
+	$("#pageSize").change(function ()
+	{
+		$(this).parent().submit();
 	});
 
 	// Revisions table toggle links
@@ -49,7 +55,7 @@ $(document).ready(function ()
 	{
 		var html = $(this).html();
 
-		if (html.indexOf("\\") != -1)
+		if(html.indexOf("\\") != -1)
 		{
 			html = html.replace(/\(.*?\.*?\)/g, "");
 			$(this).html(html);

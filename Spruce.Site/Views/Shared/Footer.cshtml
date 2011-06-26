@@ -1,0 +1,22 @@
+﻿<div id="footer">
+	<div class="left">
+		<a href="@Url.Action("Excel")" title="Export to current list an Excel 2007 spreadsheet">Export as Excel</a>&nbsp;|&nbsp;
+		<a href="@Url.RssLink()" title="View the current list as an RSS feed">Export as RSS</a>&nbsp;|&nbsp;
+		<a href="javascript:$('#query').toggle()">Show query</a>&nbsp;|&nbsp;
+	</div>
+	<div class="left">
+		<div class="left">
+		<form action="" method="get">
+		@Html.Hidden("sortBy",Request.QueryString["sortBy"])
+		@Html.Hidden("desc",Request.QueryString["desc"])
+		@Html.DropDownBoxForPageSize()
+		</form>
+		</div>
+		<div class="left">&nbsp;Items per page</div>
+	</div>
+	<br class="clear" />
+
+	<div id="query">
+		<pre>@Html.Raw(HttpContext.Current.Items["Query"].ToString())</pre>
+	</div>
+</div>

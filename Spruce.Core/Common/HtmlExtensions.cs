@@ -115,6 +115,16 @@ namespace Spruce.Core
 			return helper.DropDownList("project", selectList, new { tabindex = tabIndex });
 		}
 
+		public static MvcHtmlString DropDownBoxForPageSize(this HtmlHelper helper)
+		{
+			List<SelectListItem> selectList = new List<SelectListItem>();
+
+			selectList.Add(new SelectListItem() { Text = "25", Value = "25",Selected=UserContext.Current.Settings.PageSize == 25 });
+			selectList.Add(new SelectListItem() { Text = "50", Value = "50", Selected = UserContext.Current.Settings.PageSize == 50 });
+			selectList.Add(new SelectListItem() { Text = "100", Value = "100", Selected = UserContext.Current.Settings.PageSize == 100 });
+
+			return helper.DropDownList("pageSize", selectList);
+		}
 
 		public static MvcHtmlString DropDownBoxForAreas(this HtmlHelper helper, string name, IList<AreaSummary> items, string selectedValue, int tabIndex)
 		{
