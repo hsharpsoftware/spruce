@@ -12,8 +12,10 @@ namespace Spruce.Core.Controllers
 {
 	public class TasksController : ControllerBase
     {
-		public ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize)
+		public ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize,
+			string title, string assignedTo, string startDate, string endDate, string status)
 		{
+			UserContext.Current.Settings.FilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
 			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, true, sortBy, desc, page, pageSize, new TaskManager());
 			return View(list);
 		}
