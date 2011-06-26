@@ -75,6 +75,12 @@ namespace Spruce.Core
 			return WorkItemManager.ToWorkItemSummaryList(collection);
 		}
 
+		public void Title(string title)
+		{
+			_parameters.Add("title", title);
+			_andFilters.Add("[Title] CONTAINS @title");
+		}
+
 		public void Active()
 		{
 			_orFilters.Add("State='Active'");
@@ -90,9 +96,9 @@ namespace Spruce.Core
 			_orFilters.Add("State='Closed'");
 		}
 
-		public void AssignedToMe()
+		public void AssignedTo(string name)
 		{
-			_parameters.Add("user", UserContext.Current.Name);
+			_parameters.Add("user", name);
 			_andFilters.Add("[Assigned To]=@user");
 		}
 
@@ -126,6 +132,13 @@ namespace Spruce.Core
 			_parameters.Add("lastmonth", DateTime.Today.StartOfLastMonth());
 			_parameters.Add("lastmonthend", DateTime.Today.StartOfThisMonth());
 			_andFilters.Add("[System.CreatedDate] >= @lastmonth AND [System.CreatedDate] < @lastmonthend");
+		}
+
+		public void BetweenDates(DateTime start,DateTime end)
+		{
+			_parameters.Add("datestart", start);
+			_parameters.Add("dateend", end);
+			_andFilters.Add("[System.CreatedDate] >= @datestart AND [System.CreatedDate] < @dateend");
 		}
 
 		#region Statics

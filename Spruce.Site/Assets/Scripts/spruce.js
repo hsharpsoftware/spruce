@@ -6,6 +6,16 @@ $(document).ready(function ()
 		$(this).parent().parent().submit();
 	});
 
+	// Table filters row - return key submits the form
+	$("#list-table #title").keypress(filterFormKeyPress);
+	$("#list-table #assignedTo").keypress(filterFormKeyPress);
+	$("#list-table #startDate").keypress(filterFormKeyPress);
+	$("#list-table #endDate").keypress(filterFormKeyPress);
+	$("#list-table #status").change(function ()
+	{
+		$("#filterform").submit();
+	});
+
 	//
 	// Close/resolve drop out and attachments drop out.
 	//
@@ -82,7 +92,27 @@ $(document).ready(function ()
 	{
 		$(this).timeago();
 	});
+
+	// Tooltips for the filters
+	$(".help").tooltip(
+	{
+		bodyHandler: function ()
+		{
+			return $(this).attr("help");
+		},
+		showURL: false
+	});
 });
+
+function filterFormKeyPress(e)
+{
+	if(e.which == 13)
+	{
+		$("#filterform").submit();
+		e.preventDefault();
+		return false;
+	}
+}
 
 function toggleRevisionTable(index)
 {

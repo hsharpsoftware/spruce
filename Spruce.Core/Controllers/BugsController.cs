@@ -13,17 +13,22 @@ namespace Spruce.Core.Controllers
 {
 	public class BugsController : ControllerBase
     {
-		public ActionResult Index(string id, string sortBy, bool? desc,int? page,int? pageSize)
+		public ActionResult Index(string id, string sortBy, bool? desc,int? page,int? pageSize,
+			string title,string assignedTo,string startDate,string endDate,string status)
 		{
 			SetBugView("Index");
+
+			UserContext.Current.Settings.FilterOptions = FilterOptions.Parse(title,assignedTo,startDate,endDate,status);
 			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, false, sortBy, desc, page, pageSize, new BugManager());
 
 			return View(list);
 		}
 
-		public ActionResult Heatmap(string id, string sortBy, bool? desc, int? page, int? pageSize)
+		public ActionResult Heatmap(string id, string sortBy, bool? desc, int? page, int? pageSize,
+			string title, string assignedTo, string startDate, string endDate, string status)
 		{
 			SetBugView("Heatmap");
+			UserContext.Current.Settings.FilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
 			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, true, sortBy, desc, page, pageSize,new BugManager());
 
 			return View(list);

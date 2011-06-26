@@ -1,12 +1,7 @@
 ﻿@model int[]
-
 <div id="pagebar-container">
 	<div id="pagenumbers">
-		@if (Model[0] <= 1)
-		{
-			<div class="page">1</div>
-		}
-		else
+		@if (Model[0] > 1)
 		{
 			for (int page = 1; page <= Model[0]; page++)
 			{

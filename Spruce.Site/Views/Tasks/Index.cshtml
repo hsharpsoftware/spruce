@@ -2,6 +2,9 @@
 
 <h3>Tasks</h3>
 
+<form action="" method="get" id="filterform">
+@Html.Hidden("sortBy",Request.QueryString["sortBy"])
+@Html.Hidden("desc",Request.QueryString["desc"])
 <div style="width:100%">
 	<table id="list-table">
 		<thead>
@@ -26,6 +29,24 @@
 				</th>
 			</tr>
 		</thead>
+		<!-- Filter bar -->
+		<tr style="height:5px;background-color:#EEE;">
+			<td class="help" help="Filter by title.">@Html.TextBox("title", Request.QueryString["title"], new { placeholder = "title" })</td>
+			<td></td>
+			<td style="width:15%;" class="help"  help="Filter by assigned to. Use 'me' or the login name.">
+				@Html.TextBox("assignedTo", Request.QueryString["assignedTo"], new { placeholder = "assigned to" })
+			</td>
+			<td style="width:15%" class="help"  help="Filter by start/end date. You can use today, yesterday, thisweek, thismonth, lastmonth or standard dates.">
+				@Html.TextBox("startDate", Request.QueryString["startDate"], new { placeholder = "start" })
+				@Html.TextBox("endDate", Request.QueryString["endDate"], new { placeholder = "end" })
+			</td>
+			<td class="help" help="Filter by the status.">
+				@Html.DropDownList("status", new Dictionary<string, string>() { { "All", "All" }, { "Active", "Active" },{ "Closed", "Closed" } }, Request.QueryString["status"])
+			</td>
+			<td></td>
+			<td></td>
+			<td style="width:10%"></td>
+		</tr>
 		<tbody>
 		@foreach (WorkItemSummary item in Model)
 		{
@@ -55,8 +76,9 @@
 		</tbody>
 	</table>
 </div>
-<br class="clear" />
+</form>
 
+<br style="clear:both" />
 @Html.Partial("PagingBar", new int[] { int.Parse(ViewData["pageCount"].ToString()), int.Parse(ViewData["currentPage"].ToString()) })
 
 <br /><br />

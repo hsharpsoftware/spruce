@@ -97,6 +97,29 @@ namespace Spruce.Core
 			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
+		/// <summary>
+		/// A shortcut for a dropdown list
+		/// </summary>
+		/// <param name="name">the select object's name</param>
+		/// <param name="items">Where key is the value, and the value is the text</param>
+		/// <param name="selectedValue"></param>
+		/// <returns></returns>
+		public static MvcHtmlString DropDownList(this HtmlHelper helper, string name, Dictionary<string,string> items,string selectedValue)
+		{
+			List<SelectListItem> selectList = new List<SelectListItem>();
+
+			foreach (string key in items.Keys)
+			{
+				SelectListItem selectListItem = new SelectListItem() { Text = items[key], Value = key };
+				if (key == selectedValue)
+					selectListItem.Selected = true;
+
+				selectList.Add(selectListItem);
+			}
+
+			return helper.DropDownList(name, selectList);
+		}
+
 		public static MvcHtmlString DropDownBoxForProjects(this HtmlHelper helper, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();

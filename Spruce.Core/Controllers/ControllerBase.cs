@@ -57,44 +57,64 @@ namespace Spruce.Core.Controllers
 				}
 			}
 
-			if (UserContext.Current.Settings.FilterOptions.Active)
+			FilterOptions filterOptions = UserContext.Current.Settings.FilterOptions; // shorthand
+
+			if (!string.IsNullOrEmpty(filterOptions.Title))
+			{
+				manager.Title(filterOptions.Title);
+			}
+
+			if (!string.IsNullOrEmpty(filterOptions.AssignedTo))
+			{
+				manager.AssignedTo(filterOptions.AssignedTo);
+			}
+
+			//
+			// Status
+			//
+			if (filterOptions.Active)
 			{
 				manager.Active();
 			}
-
-			if (UserContext.Current.Settings.FilterOptions.AssignedToMe)
-			{
-				manager.AssignedToMe();
-			}
-
-			if (UserContext.Current.Settings.FilterOptions.Closed)
+			else if (filterOptions.Closed)
 			{
 				manager.Closed();
 			}
-
-			if (UserContext.Current.Settings.FilterOptions.Resolved)
+			else if (filterOptions.Resolved)
 			{
 				manager.Resolved();
 			}
-
-			if (UserContext.Current.Settings.FilterOptions.ThisMonth)
+			else if (filterOptions.ThisMonth)
 			{
 				manager.ThisMonth();
 			}
 
-			if (UserContext.Current.Settings.FilterOptions.ThisWeek)
-			{
-				manager.ThisWeek();
-			}
-
-			if (UserContext.Current.Settings.FilterOptions.Today)
+			//
+			// Dates
+			//
+			if (filterOptions.Today)
 			{
 				manager.Today();
 			}
-
-			if (UserContext.Current.Settings.FilterOptions.LastMonth)
+			else if (filterOptions.Yesterday)
+			{
+				manager.Yesterday();
+			}
+			else if (filterOptions.ThisWeek)
+			{
+				manager.ThisWeek();
+			}
+			else if (filterOptions.ThisMonth)
+			{
+				manager.ThisMonth();
+			}
+			else if (filterOptions.LastMonth)
 			{
 				manager.LastMonth();
+			}
+			else if(filterOptions.StartDate != DateTime.MinValue && filterOptions.EndDate != DateTime.MinValue)
+			{
+				manager.BetweenDates(filterOptions.StartDate, filterOptions.EndDate);
 			}
 
 			IEnumerable<WorkItemSummary> list = manager.ExecuteQuery();
