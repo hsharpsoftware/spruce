@@ -20,7 +20,8 @@ namespace Spruce.Core
 		/// This should map to an action name in BugController
 		/// </summary>
 		public string BugView { get; set; }
-		public FilterOptions FilterOptions { get; set; }
+		public FilterOptions BugFilterOptions { get; set; }
+		public FilterOptions TaskFilterOptions { get; set; }
 
 		public int PageSize { get; set; }
 
@@ -43,7 +44,8 @@ namespace Spruce.Core
 
 		public UserSettings()
 		{
-			FilterOptions = new FilterOptions();
+			BugFilterOptions = new FilterOptions();
+			TaskFilterOptions = new FilterOptions();
 		}
 
 		/// <summary>

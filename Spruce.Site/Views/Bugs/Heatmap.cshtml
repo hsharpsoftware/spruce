@@ -12,19 +12,19 @@
 		<thead>
 			<tr id="list-table-header">
 				<th>
-					<div>@Html.ActionLink("Title","Heatmap",new { sortBy = "Title", desc = !(bool)ViewData["desc"]})</div>
+					<div>@Html.TableSortLink("Title","Title")</div>
 				</th>
 				<th style="width:8%;">
-					<div>@Html.ActionLink("ID","Heatmap",new { sortBy = "Id", desc = !(bool)ViewData["desc"]})</div>
+					<div>@Html.TableSortLink("ID","Id")</div>
 				</th>
 				<th style="width:15%">
-					<div>@Html.ActionLink("Assigned to", "Heatmap", new { sortBy = "AssignedTo", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Assigned to", "AssignedTo")</div>
 				</th>
 				<th style="width:15%">
-					<div>@Html.ActionLink("Created on", "Heatmap", new { sortBy = "CreatedDate", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Created on", "CreatedDate")</div>
 				</th>
 				<th style="width:12%">
-					<div>@Html.ActionLink("Status", "Heatmap", new { sortBy = "State", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Status", "State")</div>
 				</th>
 				<th style="width:12%">
 					<div>Priority</div>

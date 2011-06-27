@@ -57,7 +57,7 @@ namespace Spruce.Core.Controllers
 				}
 			}
 
-			FilterOptions filterOptions = UserContext.Current.Settings.FilterOptions; // shorthand
+			FilterOptions filterOptions = UserContext.Current.Settings.BugFilterOptions; // shorthand
 
 			if (!string.IsNullOrEmpty(filterOptions.Title))
 			{

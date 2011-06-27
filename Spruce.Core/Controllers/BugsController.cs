@@ -18,7 +18,7 @@ namespace Spruce.Core.Controllers
 		{
 			SetBugView("Index");
 
-			UserContext.Current.Settings.FilterOptions = FilterOptions.Parse(title,assignedTo,startDate,endDate,status);
+			UserContext.Current.Settings.BugFilterOptions = FilterOptions.Parse(title,assignedTo,startDate,endDate,status);
 			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, false, sortBy, desc, page, pageSize, new BugManager());
 
 			return View(list);
@@ -28,7 +28,7 @@ namespace Spruce.Core.Controllers
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
 			SetBugView("Heatmap");
-			UserContext.Current.Settings.FilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
+			UserContext.Current.Settings.BugFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
 			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, true, sortBy, desc, page, pageSize,new BugManager());
 
 			return View(list);

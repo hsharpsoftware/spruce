@@ -8,11 +8,34 @@ using System.Text;
 using Spruce.Core;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Spruce.Core
 {
 	public static class HtmlExtensions
 	{
+		public static MvcHtmlString TableSortLink(this HtmlHelper helper, string title, string column)
+		{
+			bool descending = (bool) helper.ViewData["desc"];
+
+			string fullUrl = HttpContext.Current.Request.Url.ToString();
+
+			// Remove the querystrings if they exist already
+			Regex regex = new Regex("(sortBy=(.*?)&desc=(.*?)[&])");
+			fullUrl = regex.Replace(fullUrl, "");
+
+			if (string.IsNullOrEmpty(HttpContext.Current.Request.Url.Query))
+			{	
+				fullUrl += "?";
+			}
+			else
+			{
+				fullUrl += "&";
+			}
+
+			return MvcHtmlString.Create(string.Format(@"<a href=""{0}sortBy={1}&desc={2}"">{3}</a>", fullUrl, column, descending, title));
+		}
+
 		public static string GetPreviousFieldValue(this HtmlHelper helper, WorkItemSummary model, string fieldName, int revisionNumber)
 		{
 			if (revisionNumber > 0 && model.Revisions[revisionNumber - 1].Fields[fieldName].Value != null)

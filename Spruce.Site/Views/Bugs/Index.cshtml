@@ -12,25 +12,25 @@
 		<thead>
 			<tr id="list-table-header">
 				<th>
-					<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Title","Title")</div>
 				</th>
 				<th style="width:8%;">
-					<div>@Html.ActionLink("ID","Index",new { sortBy = "Id", desc = !(bool)ViewData["desc"]})</div>
+					<div>@Html.TableSortLink("ID","Id")</div>
 				</th>
 				<th style="width:15%">
-					<div>@Html.ActionLink("Assigned to", "Index", new { sortBy = "AssignedTo", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Assigned to", "AssignedTo")</div>
 				</th>
 				<th style="width:15%">
-					<div>@Html.ActionLink("Created on", "Index", new { sortBy = "CreatedDate", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Created on", "CreatedDate")</div>
 				</th>
 				<th style="width:12%">
-					<div>@Html.ActionLink("Status", "Index", new { sortBy = "State", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Status", "State")</div>
 				</th>
 				<th style="width:12%">
-					<div>@Html.ActionLink("Priority", "Index", new { sortBy = "Priority", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Priority", "Priority")</div>
 				</th>
 				<th style="width:12%">
-					<div>@Html.ActionLink("Severity", "Index", new { sortBy = "Severity", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Severity", "Severity")</div>
 				</th>
 				<th style="width:10%">
 					<div class="list-table-noborder"></div>
@@ -41,10 +41,10 @@
 		<tr style="height:5px;background-color:#EEE;">
 			<td class="help" help="Filter by title.">@Html.TextBox("title", Request.QueryString["title"], new { placeholder = "title" })</td>
 			<td></td>
-			<td style="width:15%;" class="help"  help="Filter by assigned to. Use 'me' or the login name.">
+			<td style="width:15%;" class="help" help="Filter by assigned to. Use 'me' or the login name.">
 				@Html.TextBox("assignedTo", Request.QueryString["assignedTo"], new { placeholder = "assigned to" })
 			</td>
-			<td style="width:15%" class="help"  help="Filter by start/end date. You can use today, yesterday, thisweek, thismonth, lastmonth or standard dates.">
+			<td style="width:15%" class="help" help="Filter by start/end date. You can use today, yesterday, thisweek, thismonth, lastmonth or standard dates.">
 				@Html.TextBox("startDate", Request.QueryString["startDate"], new { placeholder = "start" })
 				@Html.TextBox("endDate", Request.QueryString["endDate"], new { placeholder = "end" })
 			</td>

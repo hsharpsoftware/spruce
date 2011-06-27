@@ -10,19 +10,19 @@
 		<thead>
 			<tr id="list-table-header">
 				<th>
-					<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Title","Title")</div>
 				</th>
 				<th style="width:8%;">
-					<div>@Html.ActionLink("ID", "Index", new { sortBy = "Id", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("ID","Id")</div>
 				</th>
 				<th style="width:15%">
-					<div>@Html.ActionLink("Assigned to", "Index", new { sortBy = "AssignedTo", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Assigned to", "AssignedTo")</div>
 				</th>
 				<th style="width:15%">
-					<div>@Html.ActionLink("Created on", "Index", new { sortBy = "CreatedDate", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Created on", "CreatedDate")</div>
 				</th>
 				<th style="width:12%">
-					<div>@Html.ActionLink("Status", "Index", new { sortBy = "State", desc = !(bool)ViewData["desc"] })</div>
+					<div>@Html.TableSortLink("Status", "State")</div>
 				</th>
 				<th style="width:10%">
 					<div class="list-table-noborder"></div>
