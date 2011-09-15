@@ -46,7 +46,7 @@ namespace Spruce.Core.Controllers
 			return feed;
 		}
 
-		protected IEnumerable<WorkItemSummary> FilterAndPageList(string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize, WorkItemManager manager)
+		protected IEnumerable<WorkItemSummary> FilterAndPageList(FilterOptions filterOptions, string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize, WorkItemManager manager)
 		{
 			if (!string.IsNullOrEmpty(projectName))
 			{
@@ -56,8 +56,6 @@ namespace Spruce.Core.Controllers
 					UserContext.Current.UpdateSettings();
 				}
 			}
-
-			FilterOptions filterOptions = UserContext.Current.Settings.BugFilterOptions; // shorthand
 
 			if (!string.IsNullOrEmpty(filterOptions.Title))
 			{
@@ -147,6 +145,21 @@ namespace Spruce.Core.Controllers
 			ViewData["desc"] = (descending == true);
 
 			return list;
+		}
+
+		protected FilterOptions GetBugFilterOptions()
+		{
+			return  UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name).BugFilterOptions;
+		}
+
+		protected FilterOptions GetBugHeatmapFilterOptions()
+		{
+			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name).BugHeatmapFilterOptions;
+		}
+
+		protected FilterOptions GetTaskFilterOptions()
+		{
+			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name).TaskFilterOptions;
 		}
 	}
 }

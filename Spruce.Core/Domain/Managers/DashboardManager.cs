@@ -25,13 +25,13 @@ namespace Spruce.Core
 			summary.ActiveBugs = bugManager.ExecuteQuery().Count;
 			summary.BugCount = allbugs.Count;
 			summary.MyActiveBugCount = allbugs.Where(b => b.State == "Active").ToList().Count;
-			summary.MyActiveBugs = allbugs.Where(b => b.State == "Active" && b.CreatedBy == UserContext.Current.Name)
+			summary.MyActiveBugs = allbugs.Where(b => b.State == "Active" && b.AssignedTo == UserContext.Current.Name)
 				.OrderByDescending(b => b.CreatedDate).Take(5).ToList();
 
 			taskManager.Active();
 			summary.ActiveTasks = allTasks.Count;
 			summary.TaskCount = allTasks.Count;
-			summary.MyActiveTasks = allTasks.Where(b => b.State == "Active" && b.CreatedBy == UserContext.Current.Name)
+			summary.MyActiveTasks = allTasks.Where(b => b.State == "Active" && b.AssignedTo == UserContext.Current.Name)
 				.OrderByDescending(b => b.CreatedDate).Take(5).ToList();
 
 			return summary;

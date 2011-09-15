@@ -25,6 +25,7 @@ syntax: glob
 *.sbr
 *.scc
 [Bb]in
+[Aa]pp_Data*/
 [Dd]ebug*/
 [Oo]bj*/
 [Rr]elease*/

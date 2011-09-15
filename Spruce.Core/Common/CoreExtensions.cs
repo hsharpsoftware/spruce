@@ -10,6 +10,18 @@ namespace Spruce.Core
 {
 	public static class CoreExtensions
 	{
+		public static int IndexOf(this IList<ProjectFilterOptions> options, string projectName)
+		{
+			for (int i = 0; i < options.Count; i++)
+			{
+				if (options[i].Name == projectName)
+					return i;
+			}
+
+			return -1;
+		}
+
+
 		/// <summary>
 		/// Attempts to parse the object as a string value and convert to an integer. If this fails, zero is returned.
 		/// </summary>

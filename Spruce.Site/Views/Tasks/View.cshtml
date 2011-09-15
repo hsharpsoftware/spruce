@@ -17,7 +17,7 @@
 	</div>
 	
 	<div id="item-description">
-		@MvcHtmlString.Create(Model.Description.Replace("\n","<br/>"))
+		@Html.ParseMarkdown(Model.Description)
 	</div>
 
 	@if (Model.Attachments.Count > 0)

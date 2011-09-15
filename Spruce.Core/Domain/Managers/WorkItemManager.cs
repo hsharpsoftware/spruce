@@ -400,10 +400,19 @@ namespace Spruce.Core
 			// For tasks
 			if (item.Type.Name.ToLower() == "task")
 			{
-				// For updates only
+				// For updates only, and Agile v5 has this field
 				if (item.Fields.Contains("Original Estimate"))
+				{
 					item.Fields["Original Estimate"].Value = summary.EstimatedHours;
+				}
+				else
+				{
+					if (summary.EstimatedHours > 0)
+						throw new SaveException(@"The project template appears to be MS Agile 4 which does not support task hour estaimatsion (or tasks have no 
+													Original Estimates field). Please Set the hours value to 0 in order to save.");
+				}
 
+				// The exception should be thrown before reaching these for agile 4.
 				item.Fields["Remaining Work"].Value = summary.RemainingHours;
 				item.Fields["Completed Work"].Value = summary.CompletedHours;
 			}

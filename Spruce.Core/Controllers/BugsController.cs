@@ -18,8 +18,10 @@ namespace Spruce.Core.Controllers
 		{
 			SetBugView("Index");
 
-			UserContext.Current.Settings.BugFilterOptions = FilterOptions.Parse(title,assignedTo,startDate,endDate,status);
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, false, sortBy, desc, page, pageSize, new BugManager());
+			if (Request.QueryString.Count > 0)
+				UserContext.Current.Settings.UpdateBugFilterOptions(UserContext.Current.CurrentProject.Name,title, assignedTo, startDate, endDate, status);
+
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugFilterOptions(), id, false, sortBy, desc, page, pageSize, new BugManager());
 
 			return View(list);
 		}
@@ -28,8 +30,11 @@ namespace Spruce.Core.Controllers
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
 			SetBugView("Heatmap");
-			UserContext.Current.Settings.BugFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, true, sortBy, desc, page, pageSize,new BugManager());
+
+			if (Request.QueryString.Count > 0)
+				UserContext.Current.Settings.UpdateBugHeatmapFilterOptions(UserContext.Current.CurrentProject.Name, title, assignedTo, startDate, endDate, status);
+
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugHeatmapFilterOptions(), id, true, sortBy, desc, page, pageSize, new BugManager());
 
 			return View(list);
 		}
@@ -235,7 +240,7 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult Excel()
 		{
-			IEnumerable<WorkItemSummary> list = FilterAndPageList("", true, "CreatedDate", true, 1, 10000, new BugManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugFilterOptions(),"", true, "CreatedDate", true, 1, 10000, new BugManager());
 
 			StringBuilder builder = new StringBuilder();
 			using (StringWriter writer = new StringWriter(builder))
@@ -273,7 +278,7 @@ namespace Spruce.Core.Controllers
 				UserContext.Current.UpdateSettings();
 			}
 
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(projectName, true, "CreatedDate", true, 1, 10000, new BugManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(new FilterOptions(),projectName, true, "CreatedDate", true, 1, 10000, new BugManager());
 
 			RssActionResult result = new RssActionResult();
 			result.Feed = GetRssFeed(list,"Bugs");

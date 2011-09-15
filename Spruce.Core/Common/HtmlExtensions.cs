@@ -14,6 +14,13 @@ namespace Spruce.Core
 {
 	public static class HtmlExtensions
 	{
+		public static MvcHtmlString ParseMarkdown(this HtmlHelper helper, string text)
+		{
+			text = text.Replace("\n","<br/>");
+			Markdown markdown = new Markdown();
+			return MvcHtmlString.Create(markdown.Transform(text));
+		}
+
 		public static MvcHtmlString TableSortLink(this HtmlHelper helper, string title, string column)
 		{
 			bool descending = (bool) helper.ViewData["desc"];

@@ -15,8 +15,10 @@ namespace Spruce.Core.Controllers
 		public ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize,
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
-			UserContext.Current.Settings.BugFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(id, true, sortBy, desc, page, pageSize, new TaskManager());
+			if (Request.QueryString.Count > 0)
+				UserContext.Current.Settings.UpdateTaskFilterOptions(UserContext.Current.CurrentProject.Name, title, assignedTo, startDate, endDate, status);
+
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetTaskFilterOptions(), id, true, sortBy, desc, page, pageSize, new TaskManager());
 			return View(list);
 		}
 
@@ -189,7 +191,7 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult Excel()
 		{
-			IEnumerable<WorkItemSummary> list = FilterAndPageList("", true, "CreatedDate", true, 1, 10000,new TaskManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetTaskFilterOptions(),"", true, "CreatedDate", true, 1, 10000,new TaskManager());
 
 			StringBuilder builder = new StringBuilder();
 			using (StringWriter writer = new StringWriter(builder))
@@ -227,7 +229,7 @@ namespace Spruce.Core.Controllers
 				UserContext.Current.UpdateSettings();
 			}
 
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(projectName, true, "CreatedDate", true, 1, 10000,new TaskManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(new FilterOptions(), projectName, true, "CreatedDate", true, 1, 10000,new TaskManager());
 
 			RssActionResult result = new RssActionResult();
 			result.Feed = GetRssFeed(list, "Tasks");

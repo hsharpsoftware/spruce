@@ -20,8 +20,8 @@ namespace Spruce.Core
 		/// This should map to an action name in BugController
 		/// </summary>
 		public string BugView { get; set; }
-		public FilterOptions BugFilterOptions { get; set; }
-		public FilterOptions TaskFilterOptions { get; set; }
+
+		private List<ProjectFilterOptions> _projectFilterOptions;
 
 		public int PageSize { get; set; }
 
@@ -44,8 +44,7 @@ namespace Spruce.Core
 
 		public UserSettings()
 		{
-			BugFilterOptions = new FilterOptions();
-			TaskFilterOptions = new FilterOptions();
+			_projectFilterOptions = new List<ProjectFilterOptions>();
 		}
 
 		/// <summary>
@@ -73,19 +72,19 @@ namespace Spruce.Core
 						return settings;
 				}
 			}
-			catch (IOException)
+			catch (IOException e)
 			{
-				// TODO: Warn
+				Log.Warn(e, "An IO error occurred loading the UserSettings file for user id {0}", userId);
 				return new UserSettings();
 			}
-			catch (FormatException)
+			catch (FormatException e)
 			{
-				// TODO: Warn
+				Log.Warn(e, "A FormatException error occurred loading the UserSettings file for user id {0}", userId);
 				return new UserSettings();
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				// TODO: Warn
+				Log.Warn(e, "An unhandled exception error occurred loading the UserSettings file for user id {0}", userId);
 				return new UserSettings();
 			}
 		}
@@ -102,17 +101,57 @@ namespace Spruce.Core
 					serializer.Serialize(stream, settings);
 				}
 			}
-			catch (IOException)
+			catch (IOException e)
 			{
-				// TODO: Warn
+				Log.Warn(e, "An IO error occurred saving the UserSettings file for user id {0}", userId);
 			}
-			catch (FormatException)
+			catch (FormatException e)
 			{
-				// TODO: Warn
+				Log.Warn(e, "A FormatException error occurred saving the UserSettings file for user id {0}", userId);
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				// TODO: Warn
+				Log.Warn(e, "An unhandled exception error occurred saving the UserSettings file for user id {0}", userId);
+			}
+		}
+
+		public void UpdateBugFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
+		{
+			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
+			options.BugFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
+
+			Save(UserContext.Current.Id, this);
+		}
+
+		public void UpdateBugHeatmapFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
+		{
+			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
+			options.BugHeatmapFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
+
+			Save(UserContext.Current.Id, this);
+		}
+
+		public void UpdateTaskFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
+		{
+			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
+			options.TaskFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
+
+			Save(UserContext.Current.Id, this);
+		}
+
+		public ProjectFilterOptions GetFilterOptionsForProject(string projectName)
+		{
+			int index = _projectFilterOptions.IndexOf(projectName);
+
+			if (index == -1)
+			{
+				ProjectFilterOptions options = new ProjectFilterOptions(projectName);
+				_projectFilterOptions.Add(options);
+				return options;
+			}
+			else
+			{
+				return _projectFilterOptions[index];
 			}
 		}
 	}
