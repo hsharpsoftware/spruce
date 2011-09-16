@@ -15,7 +15,7 @@ namespace Spruce.Core.Controllers
 		public ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize,
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
-			if (Request.QueryString.Count > 0)
+			if (QueryStringContainsFilters())
 				UserContext.Current.Settings.UpdateTaskFilterOptions(UserContext.Current.CurrentProject.Name, title, assignedTo, startDate, endDate, status);
 
 			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetTaskFilterOptions(), id, true, sortBy, desc, page, pageSize, new TaskManager());
@@ -218,7 +218,6 @@ namespace Spruce.Core.Controllers
 				AreaSummary summary = UserContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == areaPath);
 				UserContext.Current.Settings.AreaName = summary.Name;
 				UserContext.Current.Settings.AreaPath = summary.Path;
-				UserContext.Current.UpdateSettings();
 			}
 			else if (!string.IsNullOrEmpty(iterationPath))
 			{
@@ -226,7 +225,6 @@ namespace Spruce.Core.Controllers
 				IterationSummary summary = UserContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iterationPath);
 				UserContext.Current.Settings.IterationName = summary.Name;
 				UserContext.Current.Settings.IterationPath = summary.Path;
-				UserContext.Current.UpdateSettings();
 			}
 
 			IEnumerable<WorkItemSummary> list = FilterAndPageList(new FilterOptions(), projectName, true, "CreatedDate", true, 1, 10000,new TaskManager());

@@ -17,16 +17,10 @@ namespace Spruce.Core
 		public DateTime StartDate { get; set; }
 		public DateTime EndDate { get; set; }
 
-		public bool Today { get; set; }
-		public bool Yesterday { get; set; }
-		public bool ThisWeek { get; set; }
-		public bool ThisMonth { get; set; }
-		public bool LastMonth { get; set; }
-
 		public FilterOptions()
 		{
 			StartDate = DateTime.MinValue;
-			EndDate = DateTime.MaxValue;
+			EndDate = DateTime.MinValue;
 		}
 
 		public static FilterOptions Parse(string title, string assignedTo, string startDate, string endDate, string status)
@@ -43,64 +37,12 @@ namespace Spruce.Core
 			// Dates
 			if (!string.IsNullOrEmpty(startDate))
 			{
-				startDate = startDate.ToLower();
-				if (startDate == "today")
-				{
-					filterOptions.Today = true;
-				}
-				else if (startDate == "yesterday")
-				{
-					filterOptions.Yesterday = true;
-				}
-				else if (startDate == "thisweek")
-				{
-					filterOptions.ThisWeek = true;
-				}
-				else if (startDate == "thismonth")
-				{
-					filterOptions.ThisMonth = true;
-				}
-				else if (startDate == "lastmonth")
-				{
-					filterOptions.LastMonth = true;
-				}
-				else
-				{
-					DateTime start = DateTime.MinValue;
-					if (DateTime.TryParse(startDate, out start))
-						filterOptions.StartDate = start;
-				}
+				filterOptions.StartDate = FromNamedDate(startDate);
 			}
 
 			if (!string.IsNullOrEmpty(endDate))
 			{
-				endDate = endDate.ToLower();
-				if (endDate == "today")
-				{
-					filterOptions.Today = true;
-				}
-				else if (endDate == "yesterday")
-				{
-					filterOptions.Yesterday = true;
-				}
-				else if (endDate == "thisweek")
-				{
-					filterOptions.ThisWeek = true;
-				}
-				else if (endDate == "thismonth")
-				{
-					filterOptions.ThisMonth = true;
-				}
-				else if (endDate == "lastmonth")
-				{
-					filterOptions.LastMonth = true;
-				}
-				else
-				{
-					DateTime end = DateTime.MinValue;
-					if (DateTime.TryParse(endDate, out end))
-						filterOptions.EndDate = end;
-				}
+				filterOptions.EndDate = FromNamedDate(endDate);
 			}
 
 			// Status
@@ -126,6 +68,55 @@ namespace Spruce.Core
 			}
 
 			return filterOptions;
+		}
+
+		public string ConvertStatusToString()
+		{
+			if (Active)
+				return "Active";
+			if (Closed)
+				return "Closed";
+			if (Resolved)
+				return "Resolved";
+
+			return "All";
+		}
+
+		private static DateTime FromNamedDate(string namedDate)
+		{
+			if (string.IsNullOrEmpty(namedDate))
+				return DateTime.MinValue;
+
+			namedDate = namedDate.ToLower();
+
+			if (namedDate == "today")
+			{
+				return DateTime.Today;
+			}
+			else if (namedDate == "yesterday")
+			{
+				return DateTime.Today.Yesterday();
+			}
+			else if (namedDate == "thisweek")
+			{
+				return DateTime.Today.StartOfWeek();
+			}
+			else if (namedDate == "thismonth")
+			{
+				return DateTime.Today.StartOfThisMonth();
+			}
+			else if (namedDate == "lastmonth")
+			{
+				return DateTime.Today.StartOfLastMonth();
+			}
+			else
+			{
+				DateTime dateTime = DateTime.MinValue;
+				if (!DateTime.TryParse(namedDate, out dateTime))
+					dateTime = DateTime.MinValue;
+
+				return dateTime;
+			}
 		}
 	}
 }

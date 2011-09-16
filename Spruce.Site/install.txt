@@ -1,0 +1,5 @@
+﻿Checklist:
+
+- Create an App pool that runs with .NET 4
+- Make sure the Site has authentication set to Windows and anonymous is disabled (can this be done in the web.config?)
+- Other troubleshooting here about separate server deployment

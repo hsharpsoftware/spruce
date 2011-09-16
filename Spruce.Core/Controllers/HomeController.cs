@@ -47,7 +47,6 @@ namespace Spruce.Core.Controllers
 			if (!string.IsNullOrEmpty(project) && project != UserContext.Current.CurrentProject.Name)
 			{
 				UserContext.Current.ChangeCurrentProject(project);
-				UserContext.Current.UpdateSettings();
 			}
 			else
 			{
@@ -56,7 +55,6 @@ namespace Spruce.Core.Controllers
 					AreaSummary summary = UserContext.Current.CurrentProject.Areas.FirstOrDefault(a => a.Path == area);
 					UserContext.Current.Settings.AreaName = summary.Name;
 					UserContext.Current.Settings.AreaPath = summary.Path;
-					UserContext.Current.UpdateSettings();
 				}
 
 				if (!string.IsNullOrEmpty(iteration))
@@ -64,13 +62,16 @@ namespace Spruce.Core.Controllers
 					IterationSummary summary = UserContext.Current.CurrentProject.Iterations.FirstOrDefault(i => i.Path == iteration);
 					UserContext.Current.Settings.IterationName = summary.Name;
 					UserContext.Current.Settings.IterationPath = summary.Path;
-					UserContext.Current.UpdateSettings();
 				}
 			}
 
-			// Redirect
+			// Redirect, however if the fromUrl has the bugs/tasks filter querystrings do not redirect
+			// as this will cause those filter settings to be persisted onto the settings of project we're changing to.
 			if (!string.IsNullOrEmpty(fromUrl))
-				return Redirect(fromUrl);
+			{
+				Uri uri = new Uri(fromUrl);
+				return Redirect(uri.AbsolutePath);
+			}
 			else
 				return RedirectToAction("Index");
 		}

@@ -8,6 +8,9 @@ namespace Spruce.Core
 {
 	public class SpruceSettings
 	{
+		private static string _uploadDirectory;
+		private static string _userSettingsDirectory;
+
 		public static string TfsServer
 		{
 			get
@@ -31,10 +34,24 @@ namespace Spruce.Core
 		{
 			get
 			{
-				if (UserContext.IsWeb)
-					return HttpContext.Current.Server.MapPath("~/App_Data/Attachments/");
-				else
-					return @"Attachments\";
+				if (string.IsNullOrEmpty(_uploadDirectory))
+					_uploadDirectory = string.Format(@"{0}\App_Data\Attachments\", AppDomain.CurrentDomain.BaseDirectory);
+
+				return _uploadDirectory;
+			}
+		}
+
+		/// <summary>
+		/// The directory for user settings databases or XML files.
+		/// </summary>
+		public static string UserSettingsDirectory
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(_userSettingsDirectory))
+					_userSettingsDirectory = string.Format(@"{0}\App_Data\UserSettings\", AppDomain.CurrentDomain.BaseDirectory);
+
+				return _userSettingsDirectory;
 			}
 		}
 	}

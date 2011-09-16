@@ -16,6 +16,11 @@ namespace Spruce.Core.Controllers
 		protected void SetBugView(string actionName)
 		{
 			UserContext.Current.Settings.BugView = actionName;
+		}
+
+		protected override void OnActionExecuted(ActionExecutedContext filterContext)
+		{
+			base.OnActionExecuted(filterContext);
 			UserContext.Current.UpdateSettings();
 		}
 
@@ -53,7 +58,6 @@ namespace Spruce.Core.Controllers
 				if (projectName != UserContext.Current.CurrentProject.Name)
 				{
 					UserContext.Current.ChangeCurrentProject(projectName);
-					UserContext.Current.UpdateSettings();
 				}
 			}
 
@@ -86,32 +90,32 @@ namespace Spruce.Core.Controllers
 			//
 			// Dates
 			//
-			if (filterOptions.Today)
+			if (filterOptions.StartDate > DateTime.MinValue)
 			{
-				manager.Today();
+				manager.StartingFromDate(filterOptions.StartDate);
 			}
-			else if (filterOptions.Yesterday)
+
+			if (filterOptions.EndDate > DateTime.MinValue)
 			{
-				manager.Yesterday();
-			}
-			else if (filterOptions.ThisWeek)
-			{
-				manager.ThisWeek();
-			}
-			else if (filterOptions.ThisMonth)
-			{
-				manager.ThisMonth();
-			}
-			else if (filterOptions.LastMonth)
-			{
-				manager.LastMonth();
-			}
-			else if(filterOptions.StartDate != DateTime.MinValue && filterOptions.EndDate != DateTime.MinValue)
-			{
-				manager.BetweenDates(filterOptions.StartDate, filterOptions.EndDate);
+				manager.EndingOnDate(filterOptions.EndDate);
 			}
 
 			IEnumerable<WorkItemSummary> list = manager.ExecuteQuery();
+
+			ViewData["title"] = filterOptions.Title;
+			ViewData["assignedTo"] = filterOptions.AssignedTo;
+			ViewData["status"] = filterOptions.ConvertStatusToString();
+
+			if (filterOptions.StartDate > DateTime.MinValue)
+				ViewData["startDate"] = filterOptions.StartDate;
+			else
+				ViewData["startDate"] = "";
+
+			if (filterOptions.EndDate > DateTime.MinValue)
+				ViewData["endDate"] = filterOptions.StartDate;
+			else
+				ViewData["endDate"] = "";
+			
 
 			return PageList(list,isHeatMap,sortBy,descending,page,pageSize);
 		}
@@ -132,8 +136,10 @@ namespace Spruce.Core.Controllers
 				if (pageSizeVal < 10)
 					pageSizeVal = 100;
 
-				UserContext.Current.Settings.PageSize = pageSizeVal;
-				UserContext.Current.UpdateSettings();
+				if (UserContext.Current.Settings.PageSize != pageSizeVal)
+				{
+					UserContext.Current.Settings.PageSize = pageSizeVal;
+				}
 			}
 
 			Pager pager = new Pager(isHeatMap, sortBy, descending == true, pageSizeVal);
@@ -160,6 +166,22 @@ namespace Spruce.Core.Controllers
 		protected FilterOptions GetTaskFilterOptions()
 		{
 			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name).TaskFilterOptions;
+		}
+
+		protected bool QueryStringContainsFilters()
+		{
+			if (!string.IsNullOrEmpty(Request.QueryString["title"]) ||
+				!string.IsNullOrEmpty(Request.QueryString["startDate"]) ||
+				!string.IsNullOrEmpty(Request.QueryString["endDate"]) ||
+				!string.IsNullOrEmpty(Request.QueryString["assignedTo"])
+				)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 }

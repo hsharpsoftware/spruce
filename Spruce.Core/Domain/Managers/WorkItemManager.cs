@@ -102,43 +102,16 @@ namespace Spruce.Core
 			_andFilters.Add("[Assigned To]=@user");
 		}
 
-		public void Today()
-		{
-			_parameters.Add("today", DateTime.Today);
-			_andFilters.Add("[System.CreatedDate] >= @today");
-		}
-
-		public void Yesterday()
-		{
-			_parameters.Add("yesterdaystart", DateTime.Today.Yesterday());
-			_parameters.Add("yesterdayend", DateTime.Today);
-			_andFilters.Add("[System.CreatedDate] >= @yesterdaystart AND [System.CreatedDate] <= @yesterdayend");
-		}
-
-		public void ThisWeek()
-		{
-			_parameters.Add("thisweek", DateTime.Today.StartOfWeek());
-			_andFilters.Add("[System.CreatedDate] >= @thisweek");
-		}
-
-		public void ThisMonth()
-		{
-			_parameters.Add("thismonth", DateTime.Today.StartOfThisMonth());
-			_andFilters.Add("[System.CreatedDate] >= @thismonth");
-		}
-
-		public void LastMonth()
-		{
-			_parameters.Add("lastmonth", DateTime.Today.StartOfLastMonth());
-			_parameters.Add("lastmonthend", DateTime.Today.StartOfThisMonth());
-			_andFilters.Add("[System.CreatedDate] >= @lastmonth AND [System.CreatedDate] < @lastmonthend");
-		}
-
-		public void BetweenDates(DateTime start,DateTime end)
+		public void StartingFromDate(DateTime start)
 		{
 			_parameters.Add("datestart", start);
+			_andFilters.Add("[System.CreatedDate] >= @datestart");
+		}
+
+		public void EndingOnDate(DateTime end)
+		{
 			_parameters.Add("dateend", end);
-			_andFilters.Add("[System.CreatedDate] >= @datestart AND [System.CreatedDate] < @dateend");
+			_andFilters.Add("[System.CreatedDate] < @dateend");
 		}
 
 		#region Statics

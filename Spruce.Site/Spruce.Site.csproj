@@ -86,6 +86,7 @@
     <Content Include="Assets\Scripts\spruce.js" />
     <Content Include="Assets\CSS\spruce.print.css" />
     <Content Include="Global.asax" />
+    <Content Include="install.txt" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
     <Content Include="Views\Tasks\Index.cshtml" />
@@ -192,6 +193,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(SolutionDir)lib\microsoft*.dll" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>xcopy /Y "$(SolutionDir)lib\microsoft*.dll" "$(TargetDir)"
+xcopy /Y "$(SolutionDir)lib\ravendb\async*.dll" "$(TargetDir)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

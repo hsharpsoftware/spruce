@@ -9,110 +9,58 @@ namespace Spruce.Core
 {
 	public class UserSettings
 	{
-		public static string _cacheFolder;
+		private static IUserSettingsProvider _persister;
 
+		/// <summary>
+		/// The unique id of the object (this property name is used by RavenDb)
+		/// </summary>
+		public string Id
+		{
+			get { return UserId.ToString(); }
+		}
+		
+		/// <summary>
+		/// This ID comes from TFS based on its authentication.
+		/// </summary>
+		///
+		public Guid UserId { get; protected set; }
+
+		public string Name { get; set; }
 		public string ProjectName { get; set; }
 		public string IterationName { get; set; }
 		public string IterationPath { get; set; }
 		public string AreaName { get; set; }
 		public string AreaPath { get; set; }
-		/// <summary>
-		/// This should map to an action name in BugController
-		/// </summary>
 		public string BugView { get; set; }
-
-		private List<ProjectFilterOptions> _projectFilterOptions;
-
+		public List<ProjectFilterOptions> ProjectFilterOptions { get; protected set; }
 		public int PageSize { get; set; }
 
 		static UserSettings()
 		{
-			_cacheFolder = string.Format(@"{0}\App_Data\usersettings\", AppDomain.CurrentDomain.BaseDirectory);
-
-			try
-			{
-				if (!Directory.Exists(_cacheFolder))
-				{
-					Directory.CreateDirectory(_cacheFolder);
-				}
-			}
-			catch (IOException)
-			{
-				// TODO: Warn
-			}
+			// In future versions we can get clever and inject the type we want with Unity, if needed.
+			// For now this can use RavenDb by default
+			_persister = new RavenDbProvider();
 		}
 
 		public UserSettings()
 		{
-			_projectFilterOptions = new List<ProjectFilterOptions>();
+			ProjectFilterOptions = new List<ProjectFilterOptions>();
 		}
 
-		/// <summary>
-		/// For now, the user settings database is just an in-memory store
-		/// </summary>
-		/// <param name="userId"></param>
-		/// <returns></returns>
+		public UserSettings(Guid id) : this()
+		{
+			UserId = id;
+		}
+
+
 		public static UserSettings Load(Guid userId)
 		{
-			string filename = string.Format(@"{0}\{1}.xml", _cacheFolder, userId);
-
-			if (!File.Exists(filename))
-				return new UserSettings();
-
-			try
-			{
-				using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-				{
-					XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
-					UserSettings settings = (UserSettings)serializer.Deserialize(stream);
-
-					if (settings == null)
-						return new UserSettings();
-					else
-						return settings;
-				}
-			}
-			catch (IOException e)
-			{
-				Log.Warn(e, "An IO error occurred loading the UserSettings file for user id {0}", userId);
-				return new UserSettings();
-			}
-			catch (FormatException e)
-			{
-				Log.Warn(e, "A FormatException error occurred loading the UserSettings file for user id {0}", userId);
-				return new UserSettings();
-			}
-			catch (Exception e)
-			{
-				Log.Warn(e, "An unhandled exception error occurred loading the UserSettings file for user id {0}", userId);
-				return new UserSettings();
-			}
+			return _persister.Load(userId);
 		}
 
-		public static void Save(Guid userId, UserSettings settings)
+		public static void Save(UserSettings settings)
 		{
-			string filename = string.Format(@"{0}\{1}.xml", _cacheFolder, userId);
-
-			try
-			{
-				using (FileStream stream = new FileStream(filename, FileMode.Create, FileAccess.Write))
-				{
-					XmlSerializer serializer = new XmlSerializer(typeof(UserSettings));
-					serializer.Serialize(stream, settings);
-				}
-			}
-			catch (IOException e)
-			{
-				Log.Warn(e, "An IO error occurred saving the UserSettings file for user id {0}", userId);
-			}
-			catch (FormatException e)
-			{
-				Log.Warn(e, "A FormatException error occurred saving the UserSettings file for user id {0}", userId);
-			}
-			catch (Exception e)
-			{
-				Log.Warn(e, "An unhandled exception error occurred saving the UserSettings file for user id {0}", userId);
-			}
+			_persister.Save(settings);
 		}
 
 		public void UpdateBugFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
@@ -120,7 +68,7 @@ namespace Spruce.Core
 			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
 			options.BugFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
 
-			Save(UserContext.Current.Id, this);
+			_persister.Save(this);
 		}
 
 		public void UpdateBugHeatmapFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
@@ -128,7 +76,7 @@ namespace Spruce.Core
 			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
 			options.BugHeatmapFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
 
-			Save(UserContext.Current.Id, this);
+			_persister.Save(this);
 		}
 
 		public void UpdateTaskFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
@@ -136,23 +84,38 @@ namespace Spruce.Core
 			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
 			options.TaskFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
 
-			Save(UserContext.Current.Id, this);
+			_persister.Save(this);
 		}
 
 		public ProjectFilterOptions GetFilterOptionsForProject(string projectName)
 		{
-			int index = _projectFilterOptions.IndexOf(projectName);
+			int index = ProjectFilterOptions.IndexOf(projectName);
 
 			if (index == -1)
 			{
 				ProjectFilterOptions options = new ProjectFilterOptions(projectName);
-				_projectFilterOptions.Add(options);
+				ProjectFilterOptions.Add(options);
 				return options;
 			}
 			else
 			{
-				return _projectFilterOptions[index];
+				return ProjectFilterOptions[index];
 			}
+		}
+
+		public override bool Equals(object obj)
+		{
+			UserSettings settings = obj as UserSettings;
+
+			if (settings == null)
+				return false;
+
+			return settings.UserId == UserId;
+		}
+
+		public override int GetHashCode()
+		{
+			return UserId.GetHashCode();
 		}
 	}
 }

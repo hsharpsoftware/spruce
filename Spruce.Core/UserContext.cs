@@ -79,7 +79,7 @@ namespace Spruce.Core
 
 		public void UpdateSettings()
 		{
-			UserSettings.Save(Id,Settings);
+			UserSettings.Save(Settings);
 		}
 
 		/// <summary>
@@ -168,7 +168,10 @@ namespace Spruce.Core
 			// Get the current username, and load their settings
 			Name = TfsCollection.AuthorizedIdentity.DisplayName;
 			Id = TfsCollection.AuthorizedIdentity.TeamFoundationId;
+
+			// Load the user settings from the backing store (ravendb)
 			Settings = UserSettings.Load(Id);
+			Settings.Name = Name;
 
 			// Set the current project, and the view settings
 			if (string.IsNullOrEmpty(Settings.ProjectName) || !WorkItemStore.Projects.Contains(Settings.ProjectName))

@@ -67,6 +67,11 @@ namespace Spruce.Core
 				return "";
 		}
 
+		/// <summary>
+		/// Converts the object value to a string, or if it's null returns an empty string.
+		/// </summary>
+		/// <param name="value"></param>
+		/// <returns></returns>
 		public static string SafeToString(this object value)
 		{
 			if (value != null)
