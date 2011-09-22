@@ -19,7 +19,7 @@
 			<div class="errorbox">
 				<h4>There was a problem saving the bug</h4>
 				<b>The error TFS returned was:</b><br />
-				@TempData["Error"]
+				@MvcHtmlString.Create(TempData["Error"].SafeToString().Replace("\n","<br/>"))
 			</div>
 		}
 
@@ -46,28 +46,33 @@
 				<div class="left label">Priority:</div>
 				<div class="left value">@Html.DropDownBoxFromList("Priority", (List<string>)ViewData["Priorities"], Model.Priority.Value.ToString(),4)</div>
 			</div>
+
+			<div class="left edit-field">
+				<div class="left label">Reason:</div>
+				<div class="left value">@Html.DropDownBoxFromList("Reason", (List<string>)ViewData["Reasons"], Model.Reason,5)</div>
+			</div>
 			<br style="clear:both"/>
 
 			<div class="left edit-field">
 				<div class="left label">Area:</div>
-				<div class="left value">@Html.DropDownBoxForAreas("AreaPath", UserContext.Current.CurrentProject.Areas, Model.AreaPath, 5)</div>
+				<div class="left value">@Html.DropDownBoxForAreas("AreaPath", UserContext.Current.CurrentProject.Areas, Model.AreaPath, 6)</div>
 			</div>
 
 			<div class="left edit-field">
 				<div class="left label">Iteration:</div>
-				<div class="left value">@Html.DropDownBoxForIterations("IterationPath", UserContext.Current.CurrentProject.Iterations, Model.IterationPath,6)</div>
+				<div class="left value">@Html.DropDownBoxForIterations("IterationPath", UserContext.Current.CurrentProject.Iterations, Model.IterationPath,7)</div>
 			</div>
 
 			<div class="left edit-field">
 				<div class="left label">Severity:</div>
-				<div class="left value">@Html.DropDownBoxFromList("Severity", (List<string>)ViewData["Severities"], Model.Severity, 7)</div>
+				<div class="left value">@Html.DropDownBoxFromList("Severity", (List<string>)ViewData["Severities"], Model.Severity, 8)</div>
 			</div>
 			<br style="clear:both"/>
 		</div>
 
 		<div id="edit-description">
 			@(Html.TextAreaFor<WorkItemSummary, string>(i => i.Description, 
-														new { tabindex = 8,
+														new { tabindex = 9,
 														title = "Enter a brief description. See your project template for guidance", 
 														placeholder = "Enter a brief description. See your project template for guidance" }))
 		</div>
@@ -102,20 +107,20 @@
 			<div>
 				<b>Upload</b><br />
 				<div class="left">
-					<input type="file" name="uploadFile1" id="uploadFile1" tabindex="9" />
-					Comments: <input type="text" name="uploadFile1Comments" id="uploadFile1Comments" tabindex="10" />
+					<input type="file" name="uploadFile1" id="uploadFile1" tabindex="10" />
+					Comments: <input type="text" name="uploadFile1Comments" id="uploadFile1Comments" tabindex="11" />
 				</div>
 				<br class="clear"/>
 				
 				<div class="left">
-					<input type="file" name="uploadFile2" id="uploadFile2" tabindex="11" />
-					Comments: <input type="text" name="uploadFile2Comments" id="uploadFile2Comments" tabindex="12" />
+					<input type="file" name="uploadFile2" id="uploadFile2" tabindex="12" />
+					Comments: <input type="text" name="uploadFile2Comments" id="uploadFile2Comments" tabindex="13" />
 				</div>
 				<br class="clear"/>
 
 				<div class="left">
-					<input type="file" name="uploadFile3" id="uploadFile3" tabindex="13" />
-					Comments: <input type="text" name="uploadFile3Comments" id="uploadFile3Comments" tabindex="14" />
+					<input type="file" name="uploadFile3" id="uploadFile3" tabindex="14" />
+					Comments: <input type="text" name="uploadFile3Comments" id="uploadFile3Comments" tabindex="15" />
 				</div>
 			</div>
 			<br class="clear" />
@@ -123,7 +128,7 @@
 
 		<div id="edit-buttons">
 			<input type="submit" value="Save" tabindex="8" />
-			<input type="button" value="Cancel" onclick="history.go(-1);" tabindex="15"  />
+			<input type="button" value="Cancel" onclick="history.go(-1);" tabindex="16"  />
 		</div>
 	</div>
 }

@@ -89,6 +89,7 @@ namespace Spruce.Core.Controllers
 
 			ViewData["PageName"] = "New bug";
 			ViewData["States"] = item.ValidStates;
+			ViewData["Reasons"] = item.ValidReasons;
 			ViewData["Priorities"] = item.ValidPriorities;
 			ViewData["Severities"] = item.ValidSeverities;
 			ViewData["Users"] = UserContext.Current.Users;
@@ -157,6 +158,7 @@ namespace Spruce.Core.Controllers
 			ViewData["fromUrl"] = fromUrl;
 			ViewData["PageName"] = "Bug " + id;
 			ViewData["States"] = item.ValidStates;
+			ViewData["Reasons"] = item.ValidReasons;
 			ViewData["Priorities"] = item.ValidPriorities;
 			ViewData["Severities"] = item.ValidSeverities;
 			ViewData["Users"] = UserContext.Current.Users;
@@ -212,8 +214,22 @@ namespace Spruce.Core.Controllers
 			}
 			catch (SaveException e)
 			{
+				// Get the original back, to populate the valid reasons.
+				WorkItemSummary summary = WorkItemManager.ItemById(item.Id);
+				// If any error occurs, all the values previous selected aren't shown.
+				// This is from a shortcoming with the WorkItemSummary being POST'd 
+				// missing some of the fields, e.g. ValidReasons.
 				TempData["Error"] = e.Message;
-				return RedirectToAction("Edit", new { id = item.Id});
+				//return RedirectToAction("Edit", new { id = item.Id});
+
+				ViewData["fromUrl"] = fromUrl;
+				ViewData["PageName"] = "Bug " + item.Id;
+				ViewData["States"] = item.ValidStates;
+				ViewData["Reasons"] = item.ValidReasons;
+				ViewData["Priorities"] = item.ValidPriorities;
+				ViewData["Severities"] = item.ValidSeverities;
+				ViewData["Users"] = UserContext.Current.Users;
+				return View(item);
 			}
 		}
 
@@ -281,6 +297,11 @@ namespace Spruce.Core.Controllers
 			RssActionResult result = new RssActionResult();
 			result.Feed = GetRssFeed(list,"Bugs");
 			return result;
+		}
+
+		public ActionResult GetReasonsForState(string state)
+		{
+			return Json(WorkItemManager.GetAllowedBugValuesForState(state, "Reason"),JsonRequestBehavior.AllowGet);
 		}
     }
 }

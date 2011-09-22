@@ -10,6 +10,7 @@ using Microsoft.TeamFoundation.Server;
 using System.Xml;
 using Microsoft.TeamFoundation;
 using System.Web.Mvc;
+using System.Text;
 
 namespace Spruce.Core
 {
@@ -114,8 +115,7 @@ namespace Spruce.Core
 			_andFilters.Add("[System.CreatedDate] < @dateend");
 		}
 
-		#region Statics
-		public static IList<WorkItemSummary> ExecuteWiqlQuery(string query, Dictionary<string, object> parameters, bool useDefaultProject)
+		public IList<WorkItemSummary> ExecuteWiqlQuery(string query, Dictionary<string, object> parameters, bool useDefaultProject)
 		{
 			if (parameters == null)
 				parameters = new Dictionary<string, object>();
@@ -136,7 +136,7 @@ namespace Spruce.Core
 			return ToWorkItemSummaryList(collection);
 		}
 
-		internal static string AddSqlForPaths(Dictionary<string, object> parameters)
+		internal string AddSqlForPaths(Dictionary<string, object> parameters)
 		{
 			string result = "";
 
@@ -155,42 +155,37 @@ namespace Spruce.Core
 			return result;
 		}
 
-		public static WorkItemSummary ItemById(int id)
+		public WorkItemSummary ItemById(int id)
 		{
 			WorkItem item = UserContext.Current.WorkItemStore.GetWorkItem(id);
-			WorkItemSummary summary = ToWorkItemSummary(item);
+			WorkItemSummary summary = new WorkItemSummary();
+			summary.ToWorkItemSummary<WorkItemSummary>(item);
 
 			// TODO: useful error messages when there are no states or priorities
-
-			// Populate the valid states, priorties
-			summary.ValidStates = new List<string>();
-			foreach (string state in item.Fields["State"].AllowedValues)
-			{
-				summary.ValidStates.Add(state);
-			}
-
-			summary.ValidPriorities = new List<string>();
-			if (item.Fields.Contains("Priority"))
-			{
-				foreach (string state in item.Fields["Priority"].AllowedValues)
-				{
-					summary.ValidPriorities.Add(state);
-				}
-			}
-
-			summary.ValidSeverities = new List<string>();
-			if (item.Fields.Contains("Severity"))
-			{
-				foreach (string state in item.Fields["Severity"].AllowedValues)
-				{
-					summary.ValidSeverities.Add(state);
-				}
-			}
+			//PopulateAllowedValues(item, summary);
 
 			return summary;
 		}
 
-		public static IList<WorkItemSummary> StoredQuery(Guid id)
+		public IList<string> GetAllowedBugValuesForState(string state, string fieldName)
+		{
+			WorkItem item = new WorkItem(UserContext.Current.CurrentProject.WorkItemTypeForBug);
+			item.State = state;
+			item.Validate();
+
+			return item.Fields[fieldName].AllowedValues.ToList();
+		}
+
+		public IList<string> GetAllowedTaskValuesForState(string state, string fieldName)
+		{
+			WorkItem item = new WorkItem(UserContext.Current.CurrentProject.WorkItemTypeForTask);
+			item.State = state;
+			item.Validate();
+
+			return item.Fields[fieldName].AllowedValues.ToList();
+		}
+
+		public IList<WorkItemSummary> StoredQuery(Guid id)
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>();
 			parameters.Add("project", UserContext.Current.CurrentProject.Name);
@@ -199,98 +194,39 @@ namespace Spruce.Core
 			QueryItem item = project.QueryHierarchy.Find(id);
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(project.StoredQueries[id].QueryText,parameters);
 
-			return WorkItemManager.ToWorkItemSummaryList(collection);
+			return ToWorkItemSummaryList(collection);
 		}
 
-		public static IList<WorkItemSummary> AllItems()
+		public IList<WorkItemSummary> AllItems()
 		{
 			Dictionary<string, object> parameters = new Dictionary<string, object>();
 			parameters.Add("project", UserContext.Current.CurrentProject.Name);
 
 			string query = string.Format("SELECT ID, Title from Issue WHERE " +
 				"System.TeamProject = @project {0} " +
-				"ORDER BY Id DESC", WorkItemManager.AddSqlForPaths(parameters));
+				"ORDER BY Id DESC", AddSqlForPaths(parameters));
 
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(query, parameters);
 
-			return WorkItemManager.ToWorkItemSummaryList(collection);
+			return ToWorkItemSummaryList(collection);
 		}
 
-		/// <summary>
-		/// Accomodates fields that won't necessarily exist (such as resolved by) until a later stage of the work item.
-		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="fieldName"></param>
-		/// <returns></returns>
-		internal static string GetFieldValue(WorkItem item, string fieldName)
-		{
-			if (item.Fields.Contains(fieldName))
-				return Convert.ToString(item.Fields[fieldName].Value);
-			else
-				return "";
-		}
+		
 
-		internal static WorkItemSummary ToWorkItemSummary(WorkItem item)
-		{
-			WorkItemSummary summary = new WorkItemSummary()
-			{
-				Id = item.Id,
-				AssignedTo = item.Fields["Assigned To"].Value.ToString(),
-				CreatedDate = item.CreatedDate,
-				CreatedBy = item.CreatedBy,
-				AreaName = item.AreaPath.Replace(item.Project.Name + "\\", ""),
-				AreaPath = item.AreaPath,
-				Description = item.Description,
-				IterationName = item.IterationPath.Replace(item.Project.Name + "\\", ""),
-				IterationPath = item.IterationPath,
-				ResolvedBy = GetFieldValue(item, "Resolved By"),
-				State = item.State,
-				Title = item.Title,
-				IsBug = (item.Type.Name.ToLower() == "bug"),
-				ProjectName = item.Project.Name,
-				Fields = item.Fields,
-				Attachments = item.Attachments,
-				Links = item.Links,
-				Revisions = item.Revisions,
-			};
-
-			if (item.Fields.Contains("Priority"))
-				summary.Priority = item.Fields["Priority"].Value.ToIntOrDefault();
-
-			if (item.Fields.Contains("Severity"))
-				summary.Severity = item.Fields["Severity"].Value.ToString();
-
-			// For tasks: estimates
-			if (item.Type.Name.ToLower() == "task")
-			{
-				// Check this field exists. 4.2 Agile seems to have it missing
-				if (item.Fields.Contains("Original Estimate"))
-					summary.EstimatedHours = item.Fields["Original Estimate"].Value.ToDoubleOrDefault();
-
-				summary.RemainingHours = item.Fields["Remaining Work"].Value.ToDoubleOrDefault();
-				summary.CompletedHours = item.Fields["Completed Work"].Value.ToDoubleOrDefault();
-			}
-
-			// For CMMI projects
-			if (!string.IsNullOrEmpty("Repro Steps") && string.IsNullOrEmpty(item.Description))
-				summary.Description = GetFieldValue(item, "Repro Steps");
-
-			return summary;
-		}
-
-		internal static IList<WorkItemSummary> ToWorkItemSummaryList(WorkItemCollection collection)
+		internal IList<WorkItemSummary> ToWorkItemSummaryList(WorkItemCollection collection)
 		{
 			List<WorkItemSummary> list = new List<WorkItemSummary>();
 
 			foreach (WorkItem item in collection)
 			{
-				list.Add(ToWorkItemSummary(item));
+				WorkItemSummary summary = new WorkItemSummary();
+				list.Add(summary.ToWorkItemSummary<WorkItemSummary>(item));
 			}
 
 			return list;
 		}
 
-		public static IList<IterationSummary> IterationsForProject(string projectName)
+		public IList<IterationSummary> IterationsForProject(string projectName)
 		{
 			List<IterationSummary> list = new List<IterationSummary>();
 
@@ -306,7 +242,7 @@ namespace Spruce.Core
 			return list;
 		}
 
-		public static IList<AreaSummary> AreasForProject(string projectName)
+		public IList<AreaSummary> AreasForProject(string projectName)
 		{
 			List<AreaSummary> list = new List<AreaSummary>();
 
@@ -322,17 +258,17 @@ namespace Spruce.Core
 			return list;
 		}
 
-		public static void SaveBug(WorkItemSummary summary)
+		public void SaveBug(WorkItemSummary summary)
 		{
 			Save(summary, UserContext.Current.CurrentProject.WorkItemTypeForBug);
 		}
 
-		public static void SaveTask(WorkItemSummary summary)
+		public void SaveTask(WorkItemSummary summary)
 		{
 			Save(summary, UserContext.Current.CurrentProject.WorkItemTypeForTask);
 		}
 
-		public static void SaveExisting(WorkItemSummary summary)
+		public void SaveExisting(WorkItemSummary summary)
 		{
 			Save(summary, null);
 		}
@@ -342,7 +278,7 @@ namespace Spruce.Core
 		/// </summary>
 		/// <param name="summary"></param>
 		/// <param name="type"></param>
-		public static void Save(WorkItemSummary summary, WorkItemType type)
+		public void Save(WorkItemSummary summary, WorkItemType type)
 		{
 			WorkItem item;
 
@@ -370,7 +306,12 @@ namespace Spruce.Core
 			if (item.Fields.Contains("Severity") && !string.IsNullOrEmpty(summary.Severity))
 				item.Fields["Severity"].Value = summary.Severity;
 
-			// For tasks
+			if (item.Fields.Contains("Reason"))
+			{
+				item.Fields["Reason"].Value = summary.Reason;
+			}
+
+			// For tasks. No inheritence yet, this method is definitely hacky and would love some refactoring.
 			if (item.Type.Name.ToLower() == "task")
 			{
 				// For updates only, and Agile v5 has this field
@@ -397,9 +338,6 @@ namespace Spruce.Core
 			if (item.Fields.Contains("Symptom"))
 				item.Fields["Symptom"].Value = summary.Description;
 
-			if (item.Fields.Contains("Reason") && item.Fields["Reason"].AllowedValues.Count > 0)
-				item.Fields["Reason"].Value = item.Fields["Reason"].AllowedValues[0];
-
 			try
 			{
 				item.Save();
@@ -407,11 +345,18 @@ namespace Spruce.Core
 			}
 			catch (ValidationException e)
 			{
-				throw new SaveException(string.Format("Save failed for '{0}' ({1})", item.Title,e.Message), e);
+				StringBuilder builder = new StringBuilder();
+				foreach (Field field in item.Fields)
+				{
+					if (field.Status != FieldStatus.Valid)
+						builder.AppendLine(string.Format("The '{0}' field has the status {1}", field.Name, field.Status));
+				}
+
+				throw new SaveException(string.Format("Save failed for '{0}' ({1}).\nFields: {2}", item.Title,e.Message,builder), e);
 			}
 		}
 
-		public static void SaveAttachments(int id, IEnumerable<Attachment> attachments)
+		public void SaveAttachments(int id, IEnumerable<Attachment> attachments)
 		{
 			WorkItem item = UserContext.Current.WorkItemStore.GetWorkItem(id);
 			foreach (Attachment attachment in attachments)
@@ -429,7 +374,7 @@ namespace Spruce.Core
 			}
 		}
 
-		public static void Resolve(int id)
+		public void Resolve(int id)
 		{
 			try
 			{
@@ -444,7 +389,7 @@ namespace Spruce.Core
 			}
 		}
 
-		public static void Close(int id)
+		public void Close(int id)
 		{
 			try
 			{
@@ -459,7 +404,7 @@ namespace Spruce.Core
 			}
 		}
 
-		public static void DeleteAttachment(int id, string url)
+		public void DeleteAttachment(int id, string url)
 		{
 			WorkItem item = UserContext.Current.WorkItemStore.GetWorkItem(id);
 			if (item.Attachments.Count > 0)
@@ -496,17 +441,17 @@ namespace Spruce.Core
 			}
 		}
 
-		public static WorkItemSummary NewTask()
+		public WorkItemSummary NewTask()
 		{
 			return NewItem(UserContext.Current.CurrentProject.WorkItemTypeForTask);
 		}
 
-		public static WorkItemSummary NewBug()
+		public WorkItemSummary NewBug()
 		{
 			return NewItem(UserContext.Current.CurrentProject.WorkItemTypeForBug);
 		}
 
-		public static WorkItemSummary NewItem(WorkItemType type)
+		public WorkItemSummary NewItem(WorkItemType type)
 		{
 			WorkItem item = new WorkItem(type);
 
@@ -521,33 +466,11 @@ namespace Spruce.Core
 			summary.IterationPath = UserContext.Current.Settings.IterationPath;
 
 			// Populate the valid states
-			summary.ValidStates = new List<string>();
-			foreach (string state in item.Fields["State"].AllowedValues)
-			{
-				summary.ValidStates.Add(state);
-			}
+			PopulateAllowedValues(item, summary);
 			summary.State = summary.ValidStates[0];
-
-			// For Bugs: populate the valid priorties and severities
-			if (item.Fields.Contains("Priority"))
-			{
-				summary.ValidPriorities = new List<string>();
-				foreach (string state in item.Fields["Priority"].AllowedValues)
-				{
-					summary.ValidPriorities.Add(state);
-				}
-				summary.Priority = int.Parse(summary.ValidPriorities[0]);
-			}
-
-			if (item.Fields.Contains("Severity"))
-			{
-				summary.ValidSeverities = new List<string>();
-				foreach (string severity in item.Fields["Severity"].AllowedValues)
-				{
-					summary.ValidSeverities.Add(severity);
-				}
-				summary.Severity = summary.ValidPriorities[0];
-			}
+			summary.Priority = int.Parse(summary.ValidPriorities[0]);
+			summary.Severity = summary.ValidPriorities[0];
+			summary.Reason = summary.ValidReasons[0];
 
 			// For tasks: estimates
 			if (item.Type.Name.ToLower() == "task")
@@ -562,6 +485,5 @@ namespace Spruce.Core
 
 			return summary;
 		}
-		#endregion
 	}
 }

@@ -45,7 +45,7 @@ namespace Spruce.Core.Search
 					Dictionary<string, object> parameters = new Dictionary<string, object>();
 					string wiql = parser.WiqlBuilder.BuildQuery(parameters);
 
-					summaries = WorkItemManager.ExecuteWiqlQuery(wiql, parameters, true);
+					summaries = WorkItemSummary.Manager.ExecuteWiqlQuery(wiql, parameters, true);
 				};
 
 				parser.SearchFor(query);

@@ -22,8 +22,8 @@ namespace Spruce.Core
 			};
 
 #if DEBUG
-			_documentStore.UseEmbeddedHttpServer = true;
-			NonAdminHttp.EnsureCanListenToWhenInNonAdminContext(8081);
+			//_documentStore.UseEmbeddedHttpServer = true;
+			//NonAdminHttp.EnsureCanListenToWhenInNonAdminContext(8081);
 #endif
 
 			try

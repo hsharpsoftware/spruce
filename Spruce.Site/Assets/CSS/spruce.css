@@ -88,7 +88,6 @@ a:visted	{ color:#1173a6; }
 .task h1					{ font-size:1em; }
 .task						{ padding:10px;font-size:0.8em; }
 
-
 /* Filter bar for tables */
 #list-table #title	{ font-size:0.8em;width:90%; }
 #assignedTo			{ font-size:0.8em;width:60px; }
@@ -109,6 +108,7 @@ a:visted	{ color:#1173a6; }
 #item-header		{ padding:5px;border-bottom:1px dotted #444;font-weight:bold; }
 #item-id			{ color:#737373;padding-right:10px; }
 #item-description	{ margin:5px 0px;padding:5px;min-height:200px;font-size:0.8em;color:#101010; }
+#item-reason		{ font-size:0.8em;color:#010101;font-weight:normal; }
 #item-attachments,#item-links,#item-revisions
 					{ padding:10px 5px 5px 5px;font-size:0.8em;border-top:1px dotted #CCC; }
 					

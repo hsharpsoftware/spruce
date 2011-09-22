@@ -97,7 +97,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\Dynamic.cs" />
+    <Compile Include="Common\DynamicQueryable.cs" />
     <Compile Include="Common\DateTimeExtensions.cs" />
     <Compile Include="Common\Log.cs" />
     <Compile Include="Controllers\RssActionResult.cs" />
@@ -108,15 +108,17 @@
     <Compile Include="Domain\Markdown\Markdown.cs" />
     <Compile Include="Domain\Summaries\ChangesetSummary.cs" />
     <Compile Include="Domain\Summaries\StoredQuerySummary.cs" />
+    <Compile Include="Domain\Summaries\WorkItemTemplate.cs" />
     <Compile Include="Domain\User\FilterOptions.cs" />
     <Compile Include="Domain\Summaries\DashboardSummary.cs" />
     <Compile Include="Domain\Summaries\Pager.cs" />
-    <Compile Include="Domain\User\Persisters\XmlFilePersister.cs" />
-    <Compile Include="Domain\User\Persisters\IUserSettingsPersister.cs" />
-    <Compile Include="Domain\User\Persisters\RavenDbPersister.cs" />
+    <Compile Include="Domain\User\Persisters\IUserSettingsProvider.cs" />
+    <Compile Include="Domain\User\Persisters\RavenDbProvider.cs" />
+    <Compile Include="Domain\User\Persisters\XmlFileProvider.cs" />
     <Compile Include="Domain\User\ProjectDetails.cs" />
     <Compile Include="Domain\User\ProjectFilterOptions.cs" />
     <Compile Include="Domain\User\UserSettings.cs" />
+    <Compile Include="Domain\WorkItemSummaryBase.cs" />
     <Compile Include="Search\Fields\ContainsField.cs" />
     <Compile Include="Search\Fields\ProjectField.cs" />
     <Compile Include="Search\Fields\DateField.cs" />

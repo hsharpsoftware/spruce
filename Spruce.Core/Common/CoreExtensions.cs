@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.ComponentModel;
 using System.IO;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Core
 {
@@ -21,13 +22,12 @@ namespace Spruce.Core
 			return -1;
 		}
 
-
 		/// <summary>
 		/// Attempts to parse the object as a string value and convert to an integer. If this fails, zero is returned.
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static int ToIntOrDefault(this object value)
+		public static int ToIntOrDefault(this string value)
 		{
 			if (value == null)
 				return 0;
@@ -96,6 +96,18 @@ namespace Spruce.Core
 
 			// Return the description or if there isn't one, the value
 			return (attribs.Length > 0) ? attribs[0].Description : Enum.GetName(value.GetType(),value);
+		}
+
+		public static IList<string> ToList(this AllowedValuesCollection collection)
+		{
+			List<string> list = new List<string>();
+
+			foreach (string item in collection)
+			{
+				list.Add(item);
+			}
+
+			return list;
 		}
 	}
 }

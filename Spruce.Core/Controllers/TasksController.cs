@@ -38,6 +38,7 @@ namespace Spruce.Core.Controllers
 
 			ViewData["PageName"] = "New task";
 			ViewData["States"] = item.ValidStates;
+			ViewData["Reasons"] = item.ValidReasons;
 			ViewData["Priorities"] = item.ValidPriorities;
 			ViewData["Severities"] = item.ValidSeverities;
 			ViewData["Users"] = UserContext.Current.Users;
@@ -111,6 +112,7 @@ namespace Spruce.Core.Controllers
 
 			ViewData["PageName"] = "Task " + id;
 			ViewData["States"] = item.ValidStates;
+			ViewData["Reasons"] = item.ValidReasons;
 			ViewData["Priorities"] = item.ValidPriorities;
 			ViewData["Users"] = UserContext.Current.Users;
 			ViewData["Error"] = TempData["Error"];

@@ -1,3 +1,6 @@
+/// <reference path="jquery-1.4.1-vsdoc.js" />
+/// <reference path="jquery.form-extensions.min.js" />
+
 $(document).ready(function ()
 {
 	// Projects, areas, iterations drop downs in the header
@@ -127,6 +130,15 @@ function setupEditPage()
 	var title = $("#Title").val();
 	if(title === "")
 		$("#Title").focus();
+
+/*
+	$("#State").change(function () {
+		alert($("#State").selectedValue());
+		$.get("../GetReasonsForState/" + $("#State").selectedValue(), function (data) {
+			alert(data);
+		});
+	});
+*/
 
 	bindFormSubmit();
 }

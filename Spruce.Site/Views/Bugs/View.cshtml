@@ -6,8 +6,11 @@
 		<div class="left bold">@Model.Title</div>
 		<div class="right" id="item-menucontainer">
 			<div>
-				<a href="javascript:;" id="item-actionmenulink"><img id="item-arrowimg" src="@Url.Content("~/Assets/Images/black-arrow-down.png")" border="0" alt="menu" /></a>
 				@Model.State
+				@if (!string.IsNullOrEmpty(Model.Reason))
+				{
+					<div id="item-reason">(Reason:&nbsp;@Model.Reason)</div>
+				}
 			</div>
 			<div id="item-menu">
 				@Html.ActionLink("Resolve", "Resolve", new { id = Model.Id })<br/>
@@ -23,6 +26,7 @@
 
 	@if (Model.Attachments.Count > 0)
 	{
+	<!-- Attachments -->
 	<div id="item-attachments">	
 		<b>Attachments</b>
 		<ul>
@@ -42,6 +46,7 @@
 	
 	@if (Model.Links.Count > 0)
 	{
+	<!-- Links -->
 	<div id="item-links">	
 		<b>Links</b>
 		<ul>
@@ -57,6 +62,7 @@
 	
 	@if (Model.Revisions.Count > 1)
 	{
+	<!-- History -->
 	<div id="item-revisions">	
 		<b>History</b>
 		<ul>
