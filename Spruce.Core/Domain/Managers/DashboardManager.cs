@@ -11,28 +11,31 @@ namespace Spruce.Core
 	{
 		public static DashboardSummary GetSummary()
 		{
-			BugManager bugManager = new BugManager();
-			TaskManager taskManager = new TaskManager();
+			BugQueryManager bugManager = new BugQueryManager();
+			TaskQueryManager taskManager = new TaskQueryManager();
 
-			IList<WorkItemSummary> allbugs = bugManager.ExecuteQuery();
-			IList<WorkItemSummary> allTasks = taskManager.ExecuteQuery();
+			IList<WorkItemSummary> allbugs = bugManager.Execute().ToList();
+			IList<WorkItemSummary> allTasks = taskManager.Execute().ToList();
 
 			DashboardSummary summary = new DashboardSummary();
 			summary.RecentCheckins = RecentCheckins();
 
-			bugManager.Active();
-			
-			summary.ActiveBugs = bugManager.ExecuteQuery().Count;
+			bugManager.SetActive();
+			summary.ActiveBugs = bugManager.Execute().Count();
 			summary.BugCount = allbugs.Count;
 			summary.MyActiveBugCount = allbugs.Where(b => b.State == "Active").ToList().Count;
 			summary.MyActiveBugs = allbugs.Where(b => b.State == "Active" && b.AssignedTo == UserContext.Current.Name)
-				.OrderByDescending(b => b.CreatedDate).Take(5).ToList();
+				.OrderByDescending(b => b.CreatedDate)
+				.Take(5)
+				.ToList();
 
-			taskManager.Active();
+			taskManager.SetActive();
 			summary.ActiveTasks = allTasks.Count;
 			summary.TaskCount = allTasks.Count;
 			summary.MyActiveTasks = allTasks.Where(b => b.State == "Active" && b.AssignedTo == UserContext.Current.Name)
-				.OrderByDescending(b => b.CreatedDate).Take(5).ToList();
+				.OrderByDescending(b => b.CreatedDate)
+				.Take(5)
+				.ToList();
 
 			return summary;
 		}

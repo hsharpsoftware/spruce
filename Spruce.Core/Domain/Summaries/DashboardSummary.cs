@@ -13,8 +13,8 @@ namespace Spruce.Core
 		public int ActiveBugs { get; set; }
 		public int ActiveTasks { get; set; }
 		public int MyActiveBugCount { get; set; }
-		public List<WorkItemSummary> MyActiveBugs { get; set; }
-		public List<WorkItemSummary> MyActiveTasks { get; set; }
-		public List<ChangesetSummary> RecentCheckins { get; set; }
+		public IEnumerable<WorkItemSummary> MyActiveBugs { get; set; }
+		public IEnumerable<WorkItemSummary> MyActiveTasks { get; set; }
+		public IEnumerable<ChangesetSummary> RecentCheckins { get; set; }
 	}
 }

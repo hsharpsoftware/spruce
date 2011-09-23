@@ -29,10 +29,10 @@ namespace Spruce.Core.Controllers
 			if (!string.IsNullOrEmpty(q))
 			{
 				SearchManager manager = new SearchManager();
-				summaries = manager.Search(q);
+				summaries = manager.Search(q).ToList();
 				ViewData["search"] = q;
 
-				if (manager.IsWorkItemId(q) && summaries.Count == 1)
+				if (manager.IsId(q) && summaries.Count == 1)
 				{
 					// For single work item ids (that exist), redirect straight to the bug page
 					return RedirectToAction("View", "Bugs", new { id = int.Parse(q) });
@@ -88,7 +88,8 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult StoredQuery(Guid id, string sortBy, bool? desc, int? page, int? pageSize)
 		{
-			IEnumerable<WorkItemSummary> list = WorkItemManager.StoredQuery(id);
+			QueryManager manager = new QueryManager();
+			IEnumerable<WorkItemSummary> list = manager.StoredQuery(id);
 			list = PageList(list, false, sortBy, desc, page, pageSize);
 			ViewData["CurrentQuery"] = id;
 

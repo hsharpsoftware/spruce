@@ -13,7 +13,7 @@ namespace Spruce.Core.Search
 	/// </summary>
 	public class SearchManager
 	{
-		public bool IsWorkItemId(string query)
+		public bool IsId(string query)
 		{
 			int i;
 			return int.TryParse(query, out i);
@@ -24,18 +24,19 @@ namespace Spruce.Core.Search
 		/// </summary>
 		/// <param name="query"></param>
 		/// <returns></returns>
-		public IList<WorkItemSummary> Search(string query)
+		public IEnumerable<WorkItemSummary> Search(string query)
 		{
-			IList<WorkItemSummary> summaries = new List<WorkItemSummary>();
+			IEnumerable<WorkItemSummary> summaries = new List<WorkItemSummary>();
+			QueryManager manager = new QueryManager();
 
 			// Is it just a number? then it's an id
-			if (IsWorkItemId(query))
+			if (IsId(query))
 			{
 				Dictionary<string, object> parameters = new Dictionary<string, object>();
 				parameters.Add("Id",Convert.ToInt32(query));
 				string wiql = "SELECT * FROM Issues WHERE [System.Id] = @Id";
 
-				return WorkItemManager.ExecuteWiqlQuery(wiql, parameters, true);
+				return manager.ExecuteWiqlQuery(wiql, parameters, true);
 			}
 			else
 			{
@@ -45,7 +46,7 @@ namespace Spruce.Core.Search
 					Dictionary<string, object> parameters = new Dictionary<string, object>();
 					string wiql = parser.WiqlBuilder.BuildQuery(parameters);
 
-					summaries = WorkItemSummary.Manager.ExecuteWiqlQuery(wiql, parameters, true);
+					summaries = manager.ExecuteWiqlQuery(wiql, parameters, true);
 				};
 
 				parser.SearchFor(query);

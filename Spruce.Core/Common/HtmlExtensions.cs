@@ -319,6 +319,14 @@ namespace Spruce.Core
 
 			builder.Append(",");
 
+			return builder.AppendLine().ToString();
+		}
+
+		public static string ToCsv(this BugSummary summary)
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.Append(ToCsv(summary));
+
 			// Priority
 			builder.Append(summary.Priority);
 			builder.Append(",");
@@ -329,6 +337,18 @@ namespace Spruce.Core
 			else
 				builder.Append(summary.Title);
 
+
+			return builder.AppendLine().ToString();
+		}
+
+		public static string ToCsv(this TaskSummary summary)
+		{
+			StringBuilder builder = new StringBuilder();
+			builder.Append(ToCsv(summary));
+
+			// Priority
+			builder.Append(summary.Priority);
+			builder.Append(",");
 
 			return builder.AppendLine().ToString();
 		}

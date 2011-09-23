@@ -51,7 +51,7 @@ namespace Spruce.Core.Controllers
 			return feed;
 		}
 
-		protected IEnumerable<WorkItemSummary> FilterAndPageList(FilterOptions filterOptions, string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize, WorkItemManager manager)
+		protected IEnumerable<WorkItemSummary> FilterAndPageList(FilterOptions filterOptions, string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize, QueryManager manager)
 		{
 			if (!string.IsNullOrEmpty(projectName))
 			{
@@ -63,12 +63,12 @@ namespace Spruce.Core.Controllers
 
 			if (!string.IsNullOrEmpty(filterOptions.Title))
 			{
-				manager.Title(filterOptions.Title);
+				manager.WithTitle(filterOptions.Title);
 			}
 
 			if (!string.IsNullOrEmpty(filterOptions.AssignedTo))
 			{
-				manager.AssignedTo(filterOptions.AssignedTo);
+				manager.AndAssignedTo(filterOptions.AssignedTo);
 			}
 
 			//
@@ -76,15 +76,15 @@ namespace Spruce.Core.Controllers
 			//
 			if (filterOptions.Active)
 			{
-				manager.Active();
+				manager.SetActive();
 			}
 			else if (filterOptions.Closed)
 			{
-				manager.Closed();
+				manager.SetClosed();
 			}
 			else if (filterOptions.Resolved)
 			{
-				manager.Resolved();
+				manager.SetResolved();
 			}
 
 			//
@@ -92,15 +92,15 @@ namespace Spruce.Core.Controllers
 			//
 			if (filterOptions.StartDate > DateTime.MinValue)
 			{
-				manager.StartingFromDate(filterOptions.StartDate);
+				manager.WithStartingFromDate(filterOptions.StartDate);
 			}
 
 			if (filterOptions.EndDate > DateTime.MinValue)
 			{
-				manager.EndingOnDate(filterOptions.EndDate);
+				manager.WithEndingOnDate(filterOptions.EndDate);
 			}
 
-			IEnumerable<WorkItemSummary> list = manager.ExecuteQuery();
+			IEnumerable<WorkItemSummary> list = manager.Execute();
 
 			ViewData["title"] = filterOptions.Title;
 			ViewData["assignedTo"] = filterOptions.AssignedTo;

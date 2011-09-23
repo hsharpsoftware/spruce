@@ -21,7 +21,7 @@ namespace Spruce.Core.Controllers
 			if (QueryStringContainsFilters())
 				UserContext.Current.Settings.UpdateBugFilterOptions(UserContext.Current.CurrentProject.Name,title, assignedTo, startDate, endDate, status);
 
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugFilterOptions(), id, false, sortBy, desc, page, pageSize, new BugManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugFilterOptions(), id, false, sortBy, desc, page, pageSize, new BugQueryManager());
 
 			return View(list);
 		}
@@ -34,26 +34,29 @@ namespace Spruce.Core.Controllers
 			if (QueryStringContainsFilters())
 				UserContext.Current.Settings.UpdateBugHeatmapFilterOptions(UserContext.Current.CurrentProject.Name, title, assignedTo, startDate, endDate, status);
 
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugHeatmapFilterOptions(), id, true, sortBy, desc, page, pageSize, new BugManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugHeatmapFilterOptions(), id, true, sortBy, desc, page, pageSize, new BugQueryManager());
 
 			return View(list);
 		}
 
 		public ActionResult View(int id)
 		{
-			WorkItemSummary item = WorkItemManager.ItemById(id);
+			BugQueryManager manager = new BugQueryManager();
+			WorkItemSummary item = manager.ItemById<BugSummary>(id);
 			return View(item);
 		}
 
 		public ActionResult Resolve(int id)
 		{
-			WorkItemManager.Resolve(id);
+			BugManager manager = new BugManager();
+			manager.Resolve(id);
 			return RedirectToAction("View", new { id = id });
 		}
 
 		public ActionResult Close(int id)
 		{
-			WorkItemManager.Close(id);
+			BugManager manager = new BugManager();
+			manager.Close(id);
 			return RedirectToAction("View", new { id = id });
 		}
 
@@ -61,7 +64,8 @@ namespace Spruce.Core.Controllers
 		{
 			url = url.FromBase64();
 
-			WorkItemManager.DeleteAttachment(id,url);
+			BugManager manager = new BugManager();
+			manager.DeleteAttachment(id, url);
 			return RedirectToAction("Edit", new { id = id });
 		}
 
@@ -69,7 +73,8 @@ namespace Spruce.Core.Controllers
 		{
 			StringBuilder builder = new StringBuilder();
 
-			WorkItemSummary summary = WorkItemManager.NewBug();
+			BugManager manager = new BugManager();
+			BugSummary summary = manager.NewItem();
 			IEnumerable<Field> list = summary.Fields.Cast<Field>().OrderBy(f => f.Name);
 			foreach (Field field in list)
 			{
@@ -82,7 +87,8 @@ namespace Spruce.Core.Controllers
 		[HttpGet]
 		public ActionResult New(string id)
 		{
-			WorkItemSummary item = WorkItemManager.NewBug();
+			BugManager manager = new BugManager();
+			BugSummary item = manager.NewItem();
 
 			if (!string.IsNullOrWhiteSpace(id))
 				item.Title = id;
@@ -101,11 +107,13 @@ namespace Spruce.Core.Controllers
 		[ValidateInput(false)]
 		public ActionResult New(WorkItemSummary item)
 		{
+			BugManager manager = new BugManager();
+
 			try
 			{
 				item.CreatedBy = UserContext.Current.Name;
 				item.IsNew = true;
-				WorkItemManager.SaveBug(item); // item.Id is updated
+				manager.Save(item); // item.Id is updated
 
 				// Save the files once it's saved (as we can't add an AttachmentsCollection as it has no constructors)
 				if (Request.Files.Count > 0)
@@ -131,7 +139,7 @@ namespace Spruce.Core.Controllers
 							attachments.Add(new Attachment(filename3, Request.Form["uploadFile3Comments"]));
 						}
 
-						WorkItemManager.SaveAttachments(item.Id, attachments);
+						manager.SaveAttachments(item.Id, attachments);
 					}
 					catch (IOException e)
 					{
@@ -152,7 +160,8 @@ namespace Spruce.Core.Controllers
 		[HttpGet]
 		public ActionResult Edit(int id,string fromUrl)
 		{
-			WorkItemSummary item = WorkItemManager.ItemById(id);
+			BugQueryManager manager = new BugQueryManager();
+			BugSummary item = manager.ItemById<BugSummary>(id);
 			item.IsNew = false;
 
 			ViewData["fromUrl"] = fromUrl;
@@ -170,9 +179,11 @@ namespace Spruce.Core.Controllers
 		[ValidateInput(false)]
 		public ActionResult Edit(WorkItemSummary item,string fromUrl)
 		{
+			BugManager manager = new BugManager();
+
 			try
 			{
-				WorkItemManager.SaveExisting(item);
+				manager.Save(item);
 
 				// Save the files once it's saved (as we can't add an AttachmentsCollection as it has no constructors)
 				if (Request.Files.Count > 0)
@@ -198,7 +209,7 @@ namespace Spruce.Core.Controllers
 							attachments.Add(new Attachment(filename3, Request.Form["uploadFile3Comments"]));
 						}
 
-						WorkItemManager.SaveAttachments(item.Id, attachments);
+						manager.SaveAttachments(item.Id, attachments);
 					}
 					catch (IOException e)
 					{
@@ -215,7 +226,9 @@ namespace Spruce.Core.Controllers
 			catch (SaveException e)
 			{
 				// Get the original back, to populate the valid reasons.
-				WorkItemSummary summary = WorkItemManager.ItemById(item.Id);
+				BugQueryManager queryManager = new BugQueryManager();
+				BugSummary summary = queryManager.ItemById<BugSummary>(item.Id);
+
 				// If any error occurs, all the values previous selected aren't shown.
 				// This is from a shortcoming with the WorkItemSummary being POST'd 
 				// missing some of the fields, e.g. ValidReasons.
@@ -256,7 +269,7 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult Excel()
 		{
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugFilterOptions(),"", true, "CreatedDate", true, 1, 10000, new BugManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetBugFilterOptions(),"", true, "CreatedDate", true, 1, 10000, new BugQueryManager());
 
 			StringBuilder builder = new StringBuilder();
 			using (StringWriter writer = new StringWriter(builder))
@@ -292,7 +305,7 @@ namespace Spruce.Core.Controllers
 				UserContext.Current.Settings.IterationPath = summary.Path;
 			}
 
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(new FilterOptions(),projectName, true, "CreatedDate", true, 1, 10000, new BugManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(new FilterOptions(),projectName, true, "CreatedDate", true, 1, 10000, new BugQueryManager());
 
 			RssActionResult result = new RssActionResult();
 			result.Feed = GetRssFeed(list,"Bugs");
@@ -301,7 +314,8 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult GetReasonsForState(string state)
 		{
-			return Json(WorkItemManager.GetAllowedBugValuesForState(state, "Reason"),JsonRequestBehavior.AllowGet);
+			BugQueryManager manager = new BugQueryManager();
+			return Json(manager.GetAllowedValuesForState(state, "Reason"), JsonRequestBehavior.AllowGet);
 		}
     }
 }

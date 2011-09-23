@@ -18,20 +18,22 @@ namespace Spruce.Core.Controllers
 			if (QueryStringContainsFilters())
 				UserContext.Current.Settings.UpdateTaskFilterOptions(UserContext.Current.CurrentProject.Name, title, assignedTo, startDate, endDate, status);
 
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetTaskFilterOptions(), id, true, sortBy, desc, page, pageSize, new TaskManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetTaskFilterOptions(), id, true, sortBy, desc, page, pageSize, new TaskQueryManager());
 			return View(list);
 		}
 
 		public ActionResult View(int id)
 		{
-			WorkItemSummary item = WorkItemManager.ItemById(id);
+			TaskQueryManager manager = new TaskQueryManager();
+			WorkItemSummary item = manager.ItemById<TaskSummary>(id);
 			return View(item);
 		}
 
 		[HttpGet]
 		public ActionResult New(string id)
 		{
-			WorkItemSummary item = WorkItemManager.NewTask();
+			TaskManager manager = new TaskManager();
+			TaskSummary item = manager.NewItem();
 
 			if (!string.IsNullOrWhiteSpace(id))
 				item.Title = id;
@@ -50,11 +52,13 @@ namespace Spruce.Core.Controllers
 		[ValidateInput(false)]
 		public ActionResult New(WorkItemSummary item)
 		{
+			TaskManager manager = new TaskManager();
+
 			try
 			{
 				item.CreatedBy = UserContext.Current.Name;
 				item.IsNew = true;
-				WorkItemManager.SaveTask(item);
+				manager.Save(item);
 
 				// Save the files once it's saved (as we can't add an AttachmentsCollection as it has no constructors)
 				if (Request.Files.Count > 0)
@@ -80,7 +84,7 @@ namespace Spruce.Core.Controllers
 							attachments.Add(new Attachment(filename3, Request.Form["uploadFile3Comments"]));
 						}
 
-						WorkItemManager.SaveAttachments(item.Id, attachments);
+						manager.SaveAttachments(item.Id, attachments);
 					}
 					catch (IOException e)
 					{
@@ -100,14 +104,16 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult Close(int id)
 		{
-			WorkItemManager.Close(id);
+			TaskManager manager = new TaskManager();
+			manager.Close(id);
 			return RedirectToAction("Index");
 		}
 
 		[HttpGet]
 		public ActionResult Edit(int id)
 		{
-			WorkItemSummary item = WorkItemManager.ItemById(id);
+			TaskQueryManager manager = new TaskQueryManager();
+			TaskSummary item = manager.ItemById<TaskSummary>(id);
 			item.IsNew = false;
 
 			ViewData["PageName"] = "Task " + id;
@@ -126,7 +132,9 @@ namespace Spruce.Core.Controllers
 		{
 			try
 			{
-				WorkItemManager.SaveExisting(item);
+				TaskManager manager = new TaskManager();
+				item.IsNew = false;
+				manager.Save(item);
 
 				// Save the files once it's saved (as we can't add an AttachmentsCollection as it has no constructors)
 				if (Request.Files.Count > 0)
@@ -152,7 +160,7 @@ namespace Spruce.Core.Controllers
 							attachments.Add(new Attachment(filename3, Request.Form["uploadFile3Comments"]));
 						}
 
-						WorkItemManager.SaveAttachments(item.Id, attachments);
+						manager.SaveAttachments(item.Id, attachments);
 					}
 					catch (IOException e)
 					{
@@ -193,7 +201,7 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult Excel()
 		{
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetTaskFilterOptions(),"", true, "CreatedDate", true, 1, 10000,new TaskManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(GetTaskFilterOptions(),"", true, "CreatedDate", true, 1, 10000,new TaskQueryManager());
 
 			StringBuilder builder = new StringBuilder();
 			using (StringWriter writer = new StringWriter(builder))
@@ -229,7 +237,7 @@ namespace Spruce.Core.Controllers
 				UserContext.Current.Settings.IterationPath = summary.Path;
 			}
 
-			IEnumerable<WorkItemSummary> list = FilterAndPageList(new FilterOptions(), projectName, true, "CreatedDate", true, 1, 10000,new TaskManager());
+			IEnumerable<WorkItemSummary> list = FilterAndPageList(new FilterOptions(), projectName, true, "CreatedDate", true, 1, 10000,new TaskQueryManager());
 
 			RssActionResult result = new RssActionResult();
 			result.Feed = GetRssFeed(list, "Tasks");

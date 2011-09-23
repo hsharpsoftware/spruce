@@ -109,5 +109,34 @@ namespace Spruce.Core
 
 			return list;
 		}
+
+		public static IList<T> ToSummaryList<T>(this WorkItemCollection collection) where T : WorkItemSummary
+		{
+			List<T> list = new List<T>();
+
+			foreach (WorkItem item in collection)
+			{
+				T summary = default(T);
+				summary.FromWorkItem(item);
+				list.Add(summary);
+			}
+
+			return list;
+		}
+
+		public static void FillCoreFields(this WorkItem item, WorkItemSummary summary)
+		{
+			item.Title = summary.Title;
+			item.Description = summary.Description; // TODO: change to appropriate Field
+			item.Fields["Assigned To"].Value = summary.AssignedTo;
+			item.Fields["State"].Value = summary.State;
+			item.IterationPath = summary.IterationPath;
+			item.AreaPath = summary.AreaPath;
+
+			if (item.Fields.Contains("Reason"))
+			{
+				item.Fields["Reason"].Value = summary.Reason;
+			}
+		}
 	}
 }
