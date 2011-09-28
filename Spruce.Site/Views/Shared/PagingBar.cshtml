@@ -1,4 +1,5 @@
-﻿@model int[]
+﻿@* int[] is used as you can't provide a generic argument with RenderPartial(), AND dynamic is same assembly over *@
+@model int[]
 <div id="pagebar-container">
 	<div id="pagenumbers">
 		@if (Model[0] > 1)

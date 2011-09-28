@@ -138,9 +138,9 @@ namespace Spruce.Core
 			summary.AreaPath = UserContext.Current.Settings.AreaPath;
 			summary.IterationPath = UserContext.Current.Settings.IterationPath;
 
-			WorkItemTemplate template = new WorkItemTemplate();
-			summary.State = template.ValidStates[0];
-			summary.Reason = template.ValidReasons[0];
+			summary.PopulateAllowedValues(item);
+			summary.State = summary.ValidStates[0];
+			summary.Reason = summary.ValidReasons[0];
 
 			return item;
 		}

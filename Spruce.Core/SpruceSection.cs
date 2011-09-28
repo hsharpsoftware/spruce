@@ -54,6 +54,16 @@ namespace Spruce.Core
 			set { this["siteUrl"] = value; }
 		}
 
+		/// <summary>
+		/// The default controller.
+		/// </summary>
+		[ConfigurationProperty("defaultController", IsRequired = true)]
+		public string DefaultController
+		{
+			get { return (string)this["defaultController"]; }
+			set { this["defaultController"] = value; }
+		}
+
 		// New additions (after a release candidate) should be marked IsRequired=false
 	}
 }

@@ -1,0 +1,76 @@
+﻿@model WorkItem
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		setupEditPage();
+	});
+</script>
+
+@if (ViewData["Error"] != null)
+{
+	<div class="errorbox">
+		<h1>There was a problem saving the task</h1>
+		<p>
+			<b>The error TFS returned was:</b><br />
+			@ViewData["Error"]
+		</p>
+	</div>
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "editform" }))
+{
+	@(Html.HiddenFor<WorkItem, int>(m => m.Id))
+
+	<h3>@ViewData["PageName"]</h3>
+	
+	<div id="edit-container">
+		<div id="edit-title">
+			@(Html.TextBoxFor<WorkItem, string>(i => i.Title, 
+													new { tabindex = 1, 
+													maxlength = 150,
+													title = "Enter your title",
+													placeholder="Enter your title" }))
+		</div>
+
+		<div id="edit-options" class="lightbg">
+			<div class="left edit-field">
+				<div class="left label">Assigned to:</div>
+				<div class="left value">@Html.DropDownBoxFromList("AssignedTo",(List<string>)ViewData["Users"],Model.Fields["Assigned To"].Value,2)</div>
+			</div>
+		
+			<div class="left edit-field">
+				<div class="left label">State:</div>
+				<div class="left value">@Html.DropDownBoxFromList("State", (List<string>)ViewData["States"], Model.Fields["State"].Value, 3)</div>
+			</div>
+
+			<div class="left edit-field">
+				<div class="left label">Priority:</div>
+				<div class="left value">@Html.DropDownBoxFromList("Priority", (List<string>)ViewData["Priorities"], Model.Fields["Priority"].Value,4)</div>
+			</div>
+			<br style="clear:both"/>
+
+			<div class="left edit-field">
+				<div class="left label">Area:</div>
+				<div class="left value">@Html.DropDownBoxForAreas("AreaPath", (List<AreaSummary>)ViewData["Areas"], Model.AreaPath,5)</div>
+			</div>
+
+			<div class="left edit-field">
+				<div class="left label">Iteration:</div>
+				<div class="left value">@Html.DropDownBoxForIterations("IterationPath", (List<IterationSummary>)ViewData["Iterations"], Model.IterationPath,6)</div>
+			</div>
+			<br style="clear:both"/>
+		</div>
+
+		<div id="edit-description">
+			@(Html.TextAreaFor<WorkItem, string>(i => i.Description, 
+														new { tabindex = 7,
+														title = "Enter a brief description. See your project template for guidance", 
+														placeholder = "Enter a brief description. See your project template for guidance" }))
+		</div>
+
+		<div id="edit-buttons">
+			<input type="submit" value="Save" tabindex="8" />
+			<input type="button" value="Cancel" onclick="history.go(-1);" tabindex="9"  />
+		</div>
+	</div>
+}

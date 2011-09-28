@@ -1,10 +1,10 @@
-﻿@model IEnumerable<WorkItemSummary>
+﻿@model ListData<WorkItemSummary>
 
 <h3>Saved TFS queries</h3>
 
 @using (Html.BeginForm("StoredQuery", "Home", FormMethod.Get))
 {
-	@Html.DropDownBoxForStoredQueries("id", UserContext.Current.CurrentProject.StoredQueries, (Guid) ViewData["CurrentQuery"], 0)
+	@Html.DropDownBoxForStoredQueries("id", UserContext.Current.CurrentProject.StoredQueries, (Guid) ViewData["CurrentQueryId"], 0)
 	<input type="submit" value="Display" />
 }
 <br /><br />
@@ -15,25 +15,19 @@
 			<thead>
 				<tr id="list-table-header">
 					<th>
-						<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = !(bool)ViewData["desc"] })</div>
+						<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = Model.FilterValues.IsDescending})</div>
 					</th>
 					<th style="width:8%;">
-						<div>@Html.ActionLink("ID","Index",new { sortBy = "Id", desc = !(bool)ViewData["desc"]})</div>
+						<div>@Html.ActionLink("ID", "Index", new { sortBy = "Id", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:15%">
-						<div>@Html.ActionLink("Assigned to", "Index", new { sortBy = "AssignedTo", desc = !(bool)ViewData["desc"] })</div>
+						<div>@Html.ActionLink("Assigned to", "Index", new { sortBy = "AssignedTo", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:15%">
-						<div>@Html.ActionLink("Created on", "Index", new { sortBy = "CreatedDate", desc = !(bool)ViewData["desc"] })</div>
+						<div>@Html.ActionLink("Created on", "Index", new { sortBy = "CreatedDate", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:12%">
-						<div>@Html.ActionLink("Status", "Index", new { sortBy = "State", desc = !(bool)ViewData["desc"] })</div>
-					</th>
-					<th style="width:12%">
-						<div>@Html.ActionLink("Priority", "Index", new { sortBy = "Priority", desc = !(bool)ViewData["desc"] })</div>
-					</th>
-					<th style="width:12%">
-						<div>@Html.ActionLink("Severity", "Index", new { sortBy = "Severity", desc = !(bool)ViewData["desc"] })</div>
+						<div>@Html.ActionLink("Status", "Index", new { sortBy = "State", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:10%">
 						<div class="list-table-noborder"></div>
@@ -41,7 +35,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			@foreach (WorkItemSummary item in Model)
+			@foreach (WorkItemSummary item in Model.WorkItems)
 			{
 				<tr id="list-table-row">
 					<td>
@@ -59,12 +53,6 @@
 					<td>
 						<div>@item.State</div>
 					</td>
-					<td>
-						<div>@item.Priority</div>
-					</td>
-					<td>
-						<div>@item.Severity</div>
-					</td>
 					<td style="width:10%">
 						<div class="list-table-noborder">
 							@Html.ActionLink("Edit", "Edit", new { id = item.Id, fromUrl=Request.Url.PathAndQuery })
@@ -77,4 +65,4 @@
 	</div>
 </div>
 <br class="clear" /><br />
-@Html.Partial("PagingBar", new int[] { int.Parse(ViewData["pageCount"].ToString()), int.Parse(ViewData["currentPage"].ToString()) })
+@Html.Partial("PagingBar", new[] { Model.FilterValues.PageCount, Model.FilterValues.CurrentPage })

@@ -26,7 +26,7 @@ namespace Spruce.Core
 
 			_query = string.Format("SELECT ID, Title from Issue WHERE " +
 				"System.TeamProject = @project {0} %FILTERS% " +
-				"ORDER BY Id DESC", AddSqlForPaths(_parameters));
+				"ORDER BY Id DESC", GenerateSqlForPaths(_parameters));
 		}
 
 		public void And(string query)
@@ -44,7 +44,7 @@ namespace Spruce.Core
 			_parameters.Add(name, value);
 		}
 
-		private string AddSqlForPaths(Dictionary<string, object> parameters)
+		public string GenerateSqlForPaths(Dictionary<string, object> parameters)
 		{
 			string result = "";
 

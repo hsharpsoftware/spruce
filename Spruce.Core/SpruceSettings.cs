@@ -27,6 +27,14 @@ namespace Spruce.Core
 			}
 		}
 
+		public static string SiteUrl
+		{
+			get
+			{
+				return SpruceSection.Current.SiteUrl;
+			}
+		}
+
 		/// <summary>
 		/// The directory for all attachments to be uploaded prior to being saved on TFS. Includes a trailing slash.
 		/// </summary>

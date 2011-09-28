@@ -14,8 +14,9 @@ namespace Spruce.Core
 	public class UserContext
 	{
 		private static readonly string CONTEXT_KEY = "SPRUCE_USER_CONTEXT";
-		private string _projectName;
 		private static UserContext _contextForNoneWeb;
+		private string _projectName;
+		private List<string> _users;		
 
 		public TfsTeamProjectCollection TfsCollection { get; private set; }
 		public WorkItemStore WorkItemStore { get; private set; }
@@ -26,7 +27,17 @@ namespace Spruce.Core
 		public List<string> ProjectNames { get; private set; }
 		public string Name { get; private set; }
 		public Guid Id { get; private set; }
-		public List<string> Users { get; private set; }
+		public IEnumerable<string> Users
+		{
+			get
+			{
+				return _users;
+			}
+			private set
+			{
+				_users = new List<string>(value);
+			}
+		}
 		public UserSettings Settings { get; set; }
 		
 		public static bool IsWeb { get; set; }
@@ -65,12 +76,20 @@ namespace Spruce.Core
 						HttpContext.Current.Session[CONTEXT_KEY] = context;
 					}
 
+					// This call is here and not in SpruceApplication as it needs a user login in to 
+					// scan the types, as it creates a WorkItem to discover its WorkItemType.
+					if (!WorkItemSummaryFactory.HasScanned())
+						WorkItemSummaryFactory.Scan();
+
 					return context;
 				}
 				else
 				{
 					if (_contextForNoneWeb == null)
 						_contextForNoneWeb = new UserContext();
+
+					if (!WorkItemSummaryFactory.HasScanned())
+						WorkItemSummaryFactory.Scan();
 
 					return _contextForNoneWeb;
 				}
@@ -138,11 +157,11 @@ namespace Spruce.Core
 					if (string.IsNullOrEmpty(name))
 						name = members[i].AccountName;
 
-					Users.Add(name);
+					_users.Add(name);
 				}
 			}
 
-			Users.Sort();
+			_users.Sort();
 		}
 
 		static UserContext()
@@ -159,6 +178,7 @@ namespace Spruce.Core
 				throw new ArgumentNullException("The DefaultProjectName settings is empty, please set it in the web.config");
 
 			// Connect to TFS
+			_users = new List<string>();
 			TfsCollection = new TfsTeamProjectCollection(new Uri(SpruceSettings.TfsServer));
 			TfsCollection.Authenticate();
 			WorkItemStore = new WorkItemStore(TfsCollection);

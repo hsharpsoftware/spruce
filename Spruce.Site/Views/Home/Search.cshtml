@@ -1,4 +1,4 @@
-﻿@model List<WorkItemSummary>
+﻿@model ListData<WorkItemSummary>
 
 <span class="searchresults">Search result(s) for <b>@ViewData["search"]</b></span>
 
@@ -12,31 +12,60 @@
 }
 </div>
 
-<table id="workitems-table">
-	<thead>
-		<tr class="midbg">
-			<th style="width:5%">ID</th>
-			<th style="width:60%">Title</th>
-			<th style="width:20%">Assigned to</th>
-			<th style="width:15%">Status</th>
-		</tr>
-	</thead>
-	<tbody>
-	@foreach (WorkItemSummary item in Model)
-	{
-		<tr>
-			@if (item.IsBug)
+<div style="width:100%">
+	<div class="left" style="width:75%">
+		<table id="list-table">
+			<thead>
+				<tr id="list-table-header">
+					<th>
+						<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = Model.FilterValues.IsDescending})</div>
+					</th>
+					<th style="width:8%;">
+						<div>@Html.ActionLink("ID", "Index", new { sortBy = "Id", desc = Model.FilterValues.IsDescending })</div>
+					</th>
+					<th style="width:15%">
+						<div>@Html.ActionLink("Assigned to", "Index", new { sortBy = "AssignedTo", desc = Model.FilterValues.IsDescending })</div>
+					</th>
+					<th style="width:15%">
+						<div>@Html.ActionLink("Created on", "Index", new { sortBy = "CreatedDate", desc = Model.FilterValues.IsDescending })</div>
+					</th>
+					<th style="width:12%">
+						<div>@Html.ActionLink("Status", "Index", new { sortBy = "State", desc = Model.FilterValues.IsDescending })</div>
+					</th>
+					<th style="width:10%">
+						<div class="list-table-noborder"></div>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+			@foreach (WorkItemSummary item in Model.WorkItems)
 			{
-				<td>@Html.ActionLink(item.Id.ToString(), "View","Bugs", new { id = item.Id },null)</td>
+				<tr id="list-table-row">
+					<td>
+						<div>@item.Title</div>
+					</td>
+					<td>
+						<div>@Html.ActionLink(item.Id.ToString(), "View", item.Controller, new { id = item.Id })</div>
+					</td>
+					<td style="width:15%">
+						<div>@item.AssignedTo</div>
+					</td>
+					<td style="width:15%">
+						<div>@item.CreatedDate.ToString("ddd dd MMM yyyy")</div>
+					</td>
+					<td>
+						<div>@item.State</div>
+					</td>
+					<td style="width:10%">
+						<div class="list-table-noborder">
+							@Html.ActionLink("Edit", "Edit", item.Controller, new { id = item.Id, fromUrl = Request.Url.PathAndQuery })
+						</div>
+					</td>
+				</tr>
 			}
-			else
-			{
-				<td>@Html.ActionLink(item.Id.ToString(), "View", "Tasks", new { id = item.Id }, null)</td>
-			}
-			<td>@item.Title</td>
-			<td>@item.AssignedTo</td>
-			<td>@item.State</td>
-		</tr>
-	}
-	</tbody>
-</table>
+			</tbody>
+		</table>
+	</div>
+</div>
+<br class="clear" /><br />
+@Html.Partial("PagingBar", new[] { Model.FilterValues.PageCount, Model.FilterValues.CurrentPage })

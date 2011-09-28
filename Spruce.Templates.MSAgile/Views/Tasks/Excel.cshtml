@@ -1,0 +1,35 @@
+﻿@model IEnumerable<WorkItemSummary>
+
+<Worksheet ss:Name="Tasks (@ViewData["CurrentFilter"])">
+	<Table ss:ExpandedColumnCount="8" x:FullColumns="1" x:FullRows="1" ID="Bugs">
+		<Column ss:Width="100"  />
+		<Column ss:Width="100" />
+		<Column ss:Width="100" />
+		<Column ss:Width="100" />
+		<Column ss:Width="100" />
+		<Column ss:Width="100" />
+
+		<Row ss:StyleID="header">
+			<Cell><Data ss:Type="String">Title</Data></Cell>
+			<Cell><Data ss:Type="String">Id</Data></Cell>
+			<Cell><Data ss:Type="String">AssignedTo</Data></Cell>
+			<Cell><Data ss:Type="String">Created On</Data></Cell>
+			<Cell><Data ss:Type="String">Status</Data></Cell>
+			<Cell><Data ss:Type="String">Priority</Data></Cell>
+			<Cell><Data ss:Type="String">Estimated hours</Data></Cell>
+		</Row>
+
+		@foreach (WorkItemSummary item in Model)
+		{
+			<Row>
+				<Cell><Data ss:Type="String">@item.Title</Data></Cell>
+				<Cell><Data ss:Type="String">@item.Id</Data></Cell>
+				<Cell><Data ss:Type="String">@item.AssignedTo</Data></Cell>
+				<Cell><Data ss:Type="String">@item.CreatedDate.ToShortDateString()</Data></Cell>
+				<Cell><Data ss:Type="String">@item.State</Data></Cell>
+				<Cell><Data ss:Type="String">@item.Priority</Data></Cell>
+				<Cell><Data ss:Type="String">@item.EstimatedHours</Data></Cell>
+			</Row>
+		}
+	</Table>
+</Worksheet>

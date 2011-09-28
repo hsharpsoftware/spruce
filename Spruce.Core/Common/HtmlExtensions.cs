@@ -21,9 +21,10 @@ namespace Spruce.Core
 			return MvcHtmlString.Create(markdown.Transform(text));
 		}
 
-		public static MvcHtmlString TableSortLink(this HtmlHelper helper, string title, string column)
+		public static MvcHtmlString TableSortLink<T>(this HtmlHelper helper, string title, string column, ListData<T> model)
+			where T: WorkItemSummary
 		{
-			bool descending = (bool) helper.ViewData["desc"];
+			bool descending = model.FilterValues.IsDescending;
 
 			string fullUrl = HttpContext.Current.Request.Url.ToString();
 
@@ -43,7 +44,7 @@ namespace Spruce.Core
 			return MvcHtmlString.Create(string.Format(@"<a href=""{0}sortBy={1}&desc={2}"">{3}</a>", fullUrl, column, descending, title));
 		}
 
-		public static string GetPreviousFieldValue(this HtmlHelper helper, WorkItemSummary model, string fieldName, int revisionNumber)
+		public static string GetFieldValueForRevision(this HtmlHelper helper, WorkItemSummary model, string fieldName, int revisionNumber)
 		{
 			if (revisionNumber > 0 && model.Revisions[revisionNumber - 1].Fields[fieldName].Value != null)
 				return model.Revisions[revisionNumber - 1].Fields[fieldName].Value.ToString();
@@ -317,37 +318,6 @@ namespace Spruce.Core
 			else
 				builder.Append(summary.State);
 
-			builder.Append(",");
-
-			return builder.AppendLine().ToString();
-		}
-
-		public static string ToCsv(this BugSummary summary)
-		{
-			StringBuilder builder = new StringBuilder();
-			builder.Append(ToCsv(summary));
-
-			// Priority
-			builder.Append(summary.Priority);
-			builder.Append(",");
-
-			// Severity
-			if (summary.Severity.IndexOf(",") > -1)
-				builder.Append("\"" + summary.Severity + "\"");
-			else
-				builder.Append(summary.Title);
-
-
-			return builder.AppendLine().ToString();
-		}
-
-		public static string ToCsv(this TaskSummary summary)
-		{
-			StringBuilder builder = new StringBuilder();
-			builder.Append(ToCsv(summary));
-
-			// Priority
-			builder.Append(summary.Priority);
 			builder.Append(",");
 
 			return builder.AppendLine().ToString();

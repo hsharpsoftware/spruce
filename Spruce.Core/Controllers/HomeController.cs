@@ -9,37 +9,44 @@ using Spruce.Core.Search;
 
 namespace Spruce.Core.Controllers
 {
-	public class HomeController : ControllerBase
+	public class HomeController : SpruceControllerBase<WorkItemSummary>
 	{
 		public ActionResult Index()
 		{
-			// Dashboard
-			return View("Index", DashboardManager.GetSummary());
-		}
-
-		public ActionResult Changeset(int id)
-		{
-			return View(DashboardManager.GetChangeSet(id));
+			return View();
 		}
 
 		public ActionResult Search(string q)
 		{
 			IList<WorkItemSummary> summaries = new List<WorkItemSummary>();
+			ListData<WorkItemSummary> data = new ListData<WorkItemSummary>();
 
 			if (!string.IsNullOrEmpty(q))
 			{
 				SearchManager manager = new SearchManager();
-				summaries = manager.Search(q).ToList();
-				ViewData["search"] = q;
 
-				if (manager.IsId(q) && summaries.Count == 1)
+				if (manager.IsId(q))
 				{
-					// For single work item ids (that exist), redirect straight to the bug page
-					return RedirectToAction("View", "Bugs", new { id = int.Parse(q) });
+					// For single work item ids (that exist), redirect straight to their view page
+					int id = int.Parse(q);
+					QueryManager queryManager = new QueryManager();
+					WorkItemSummary summary = queryManager.ItemById(id);
+
+					if (summary != null)
+					{
+						return Redirect(SpruceSettings.SiteUrl + "/" + summary.Controller + "/View/" + id);
+					}
+				}
+				else
+				{
+					summaries = manager.Search(q).ToList();
+					data.WorkItems = summaries;
+
+					ViewData["search"] = q;
 				}
 			}
 
-			return View(summaries);
+			return View(data);
 		}
 
 		public ActionResult ChangeProject(string project, string area, string iteration, string fromUrl)
@@ -78,22 +85,22 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult StoredQueries()
 		{
-			ViewData["pageCount"] = 0;
-			ViewData["currentPage"] = 1;
-			ViewData["pageSize"] = 1;
-			ViewData["desc"] = true;
-			ViewData["CurrentQuery"] = Guid.Empty;
-			return View(new List<WorkItemSummary>());
+			ListData<WorkItemSummary> data = new ListData<WorkItemSummary>();
+			ViewData["CurrentQueryId"] = Guid.Empty;
+
+			return View(data);
 		}
 
 		public ActionResult StoredQuery(Guid id, string sortBy, bool? desc, int? page, int? pageSize)
 		{
 			QueryManager manager = new QueryManager();
-			IEnumerable<WorkItemSummary> list = manager.StoredQuery(id);
-			list = PageList(list, false, sortBy, desc, page, pageSize);
-			ViewData["CurrentQuery"] = id;
 
-			return View("StoredQueries", list);
+			ListData<WorkItemSummary> data = new ListData<WorkItemSummary>();
+			data.WorkItems = manager.StoredQuery(id);
+			PageList(data, false, sortBy, desc, page, pageSize);
+			ViewData["CurrentQueryId"] = id;
+
+			return View("StoredQueries", data);
 		}
 
 		/// <summary>

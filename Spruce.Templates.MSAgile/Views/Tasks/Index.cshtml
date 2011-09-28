@@ -1,0 +1,86 @@
+﻿@model ListData<TaskSummary>
+
+<h3>Tasks</h3>
+
+<form action="" method="get" id="filterform">
+@Html.Hidden("sortBy",Request.QueryString["sortBy"])
+@Html.Hidden("desc",Request.QueryString["desc"])
+<div style="width:100%">
+	<table id="list-table">
+		<thead>
+			<tr id="list-table-header">
+				<th>
+					<div>@(Html.TableSortLink<TaskSummary>("Title","Title", Model))</div>
+				</th>
+				<th style="width:8%;">
+					<div>@(Html.TableSortLink<TaskSummary>("ID", "Id", Model))</div>
+				</th>
+				<th style="width:15%">
+					<div>@(Html.TableSortLink<TaskSummary>("Assigned to", "AssignedTo", Model))</div>
+				</th>
+				<th style="width:15%">
+					<div>@(Html.TableSortLink<TaskSummary>("Created on", "CreatedDate", Model))</div>
+				</th>
+				<th style="width:12%">
+					<div>@(Html.TableSortLink<TaskSummary>("Status", "State", Model))</div>
+				</th>
+				<th style="width:10%">
+					<div class="list-table-noborder"></div>
+				</th>
+			</tr>
+		</thead>
+		<!-- Filter bar -->
+		<tr style="height:5px;background-color:#EEE;">
+			<td class="help" help="Filter by title.">@Html.TextBox("title", ViewData["title"], new { placeholder = "title" })</td>
+			<td></td>
+			<td style="width:15%;" class="help" help="Filter by assigned to. Use 'me' or the login name.">
+				@Html.TextBox("assignedTo", ViewData["assignedTo"], new { placeholder = "assigned to" })
+			</td>
+			<td style="width:15%" class="help" help="Filter by start/end date. You can use today, yesterday, thisweek, thismonth, lastmonth or standard dates.">
+				@Html.TextBox("startDate", ViewData["startDate"], new { placeholder = "start" })
+				@Html.TextBox("endDate", ViewData["endDate"], new { placeholder = "end" })
+			</td>
+			<td class="help" help="Filter by the status.">
+				@Html.DropDownList("status", new Dictionary<string, string>() { { "All", "All" }, { "Active", "Active" },{ "Closed", "Closed" } }, ViewData["status"].SafeToString())
+			</td>
+			<td></td>
+			<td></td>
+			<td style="width:10%"></td>
+		</tr>
+		<tbody>
+		@foreach (WorkItemSummary item in Model)
+		{
+			<tr id="list-table-row">
+				<td>
+					<div>@item.Title</div>
+				</td>
+				<td>
+					<div>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</div>
+				</td>
+				<td style="width:15%">
+					<div>@item.AssignedTo</div>
+				</td>
+				<td style="width:15%">
+					<div>@item.CreatedDate.ToString("ddd dd MMM yyyy")</div>
+				</td>
+				<td>
+					<div>@item.State</div>
+				</td>
+				<td style="width:10%">
+					<div class="list-table-noborder">
+						@Html.ActionLink("Edit", "Edit", new { id = item.Id, fromUrl = Request.Url.PathAndQuery })
+					</div>
+				</td>
+			</tr>
+		}
+		</tbody>
+	</table>
+</div>
+</form>
+
+<br style="clear:both" />
+@Html.Partial("PagingBar", new[] { Model.FilterValues.PageCount, Model.FilterValues.CurrentPage })
+
+<br /><br />
+
+@Html.Partial("Footer")

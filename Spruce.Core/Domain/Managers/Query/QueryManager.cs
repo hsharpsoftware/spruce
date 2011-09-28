@@ -19,14 +19,26 @@ namespace Spruce.Core
 
 		protected void ContrainType(string workItemType)
 		{
-			_builder.And(string.Format("[Work Item Type]='{0}'",workItemType));
+			if (!string.IsNullOrEmpty(workItemType))
+				_builder.And(string.Format("[Work Item Type]='{0}'", workItemType));
 		}
 
-		public T ItemById<T>(int id) where T: WorkItemSummary
+		public T ItemById<T>(int id) where T : WorkItemSummary, new()
 		{
 			WorkItem item = UserContext.Current.WorkItemStore.GetWorkItem(id);
 
-			T summary = default(T);
+			T summary = new T();
+			summary.FromWorkItem(item);
+			summary.IsNew = false;
+
+			return summary;
+		}
+
+		public WorkItemSummary ItemById(int id)
+		{
+			WorkItem item = UserContext.Current.WorkItemStore.GetWorkItem(id);
+
+			WorkItemSummary summary = WorkItemSummaryFactory.GetForType(item.Type);
 			summary.FromWorkItem(item);
 			summary.IsNew = false;
 
@@ -79,9 +91,9 @@ namespace Spruce.Core
 
 			Project project = UserContext.Current.WorkItemStore.Projects[UserContext.Current.CurrentProject.Name];
 			QueryItem item = project.QueryHierarchy.Find(id);
-			
+
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(project.StoredQueries[id].QueryText, parameters);
-			return collection.ToSummaryList();
+			return collection.ToSummaries();
 		}
 
 		public IEnumerable<WorkItemSummary> AllItems()
@@ -91,10 +103,10 @@ namespace Spruce.Core
 
 			string query = string.Format("SELECT ID, Title from Issue WHERE " +
 				"System.TeamProject = @project {0} " +
-				"ORDER BY Id DESC", AddSqlForPaths(parameters));
+				"ORDER BY Id DESC", _builder.GenerateSqlForPaths(parameters));
 
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(query, parameters);
-			return collection.ToSummaryList();
+			return collection.ToSummaries<WorkItemSummary>();
 		}
 
 		public IEnumerable<IterationSummary> IterationsForProject(string projectName)
@@ -129,22 +141,28 @@ namespace Spruce.Core
 			return list;
 		}
 
-		public virtual IEnumerable<string> GetAllowedValuesForState(WorkItemType type,string state, string fieldName)
+		public virtual IEnumerable<string> GetAllowedValuesForState<T>(string state, string fieldName) where T : WorkItemSummary, new()
 		{
-			WorkItem item = new WorkItem(type);
+			T summary = new T();
+
+			WorkItem item = new WorkItem(summary.WorkItemType);
 			item.State = state;
 			item.Validate();
 
 			return item.Fields[fieldName].AllowedValues.ToList();
 		}
 
-		public IEnumerable<WorkItemSummary> Execute()
+		public IEnumerable<T> Execute<T>() where T : WorkItemSummary, new()
 		{
+			// Filter by a type for the query.
+			T summary = new T();
+			ContrainType(summary.WIQLTypeName);
+
 			string query = _builder.ToString();
 
 			HttpContext.Current.Items["Query"] = MvcHtmlString.Create(query);
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(query, _builder.Parameters);
-			return collection.ToSummaryList();
+			return collection.ToSummaries<T>();
 		}
 
 		public IEnumerable<WorkItemSummary> ExecuteWiqlQuery(string query, Dictionary<string, object> parameters, bool useDefaultProject)
@@ -164,7 +182,7 @@ namespace Spruce.Core
 			}
 
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(query, parameters);
-			return collection.ToSummaryList();
+			return collection.ToSummaries();
 		}
 	}
 }

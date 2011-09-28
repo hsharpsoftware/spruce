@@ -6,6 +6,7 @@ using System.Reflection;
 using System.ComponentModel;
 using System.IO;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using System.Web.Mvc;
 
 namespace Spruce.Core
 {
@@ -39,7 +40,7 @@ namespace Spruce.Core
 				return 0;
 		}
 
-		public static double ToDoubleOrDefault(this object value)
+		public static double ToDoubleOrDefault(this string value)
 		{
 			if (value == null)
 				return 0;
@@ -72,8 +73,18 @@ namespace Spruce.Core
 		/// </summary>
 		/// <param name="value"></param>
 		/// <returns></returns>
-		public static string SafeToString(this object value)
+		public static string SafeToString(this ViewDataDictionary dictionary,string key)
 		{
+			object value = dictionary[key];
+			if (value != null)
+				return value.ToString();
+			else
+				return "";
+		}
+
+		public static string SafeToString(this TempDataDictionary dictionary, string key)
+		{
+			object value = dictionary[key];
 			if (value != null)
 				return value.ToString();
 			else
@@ -110,18 +121,23 @@ namespace Spruce.Core
 			return list;
 		}
 
-		public static IList<T> ToSummaryList<T>(this WorkItemCollection collection) where T : WorkItemSummary
+		public static IList<T> ToSummaries<T>(this WorkItemCollection collection) where T : WorkItemSummary, new()
 		{
 			List<T> list = new List<T>();
 
 			foreach (WorkItem item in collection)
 			{
-				T summary = default(T);
+				T summary = new T();
 				summary.FromWorkItem(item);
 				list.Add(summary);
 			}
 
 			return list;
+		}
+
+		public static IList<WorkItemSummary> ToSummaries(this WorkItemCollection collection)
+		{
+			return collection.ToSummaries<WorkItemSummary>();
 		}
 
 		public static void FillCoreFields(this WorkItem item, WorkItemSummary summary)

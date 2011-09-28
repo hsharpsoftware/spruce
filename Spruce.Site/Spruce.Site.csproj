@@ -90,15 +90,9 @@
     <Content Include="install.txt" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Search.cshtml" />
-    <Content Include="Views\Tasks\Index.cshtml" />
-    <Content Include="Views\Tasks\Edit.cshtml" />
-    <Content Include="Views\Bugs\Edit.cshtml" />
-    <Content Include="Views\Bugs\View.cshtml" />
-    <Content Include="Views\Bugs\Index.cshtml" />
     <Content Include="Assets\Scripts\jquery-1.4.1-vsdoc.js" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Tasks\View.cshtml" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -117,6 +111,10 @@
       <Project>{9C86C475-F3BD-44D1-942A-78BF19158C3A}</Project>
       <Name>Spruce.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Spruce.Templates.MSAgile\Spruce.Templates.MSAgile.csproj">
+      <Project>{D455891A-1830-44AE-8B64-1A6D3310EBB6}</Project>
+      <Name>Spruce.Templates.MSAgile</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\Error.cshtml" />
@@ -129,22 +127,14 @@
     <Content Include="Views\Shared\Filters.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Bugs\Heatmap.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Shared\PagingBar.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Bugs\Excel.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\_ExcelLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Tasks\Excel.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Template\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Home\StoredQueries.cshtml" />
@@ -169,9 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\Footer.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Changeset.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

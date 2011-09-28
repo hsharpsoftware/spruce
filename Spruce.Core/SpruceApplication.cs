@@ -16,12 +16,21 @@ namespace Spruce.Core
 			routes.MapRoute(
 				"Default", // Route name
 				"{controller}/{action}/{id}", // URL with parameters
-				new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
+				new {
+					controller = SpruceSection.Current.DefaultController, 
+					action = "Index", id = UrlParameter.Optional } // Parameter defaults
 			);
 		}
 
 		protected void Application_Start()
 		{
+			// Register the new view engine which adds extra view paths to search
+			ViewEngines.Engines.Clear();
+			ExtendedRazorViewEngine engine = new ExtendedRazorViewEngine();
+			engine.AddViewLocationFormat("~/Template/{1}/{0}.cshtml");
+			engine.AddViewLocationFormat("~/Template/{1}/{0}.vbhtml");
+			ViewEngines.Engines.Add(engine);
+
 			AreaRegistration.RegisterAllAreas();
 			RegisterRoutes(RouteTable.Routes);
 		}

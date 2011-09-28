@@ -31,9 +31,6 @@ namespace Spruce.Core
 		public IList<IterationSummary> Iterations { get; private set; }
 		public IList<StoredQuerySummary> StoredQueries { get; private set; }
 
-		public WorkItemType WorkItemTypeForBug { get; private set; }
-		public WorkItemType WorkItemTypeForTask { get; private set; }
-
 		public ProjectDetails(Project project)
 		{
 			_project = project;
@@ -56,11 +53,7 @@ namespace Spruce.Core
 
 			AddWorkItemTypes();
 			AddWorkItemTypesAsStrings();
-			WorkItemTypeForBug = WorkItemTypes.FirstOrDefault(t => t.Name == "Bug");
-			WorkItemTypeForTask = WorkItemTypes.FirstOrDefault(t => t.Name == "Task");
 
-			AddReasonsForBug();
-			AddReasonsForTask();
 			AllowedTriageTypes = GetAllowedValues("Triage");
 			AllowedPriorities = GetAllowedValues("Priority");
 			AllowedSeverities = GetAllowedValues("Severity");
@@ -123,26 +116,6 @@ namespace Spruce.Core
 			foreach (WorkItemType workItemType in _project.WorkItemTypes)
 			{
 				WorkItemTypesAsStrings.Add(workItemType.Name);
-			}
-		}
-
-		private void AddReasonsForBug()
-		{
-			WorkItemType workItemType = WorkItemTypeForBug;
-
-			foreach (string value in workItemType.FieldDefinitions["Reason"].AllowedValues)
-			{
-				ReasonsForBug.Add(value);
-			}
-		}
-
-		private void AddReasonsForTask()
-		{
-			WorkItemType workItemType = WorkItemTypeForTask;
-
-			foreach (string value in workItemType.FieldDefinitions["Reason"].AllowedValues)
-			{
-				ReasonsForTask.Add(value);
 			}
 		}
 
