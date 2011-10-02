@@ -1,17 +1,19 @@
-﻿@model ListData<WorkItemSummary>
+﻿@model ListData
 
 <span class="searchresults">Search result(s) for <b>@ViewData["search"]</b></span>
 
 <div id="searchagain-box">
-@using (Html.BeginForm("Index", "Search", FormMethod.Get))
+@using (Html.BeginForm("Search", "Home", FormMethod.Get))
 {
 	<div>
-		@Html.TextBox("id", ViewData["search"], new { @class = "searchbox" })
+		@Html.TextBox("q", ViewData["search"], new { @class = "searchbox" })
 		<input type="submit" value="search" />
 	</div>
 }
 </div>
 
+@if (Model.WorkItems.Count() > 0)
+{
 <div style="width:100%">
 	<div class="left" style="width:75%">
 		<table id="list-table">
@@ -69,3 +71,4 @@
 </div>
 <br class="clear" /><br />
 @Html.Partial("PagingBar", new[] { Model.FilterValues.PageCount, Model.FilterValues.CurrentPage })
+}

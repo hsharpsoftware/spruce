@@ -118,6 +118,7 @@
     <Compile Include="Domain\User\Persisters\XmlFileProvider.cs" />
     <Compile Include="Domain\User\ProjectDetails.cs" />
     <Compile Include="Domain\User\ProjectFilterOptions.cs" />
+    <Compile Include="Domain\User\SerializableDictionary.cs" />
     <Compile Include="Domain\User\UserSettings.cs" />
     <Compile Include="Search\Fields\ContainsField.cs" />
     <Compile Include="Search\Fields\ProjectField.cs" />
@@ -146,9 +147,7 @@
     <EmbeddedResource Include="Search\Grammar\spruce.cgt" />
     <None Include="Search\Grammar\spruce.grm" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Domain\Templates\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

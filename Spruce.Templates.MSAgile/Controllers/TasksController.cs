@@ -12,14 +12,14 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
-	public class TasksController : SpruceControllerBase<TaskSummary>
+	public class TasksController : SpruceControllerBase
     {
-		public ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize,
+		public override ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize,
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
-			UpdateUserFilterOptions();
+			UpdateUserFilterOptions("tasks:default");
 
-			ListData<TaskSummary> data = FilterAndPage(GetTaskFilterOptions(), id, true, sortBy, desc, page, pageSize);
+			ListData data = FilterAndPage<TaskSummary>(GetTaskFilterOptions(), id, sortBy, desc, page, pageSize);
 			return View(data);
 		}
 
@@ -27,7 +27,7 @@ namespace Spruce.Templates.MSAgile
 		public ActionResult New(string id)
 		{
 			TaskManager manager = new TaskManager();
-			TaskSummary item = manager.NewItem();
+			TaskSummary item = (TaskSummary) manager.NewItem();
 
 			if (!string.IsNullOrWhiteSpace(id))
 				item.Title = id;
@@ -184,22 +184,23 @@ namespace Spruce.Templates.MSAgile
 
 		public ActionResult Excel()
 		{
-			ListData<TaskSummary> data = FilterAndPage(GetTaskFilterOptions(), "", true, "CreatedDate", true, 1, 10000);
+			ListData data = FilterAndPage<TaskSummary>(GetTaskFilterOptions(), "", "CreatedDate", true, 1, 10000);
 			return Excel(data.WorkItems);
 		}
 
 		public ActionResult Rss(string projectName, string areaPath, string iterationPath, string filter)
 		{
-			ListData<TaskSummary> data = FilterAndPage(new FilterOptions(), projectName, true, "CreatedDate", true, 1, 10000);
+			ListData data = FilterAndPage<TaskSummary>(new FilterOptions(), projectName, "CreatedDate", true, 1, 10000);
 			return Rss(data.WorkItems, "Tasks", projectName, areaPath, iterationPath, filter);
 		}
 
 		private FilterOptions GetTaskFilterOptions()
 		{
-			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name).TaskFilterOptions;
+			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name)
+				.GetByKey("tasks:default");
 		}
 
-		protected override WorkItemManager<TaskSummary> GetManager()
+		protected override WorkItemManager GetManager()
 		{
 			return new TaskManager();
 		}

@@ -96,11 +96,6 @@ namespace Spruce.Core
 			}
 		}
 
-		public void UpdateSettings()
-		{
-			UserSettings.Save(Settings);
-		}
-
 		/// <summary>
 		/// Change's the current project for the user.
 		/// </summary>

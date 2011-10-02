@@ -1,6 +1,6 @@
-﻿@model ListData<WorkItemSummary>
+﻿@model ListData
 
-<h3>Saved TFS queries</h3>
+<h3>Stored Queries</h3>
 
 @using (Html.BeginForm("StoredQuery", "Home", FormMethod.Get))
 {
@@ -9,6 +9,8 @@
 }
 <br /><br />
 
+@if (Model.WorkItems.Count() > 0)
+{
 <div style="width:100%">
 	<div class="left" style="width:75%">
 		<table id="list-table">
@@ -42,7 +44,7 @@
 						<div>@item.Title</div>
 					</td>
 					<td>
-						<div>@Html.ActionLink(item.Id.ToString(), "View", new { id = item.Id })</div>
+						<div>@Html.ActionLink(item.Id.ToString(), "View", item.Controller, new { id = item.Id }, null)</div>
 					</td>
 					<td style="width:15%">
 						<div>@item.AssignedTo</div>
@@ -55,7 +57,7 @@
 					</td>
 					<td style="width:10%">
 						<div class="list-table-noborder">
-							@Html.ActionLink("Edit", "Edit", new { id = item.Id, fromUrl=Request.Url.PathAndQuery })
+							@Html.ActionLink("Edit", "Edit", item.Controller, new { id = item.Id, fromUrl = Request.Url.PathAndQuery }, null)
 						</div>
 					</td>
 				</tr>
@@ -66,3 +68,4 @@
 </div>
 <br class="clear" /><br />
 @Html.Partial("PagingBar", new[] { Model.FilterValues.PageCount, Model.FilterValues.CurrentPage })
+}

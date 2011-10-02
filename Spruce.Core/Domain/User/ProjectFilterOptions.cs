@@ -13,9 +13,7 @@ namespace Spruce.Core
 		/// The project name these filter options are for.
 		/// </summary>
 		public string Name { get; set; }
-		public FilterOptions BugFilterOptions { get; set; }
-		public FilterOptions BugHeatmapFilterOptions { get; set; }
-		public FilterOptions TaskFilterOptions { get; set; }
+		public SerializableDictionary<string,FilterOptions> FilterOptions { get; set; }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ProjectFilterOptions"/> class.
@@ -23,14 +21,30 @@ namespace Spruce.Core
 		/// <remarks>Constructor for serialization</remarks>
 		public ProjectFilterOptions()
 		{
+			FilterOptions = new SerializableDictionary<string, FilterOptions>();
 		}
 
-		public ProjectFilterOptions(string projectName)
+		public ProjectFilterOptions(string projectName) : this()
 		{
-			Name = projectName;
-			BugFilterOptions = new FilterOptions();
-			BugHeatmapFilterOptions = new FilterOptions();
-			TaskFilterOptions = new FilterOptions();
+			Name = projectName;		
+		}
+
+		public FilterOptions GetByKey(string key)
+		{
+			if (!FilterOptions.ContainsKey(key))
+				FilterOptions.Add(key, new FilterOptions());
+
+			return FilterOptions[key];
+		}
+
+		public void UpdateFilterOption(string key, FilterOptions options)
+		{
+			if (!FilterOptions.ContainsKey(key))
+				FilterOptions.Add(key, new FilterOptions());
+
+			FilterOptions[key] = options;
+
+			UserContext.Current.Settings.Save();
 		}
 	}
 }

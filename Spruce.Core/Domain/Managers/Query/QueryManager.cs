@@ -23,12 +23,13 @@ namespace Spruce.Core
 				_builder.And(string.Format("[Work Item Type]='{0}'", workItemType));
 		}
 
-		public T ItemById<T>(int id) where T : WorkItemSummary, new()
+		public T ItemById<T>(int id) where T: WorkItemSummary, new()
 		{
 			WorkItem item = UserContext.Current.WorkItemStore.GetWorkItem(id);
 
 			T summary = new T();
 			summary.FromWorkItem(item);
+			summary.PopulateAllowedValues(item);
 			summary.IsNew = false;
 
 			return summary;
@@ -40,6 +41,7 @@ namespace Spruce.Core
 
 			WorkItemSummary summary = WorkItemSummaryFactory.GetForType(item.Type);
 			summary.FromWorkItem(item);
+			summary.PopulateAllowedValues(item);
 			summary.IsNew = false;
 
 			return summary;
@@ -106,7 +108,7 @@ namespace Spruce.Core
 				"ORDER BY Id DESC", _builder.GenerateSqlForPaths(parameters));
 
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(query, parameters);
-			return collection.ToSummaries<WorkItemSummary>();
+			return collection.ToSummaries();
 		}
 
 		public IEnumerable<IterationSummary> IterationsForProject(string projectName)
@@ -152,7 +154,7 @@ namespace Spruce.Core
 			return item.Fields[fieldName].AllowedValues.ToList();
 		}
 
-		public IEnumerable<T> Execute<T>() where T : WorkItemSummary, new()
+		public IEnumerable<WorkItemSummary> Execute<T>() where T : WorkItemSummary, new()
 		{
 			// Filter by a type for the query.
 			T summary = new T();
@@ -162,7 +164,7 @@ namespace Spruce.Core
 
 			HttpContext.Current.Items["Query"] = MvcHtmlString.Create(query);
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(query, _builder.Parameters);
-			return collection.ToSummaries<T>();
+			return collection.ToSummaries();
 		}
 
 		public IEnumerable<WorkItemSummary> ExecuteWiqlQuery(string query, Dictionary<string, object> parameters, bool useDefaultProject)

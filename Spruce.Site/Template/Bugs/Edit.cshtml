@@ -8,8 +8,8 @@
 
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "editform", enctype = "multipart/form-data" }))
 {
-	@(Html.HiddenFor<MSAgileEditData<BugSummary>, int>(m => m.WorkItem.Id))
-	@(Html.Hidden("fromUrl",ViewData["fromUrl"]))
+	@(Html.Hidden("Id",Model.WorkItem.Id))
+	@(Html.Hidden("fromUrl",Model.FromUrl))
 
 	<h3>@Model.PageTitle</h3>
 	
@@ -24,7 +24,7 @@
 		}
 
 		<div id="edit-title">
-			@(Html.TextBoxFor<MSAgileEditData<BugSummary>, string>(i => i.WorkItem.Title, 
+			@(Html.TextBox("Title",Model.WorkItem.Title, 
 													new { tabindex = 1, 
 													maxlength = 150,
 													title = "Enter your title",
@@ -34,22 +34,22 @@
 		<div id="edit-options" class="lightbg">
 			<div class="left edit-field">
 				<div class="left label">Assigned to:</div>
-				<div class="left value">@Html.DropDownBoxFromList("AssignedTo", (List<string>)ViewData["Users"], Model.WorkItem.AssignedTo, 2)</div>
+				<div class="left value">@Html.DropDownBoxFromList("AssignedTo", Model.Users, Model.WorkItem.AssignedTo, 2)</div>
 			</div>
 		
 			<div class="left edit-field">
 				<div class="left label">State:</div>
-				<div class="left value">@Html.DropDownBoxFromList("State", (List<string>)ViewData["States"], Model.WorkItem.State, 3)</div>
+				<div class="left value">@Html.DropDownBoxFromList("State", Model.States, Model.WorkItem.State, 3)</div>
 			</div>
 
 			<div class="left edit-field">
 				<div class="left label">Priority:</div>
-				<div class="left value">@Html.DropDownBoxFromList("Priority", (List<string>)ViewData["Priorities"], Model.WorkItem.Priority.Value.ToString(), 4)</div>
+				<div class="left value">@Html.DropDownBoxFromList("Priority", Model.Priorities, Model.WorkItem.Priority.Value.ToString(), 4)</div>
 			</div>
 
 			<div class="left edit-field">
 				<div class="left label">Reason:</div>
-				<div class="left value">@Html.DropDownBoxFromList("Reason", (List<string>)ViewData["Reasons"], Model.WorkItem.Reason, 5)</div>
+				<div class="left value">@Html.DropDownBoxFromList("Reason", Model.Reasons, Model.WorkItem.Reason, 5)</div>
 			</div>
 			<br style="clear:both"/>
 
@@ -65,16 +65,16 @@
 
 			<div class="left edit-field">
 				<div class="left label">Severity:</div>
-				<div class="left value">@Html.DropDownBoxFromList("Severity", (List<string>)ViewData["Severities"], Model.WorkItem.Severity, 8)</div>
+				<div class="left value">@Html.DropDownBoxFromList("Severity", Model.Severities, Model.WorkItem.Severity, 8)</div>
 			</div>
 			<br style="clear:both"/>
 		</div>
 
 		<div id="edit-description">
-			@(Html.TextAreaFor<MSAgileEditData<BugSummary>, string>(i => i.WorkItem.Description, 
-														new { tabindex = 9,
-														title = "Enter a brief description. See your project template for guidance", 
-														placeholder = "Enter a brief description. See your project template for guidance" }))
+			@(Html.TextArea("Description",Model.WorkItem.Description, 
+											new { tabindex = 9,
+											title = "Enter a brief description. See your project template for guidance", 
+											placeholder = "Enter a brief description. See your project template for guidance" }))
 		</div>
 
 		<div class="edit-attachmentsbar">

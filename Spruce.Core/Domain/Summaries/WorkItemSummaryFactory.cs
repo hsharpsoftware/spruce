@@ -10,7 +10,7 @@ namespace Spruce.Core
 	public class WorkItemSummaryFactory
 	{
 		private static bool _hasScanned;
-		private static Dictionary<string, WorkItemSummary> _types;
+		private static Dictionary<string, Type> _types;
 
 		public static bool HasScanned()
 		{
@@ -20,7 +20,7 @@ namespace Spruce.Core
 		public static void Scan()
 		{
 			_hasScanned = true; // avoid a StackOverflow: instance.WorkItemType (below) calls Scan() via the UserContext
-			_types = new Dictionary<string, WorkItemSummary>();
+			_types = new Dictionary<string, Type>();
 
 			Type summaryType = typeof(WorkItemSummary);
 			Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -36,7 +36,7 @@ namespace Spruce.Core
 						if (instance.WorkItemType == null)
 							throw new NullReferenceException(string.Format("The {0} provided has a null WorkItemType. This is typically because its WIQLTypeName does not match the name assigned in TFS.",instance));
 
-						_types.Add(instance.WorkItemType.Name,instance);
+						_types.Add(instance.WorkItemType.Name,type);
 					}
 				}
 			}
@@ -47,7 +47,8 @@ namespace Spruce.Core
 			if (!_types.ContainsKey(workItemType.Name))
 				throw new InvalidOperationException(string.Format("{0} has no equivalent WorkItemSummary. This is typically because its WIQLTypeName does not match the name assigned in TFS.",workItemType.Name));
 
-			return _types[workItemType.Name];
+			Type type = _types[workItemType.Name];	
+			return Activator.CreateInstance(type, false) as WorkItemSummary;
 		}
 	}
 }

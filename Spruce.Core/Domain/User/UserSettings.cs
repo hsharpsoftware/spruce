@@ -58,32 +58,8 @@ namespace Spruce.Core
 			return _persister.Load(userId);
 		}
 
-		public static void Save(UserSettings settings)
+		public void Save()
 		{
-			_persister.Save(settings);
-		}
-
-		public void UpdateBugFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
-		{
-			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
-			options.BugFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
-
-			_persister.Save(this);
-		}
-
-		public void UpdateBugHeatmapFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
-		{
-			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
-			options.BugHeatmapFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
-
-			_persister.Save(this);
-		}
-
-		public void UpdateTaskFilterOptions(string projectName, string title, string assignedTo, string startDate, string endDate, string status)
-		{
-			ProjectFilterOptions options = GetFilterOptionsForProject(projectName);
-			options.TaskFilterOptions = FilterOptions.Parse(title, assignedTo, startDate, endDate, status);
-
 			_persister.Save(this);
 		}
 

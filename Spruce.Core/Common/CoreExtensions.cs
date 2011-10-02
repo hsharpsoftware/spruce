@@ -121,23 +121,18 @@ namespace Spruce.Core
 			return list;
 		}
 
-		public static IList<T> ToSummaries<T>(this WorkItemCollection collection) where T : WorkItemSummary, new()
+		public static IEnumerable<WorkItemSummary> ToSummaries(this WorkItemCollection collection)// where T : WorkItemSummary, new()
 		{
-			List<T> list = new List<T>();
+			List<WorkItemSummary> list = new List<WorkItemSummary>();
 
 			foreach (WorkItem item in collection)
 			{
-				T summary = new T();
+				WorkItemSummary summary = WorkItemSummaryFactory.GetForType(item.Type);
 				summary.FromWorkItem(item);
 				list.Add(summary);
 			}
 
 			return list;
-		}
-
-		public static IList<WorkItemSummary> ToSummaries(this WorkItemCollection collection)
-		{
-			return collection.ToSummaries<WorkItemSummary>();
 		}
 
 		public static void FillCoreFields(this WorkItem item, WorkItemSummary summary)

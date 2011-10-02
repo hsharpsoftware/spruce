@@ -1,4 +1,4 @@
-﻿@model ListData<BugSummary>
+﻿@model ListData
 
 <h3>Bugs</h3>
 @Html.ActionLink("View as heat map","Heatmap")
@@ -39,17 +39,17 @@
 		</thead>
 		<!-- Filter bar -->
 		<tr style="height:5px;background-color:#EEE;">
-			<td class="help" help="Filter by title.">@Html.TextBox("title", ViewData["title"], new { placeholder = "title" })</td>
+			<td class="help" help="Filter by title.">@Html.TextBox("title", Model.FilterValues.Title, new { placeholder = "title" })</td>
 			<td></td>
 			<td style="width:15%;" class="help" help="Filter by assigned to. Use 'me' or the login name.">
-				@Html.TextBox("assignedTo", ViewData["assignedTo"], new { placeholder = "assigned to" })
+				@Html.TextBox("assignedTo", Model.FilterValues.Title, new { placeholder = "assigned to" })
 			</td>
 			<td style="width:15%" class="help" help="Filter by start/end date. You can use today, yesterday, thisweek, thismonth, lastmonth or standard dates.">
-				@Html.TextBox("startDate", ViewData["startDate"], new { placeholder = "start" })
-				@Html.TextBox("endDate", ViewData["endDate"], new { placeholder = "end" })
+				@Html.TextBox("startDate", Model.FilterValues.StartDate, new { placeholder = "start" })
+				@Html.TextBox("endDate", Model.FilterValues.EndDate, new { placeholder = "end" })
 			</td>
 			<td class="help" help="Filter by the status.">
-				@Html.DropDownList("status", new Dictionary<string, string>() { { "All", "All" }, { "Active", "Active" }, { "Resolved", "Resolved" }, { "Closed", "Closed" } }, ViewData.SafeToString("status"))
+				@Html.DropDownList("status", new Dictionary<string, string>() { { "All", "All" }, { "Active", "Active" }, { "Resolved", "Resolved" }, { "Closed", "Closed" } }, Model.FilterValues.Status)
 			</td>
 			<td></td>
 			<td></td>

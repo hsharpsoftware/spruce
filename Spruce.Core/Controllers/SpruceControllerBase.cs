@@ -10,7 +10,7 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Core.Controllers
 {
-	public class SpruceControllerBase<T> : Controller where T: WorkItemSummary,new()
+	public class SpruceControllerBase: Controller
 	{
 		public virtual ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize,
 			string title, string assignedTo, string startDate, string endDate, string status)
@@ -20,8 +20,7 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult View(int id)
 		{
-			T item = GetItem(id);
-			return View(item);
+			return View(GetItem(id));
 		}
 
 		public ActionResult Resolve(int id)
@@ -44,11 +43,11 @@ namespace Spruce.Core.Controllers
 			return RedirectToAction("Edit", new { id = id });
 		}
 
-		protected virtual T GetItem(int id)
+		protected virtual WorkItemSummary GetItem(int id)
 		{
 			// We can get away with using the base class here, as no WorkItemType filter is used just an id.
 			QueryManager manager = GetQueryManager();
-			return manager.ItemById<T>(id);
+			return manager.ItemById(id);
 		}
 
 		protected virtual void ResolveWorkItem(int id)
@@ -69,7 +68,7 @@ namespace Spruce.Core.Controllers
 		protected override void OnActionExecuted(ActionExecutedContext filterContext)
 		{
 			base.OnActionExecuted(filterContext);
-			UserContext.Current.UpdateSettings();
+			UserContext.Current.Settings.Save(); // persist any project name, iteration changes
 		}
 
 		protected SyndicationFeed GetRssFeed(IEnumerable<WorkItemSummary> list,string title)
@@ -99,7 +98,8 @@ namespace Spruce.Core.Controllers
 			return feed;
 		}
 
-		protected ListData<T> FilterAndPage(FilterOptions filterOptions, string projectName, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize)
+		protected ListData FilterAndPage<T>(FilterOptions filterOptions, string projectName, string sortBy, bool? descending, int? page, int? pageSize)
+			where T : WorkItemSummary, new()
 		{
 			QueryManager manager = GetQueryManager();
 
@@ -150,9 +150,9 @@ namespace Spruce.Core.Controllers
 				manager.WithEndingOnDate(filterOptions.EndDate);
 			}
 
-			IEnumerable<T> list = manager.Execute<T>();
+			IEnumerable<WorkItemSummary> list = manager.Execute<T>();
 
-			ListData<T> data = new ListData<T>();
+			ListData data = new ListData();
 			data.FilterValues.Title = filterOptions.Title;
 			data.FilterValues.AssignedTo = filterOptions.AssignedTo;
 			data.FilterValues.Status = filterOptions.ConvertStatusToString();
@@ -169,7 +169,7 @@ namespace Spruce.Core.Controllers
 				data.FilterValues.EndDate = "";
 			
 			
-			PageList(data,isHeatMap,sortBy,descending,page,pageSize);
+			PageList(data,sortBy,descending,page,pageSize);
 
 			return data;
 		}
@@ -177,14 +177,12 @@ namespace Spruce.Core.Controllers
 		/// <summary>
 		/// Pages the list contained in the ListData.WorkItems
 		/// </summary>
-		protected void PageList(ListData<T> data, bool isHeatMap, string sortBy, bool? descending, int? page, int? pageSize)
+		protected void PageList(ListData data, string sortBy, bool? descending, int? page, int? pageSize)
 		{
-			//
-			// Page the list
-			//
 			int currentPage = page.HasValue ? page.Value : 1;
-
 			int pageSizeVal = UserContext.Current.Settings.PageSize;
+			bool descendingVal = (descending == true);
+
 			if (pageSizeVal == 0 || pageSize != pageSizeVal)
 			{
 				if (pageSize.HasValue)
@@ -199,14 +197,19 @@ namespace Spruce.Core.Controllers
 				}
 			}
 
-			Pager pager = new Pager(isHeatMap, sortBy, descending == true, pageSizeVal);
-			data.WorkItems = pager.Page<T>(data.WorkItems, currentPage);
+			Pager pager = new Pager(sortBy, descendingVal, pageSizeVal);
+			data.WorkItems = Page(pager, data.WorkItems, currentPage);
 
 			data.FilterValues.PageCount = pager.PageCount;
 			data.FilterValues.CurrentPage = pager.CurrentPageNumber;
 			data.FilterValues.PageSize = pager.PageSize;
-			data.FilterValues.IsDescending = (descending == true);
+			data.FilterValues.IsDescending = !descendingVal;
 			data.FilterValues.SortBy = sortBy;
+		}
+
+		protected virtual IEnumerable<WorkItemSummary> Page(Pager pager,IEnumerable<WorkItemSummary> items, int currentPage)
+		{
+			return pager.Page<WorkItemSummary>(items, currentPage);
 		}
 
 		protected string SaveFile(string fieldName, int id)
@@ -230,7 +233,7 @@ namespace Spruce.Core.Controllers
 			}
 		}
 
-		protected ActionResult Rss(IEnumerable<T> list, string title, string projectName, string areaPath, string iterationPath, string filter)
+		protected ActionResult Rss(IEnumerable<WorkItemSummary> list, string title, string projectName, string areaPath, string iterationPath, string filter)
 		{
 			if (!string.IsNullOrEmpty(areaPath))
 			{
@@ -252,7 +255,7 @@ namespace Spruce.Core.Controllers
 			return result;
 		}
 
-		protected ActionResult Excel(IEnumerable<T> list)
+		protected ActionResult Excel(IEnumerable<WorkItemSummary> list)
 		{
 			StringBuilder builder = new StringBuilder();
 			using (StringWriter writer = new StringWriter(builder))
@@ -274,7 +277,7 @@ namespace Spruce.Core.Controllers
 		public ActionResult DumpFields()
 		{
 			// This should possibly be moved into a view
-			T summary = GetManager().NewItem();
+			WorkItemSummary summary = GetManager().NewItem();
 			IEnumerable<Field> list = summary.Fields.Cast<Field>().OrderBy(f => f.Name);
 
 			StringBuilder builder = new StringBuilder();
@@ -309,7 +312,7 @@ namespace Spruce.Core.Controllers
 			return Content(builder.ToString(), "text/plain");
 		}
 
-		protected virtual WorkItemManager<T> GetManager()
+		protected virtual WorkItemManager GetManager()
 		{
 			throw new NotImplementedException("GetManager should be implemented by controllers inheriting from SpruceControllerBase");
 		}
@@ -319,20 +322,23 @@ namespace Spruce.Core.Controllers
 			return new QueryManager();
 		}
 
-		protected void UpdateUserFilterOptions()
+		protected void UpdateUserFilterOptions(string key)
 		{
 			if (!string.IsNullOrEmpty(Request.QueryString["title"]) ||
 				!string.IsNullOrEmpty(Request.QueryString["startDate"]) ||
 				!string.IsNullOrEmpty(Request.QueryString["endDate"]) ||
-				!string.IsNullOrEmpty(Request.QueryString["assignedTo"])
+				!string.IsNullOrEmpty(Request.QueryString["assignedTo"]) ||
+				!string.IsNullOrEmpty(Request.QueryString["status"])
 				)
 			{
-				UserContext.Current.Settings.UpdateBugFilterOptions(UserContext.Current.CurrentProject.Name,
-					Request.QueryString["title"],
-					Request.QueryString["startDate"],
+				FilterOptions filterOptions = FilterOptions.Parse(Request.QueryString["title"],
+					Request.QueryString["assignedTo"],
 					Request.QueryString["startDate"],
 					Request.QueryString["endDate"],
 					Request.QueryString["status"]);
+
+				ProjectFilterOptions project = UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name);
+				project.UpdateFilterOption(key, filterOptions);
 			}
 		}
 	}

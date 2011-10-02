@@ -113,7 +113,7 @@ namespace Spruce.Core
 				item.Fields["Reason"].Value = Reason;
 			}
 
-			// For CMMI projects
+			// For CMMI projects (redundant?)
 			if (item.Fields.Contains("Repro Steps"))
 				item.Fields["Repro Steps"].Value = Description;
 

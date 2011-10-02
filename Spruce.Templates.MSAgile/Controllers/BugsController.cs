@@ -13,15 +13,15 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
-	public class BugsController : SpruceControllerBase<BugSummary>
+	public class BugsController : SpruceControllerBase
     {
 		public override ActionResult Index(string id, string sortBy, bool? desc,int? page,int? pageSize,
 			string title,string assignedTo,string startDate,string endDate,string status)
 		{
 			SetBugView("Index");
-			UpdateUserFilterOptions();
+			UpdateUserFilterOptions("bugs:default");
 
-			ListData<BugSummary> data = FilterAndPage(GetBugFilterOptions(), id, false, sortBy, desc, page, pageSize);
+			ListData data = FilterAndPage<BugSummary>(GetBugFilterOptions(), id, sortBy, desc, page, pageSize);
 
 			return View(data);
 		}
@@ -30,9 +30,9 @@ namespace Spruce.Templates.MSAgile
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
 			SetBugView("Heatmap");
-			UpdateUserFilterOptions();
+			UpdateUserFilterOptions("bugs:heatmap");
 
-			ListData<BugSummary> data = FilterAndPage(GetBugHeatmapFilterOptions(), id, true, sortBy, desc, page, pageSize);
+			ListData data = FilterAndPage<BugSummary>(GetBugHeatmapFilterOptions(), id, sortBy, desc, page, pageSize);
 
 			return View(data);
 		}
@@ -42,7 +42,7 @@ namespace Spruce.Templates.MSAgile
 		public ActionResult New(string id)
 		{
 			BugManager manager = new BugManager();
-			BugSummary summary = manager.NewItem();
+			BugSummary summary = (BugSummary)manager.NewItem();
 
 			if (!string.IsNullOrWhiteSpace(id))
 				summary.Title = id;
@@ -60,7 +60,7 @@ namespace Spruce.Templates.MSAgile
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult New(WorkItemSummary item)
+		public ActionResult New(BugSummary item)
 		{
 			BugManager manager = new BugManager();
 
@@ -108,7 +108,34 @@ namespace Spruce.Templates.MSAgile
 			catch (SaveException e)
 			{
 				TempData["Error"] = e.Message;
-				return RedirectToAction("New", new { id = item.Title});
+
+				// Get the original back, to populate the valid reasons.
+				QueryManager queryManager = new QueryManager();
+				BugSummary summary = queryManager.ItemById<BugSummary>(item.Id);
+				summary.IsNew = false;
+
+				// Repopulate from the POST'd data
+				summary.Title = item.Title;
+				summary.State = item.State;
+				summary.Reason = item.Reason;
+				summary.Priority = item.Priority;
+				summary.Severity = item.Severity;
+				summary.Description = item.Description;
+				summary.AssignedTo = item.AssignedTo;
+				summary.AreaId = item.AreaId;
+				summary.AreaPath = item.AreaPath;
+				summary.IterationId = item.IterationId;
+				summary.IterationPath = item.IterationPath;
+
+				MSAgileEditData<BugSummary> data = new MSAgileEditData<BugSummary>();
+				data.WorkItem = summary;
+				data.PageTitle = "Bug " + item.Id;
+				data.States = summary.ValidStates;
+				data.Reasons = summary.ValidReasons;
+				data.Priorities = summary.ValidPriorities;
+				data.Severities = summary.ValidSeverities;
+
+				return View(data);
 			}
 		}
 
@@ -119,28 +146,21 @@ namespace Spruce.Templates.MSAgile
 			BugSummary item = manager.ItemById<BugSummary>(id);
 			item.IsNew = false;
 
-			ViewData["fromUrl"] = fromUrl;
-			ViewData["PageName"] = "Bug " + id;
+			MSAgileEditData<BugSummary> data = new MSAgileEditData<BugSummary>();
+			data.WorkItem = item;
+			data.PageTitle = "Bug " + id;
+			data.FromUrl = fromUrl;
+			data.States = item.ValidStates;
+			data.Reasons = item.ValidReasons;
+			data.Priorities = item.ValidPriorities;
+			data.Severities = item.ValidSeverities;
 
-			//ViewData["PageName"] = "New bug";
-			//ViewData["States"] = item.ValidStates;
-			//ViewData["Reasons"] = item.ValidReasons;
-			//ViewData["Priorities"] = item.ValidPriorities;
-			//ViewData["Severities"] = item.ValidSeverities;
-
-			ViewData["PageName"] = "New bug";
-			ViewData["States"] = new List<string>();
-			ViewData["Reasons"] = new List<string>();
-			ViewData["Priorities"] = new List<string>();
-			ViewData["Severities"] = new List<string>();
-			ViewData["Users"] = UserContext.Current.Users;
-
-			return View(item);
+			return View(data);
 		}
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Edit(WorkItemSummary item,string fromUrl)
+		public ActionResult Edit(BugSummary item,string fromUrl)
 		{
 			BugManager manager = new BugManager();
 
@@ -188,44 +208,48 @@ namespace Spruce.Templates.MSAgile
 			}
 			catch (SaveException e)
 			{
+				TempData["Error"] = e.Message;
+
 				// Get the original back, to populate the valid reasons.
 				QueryManager queryManager = new QueryManager();
 				BugSummary summary = queryManager.ItemById<BugSummary>(item.Id);
+				summary.IsNew = false;
 
-				// If any error occurs, all the values previous selected aren't shown.
-				// This is from a shortcoming with the WorkItemSummary being POST'd 
-				// missing some of the fields, e.g. ValidReasons.
-				TempData["Error"] = e.Message;
-				//return RedirectToAction("Edit", new { id = item.Id});
+				// Repopulate from the POST'd data
+				summary.Title = item.Title;
+				summary.State = item.State;
+				summary.Reason = item.Reason;
+				summary.Priority = item.Priority;
+				summary.Severity = item.Severity;
+				summary.Description = item.Description;
+				summary.AssignedTo = item.AssignedTo;
+				summary.AreaId = item.AreaId;
+				summary.AreaPath = item.AreaPath;
+				summary.IterationId = item.IterationId;
+				summary.IterationPath = item.IterationPath;
 
-				ViewData["fromUrl"] = fromUrl;
-				ViewData["PageName"] = "Bug " + item.Id;
+				MSAgileEditData<BugSummary> data = new MSAgileEditData<BugSummary>();
+				data.WorkItem = summary;
+				data.PageTitle = "Bug " + item.Id;
+				data.FromUrl = fromUrl;
+				data.States = summary.ValidStates;
+				data.Reasons = summary.ValidReasons;
+				data.Priorities = summary.ValidPriorities;
+				data.Severities = summary.ValidSeverities;
 
-				//ViewData["PageName"] = "New bug";
-				//ViewData["States"] = item.ValidStates;
-				//ViewData["Reasons"] = item.ValidReasons;
-				//ViewData["Priorities"] = item.ValidPriorities;
-				//ViewData["Severities"] = item.ValidSeverities;
-
-				ViewData["PageName"] = "New bug";
-				ViewData["States"] = new List<string>();
-				ViewData["Reasons"] = new List<string>();
-				ViewData["Priorities"] = new List<string>();
-				ViewData["Severities"] = new List<string>();
-				ViewData["Users"] = UserContext.Current.Users;
-				return View(item);
+				return View(data);
 			}
 		}
 
 		public ActionResult Excel()
 		{
-			ListData<BugSummary> data = FilterAndPage(GetBugFilterOptions(), "", true, "CreatedDate", true, 1, 10000);
+			ListData data = FilterAndPage<BugSummary>(GetBugFilterOptions(), "", "CreatedDate", true, 1, 10000);
 			return Excel(data.WorkItems);
 		}
 
 		public ActionResult Rss(string projectName, string areaPath,string iterationPath,string filter)
 		{
-			ListData<BugSummary> data = FilterAndPage(new FilterOptions(), projectName, true, "CreatedDate", true, 1, 10000);
+			ListData data = FilterAndPage<BugSummary>(new FilterOptions(), projectName, "CreatedDate", true, 1, 10000);
 			return Rss(data.WorkItems, "Bugs", projectName, areaPath, iterationPath, filter);
 		}
 
@@ -246,17 +270,44 @@ namespace Spruce.Templates.MSAgile
 
 		private FilterOptions GetBugFilterOptions()
 		{
-			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name).BugFilterOptions;
+			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name)
+				.GetByKey("bugs:default");
 		}
 
 		private FilterOptions GetBugHeatmapFilterOptions()
 		{
-			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name).BugHeatmapFilterOptions;
+			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name)
+				.GetByKey("bugs:heatmap");
 		}
 
-		protected override WorkItemManager<BugSummary> GetManager()
+		protected override WorkItemManager GetManager()
 		{
 			return new BugManager();
+		}
+
+		protected override IEnumerable<WorkItemSummary> Page(Pager pager, IEnumerable<WorkItemSummary> items, int currentPage)
+		{
+			string action = ControllerContext.Controller.ValueProvider.GetValue("action").RawValue.ToString().ToLower();
+			if (action == "heatmap")
+			{
+				List<BugSummary> list = new List<BugSummary>();
+				foreach (BugSummary summary in items)
+				{
+					list.Add(summary);
+				}
+
+				list = pager.Page<BugSummary>(list, currentPage, "Priority asc, Severity asc").ToList();
+
+				List<WorkItemSummary> results = new List<WorkItemSummary>();
+				foreach (BugSummary summary in list)
+				{
+					results.Add(summary);
+				}
+
+				return results;
+			}
+
+			return base.Page(pager, items, currentPage);
 		}
     }
 }

@@ -73,7 +73,7 @@
     <Compile Include="Common\HtmlExtensions.cs" />
     <Compile Include="Controllers\BugsController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
-    <Compile Include="Domain\TasksController.cs" />
+    <Compile Include="Controllers\TasksController.cs" />
     <Compile Include="Domain\BugSummary.cs" />
     <Compile Include="Domain\DashboardSummary.cs" />
     <Compile Include="Domain\Managers\BugManager.cs" />
@@ -146,7 +146,7 @@
         <WebProjectProperties>
           <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>57969</DevelopmentServerPort>
+          <DevelopmentServerPort>24178</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>
           </IISUrl>

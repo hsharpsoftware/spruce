@@ -7,7 +7,7 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
-	public class BugManager : WorkItemManager<BugSummary>
+	public class BugManager : WorkItemManager
 	{
 		public override void Resolve(int id)
 		{
@@ -41,7 +41,7 @@ namespace Spruce.Templates.MSAgile
 			}
 		}
 
-		public override BugSummary NewItem()
+		public override WorkItemSummary NewItem()
 		{
 			BugSummary summary = new BugSummary();
 			WorkItem item = base.CreateWorkItem(summary.WorkItemType, summary);

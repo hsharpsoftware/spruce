@@ -6,16 +6,16 @@ using System.Web.Mvc;
 
 namespace Spruce.Core
 {
-	public class ListData<TWorkItemSummary> where TWorkItemSummary: WorkItemSummary
+	public class ListData
 	{
-		public IEnumerable<TWorkItemSummary> WorkItems { get; set; }
+		public IEnumerable<WorkItemSummary> WorkItems { get; set; }
 		public FilterValues FilterValues { get; set; }
 		public string CurrentQuery { get; set; }
 
 		public ListData()
 		{
 			FilterValues = new FilterValues();
-			WorkItems = new List<TWorkItemSummary>();
+			WorkItems = new List<WorkItemSummary>();
 			CurrentQuery = "";
 		}
 	}

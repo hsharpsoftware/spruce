@@ -9,7 +9,7 @@ using Spruce.Core.Search;
 
 namespace Spruce.Core.Controllers
 {
-	public class HomeController : SpruceControllerBase<WorkItemSummary>
+	public class HomeController : SpruceControllerBase
 	{
 		public ActionResult Index()
 		{
@@ -19,7 +19,7 @@ namespace Spruce.Core.Controllers
 		public ActionResult Search(string q)
 		{
 			IList<WorkItemSummary> summaries = new List<WorkItemSummary>();
-			ListData<WorkItemSummary> data = new ListData<WorkItemSummary>();
+			ListData data = new ListData();
 
 			if (!string.IsNullOrEmpty(q))
 			{
@@ -85,20 +85,25 @@ namespace Spruce.Core.Controllers
 
 		public ActionResult StoredQueries()
 		{
-			ListData<WorkItemSummary> data = new ListData<WorkItemSummary>();
+			ListData data = new ListData();
 			ViewData["CurrentQueryId"] = Guid.Empty;
 
 			return View(data);
 		}
 
-		public ActionResult StoredQuery(Guid id, string sortBy, bool? desc, int? page, int? pageSize)
+		public ActionResult StoredQuery(Guid? id, string sortBy, bool? desc, int? page, int? pageSize)
 		{
+			if (!id.HasValue)
+				return RedirectToAction("StoredQueries");
+
+			Guid queryId = id.Value;
+
 			QueryManager manager = new QueryManager();
 
-			ListData<WorkItemSummary> data = new ListData<WorkItemSummary>();
-			data.WorkItems = manager.StoredQuery(id);
-			PageList(data, false, sortBy, desc, page, pageSize);
-			ViewData["CurrentQueryId"] = id;
+			ListData data = new ListData();
+			data.WorkItems = manager.StoredQuery(queryId);
+			PageList(data, sortBy, desc, page, pageSize);
+			ViewData["CurrentQueryId"] = queryId;
 
 			return View("StoredQueries", data);
 		}

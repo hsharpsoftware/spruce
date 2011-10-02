@@ -14,14 +14,14 @@ using System.Text;
 
 namespace Spruce.Core
 {
-	public abstract class WorkItemManager<TSummary> where TSummary: WorkItemSummary
+	public abstract class WorkItemManager
 	{
 		public void Save(WorkItemSummary summary)
 		{
 			WorkItem item = summary.ToWorkItem();
 
 			try
-			{
+			{			
 				item.Save();
 				summary.Id = item.Id;
 			}
@@ -58,10 +58,10 @@ namespace Spruce.Core
 
 		public virtual void Resolve(int id)
 		{
-			QueryManager manager = new QueryManager();
+			QueryManager queryManager = new QueryManager();
 			try
 			{
-				WorkItemSummary summary = manager.ItemById<WorkItemSummary>(id);
+				WorkItemSummary summary = queryManager.ItemById(id);
 				summary.State = "Resolved";
 				Save(summary);
 			}
@@ -76,7 +76,7 @@ namespace Spruce.Core
 			QueryManager manager = new QueryManager();
 			try
 			{
-				WorkItemSummary summary = manager.ItemById<WorkItemSummary>(id);
+				WorkItemSummary summary = manager.ItemById(id);
 				summary.State = "Closed";
 				Save(summary);
 			}
@@ -123,9 +123,9 @@ namespace Spruce.Core
 			}
 		}
 
-		public abstract TSummary NewItem();
+		public abstract WorkItemSummary NewItem();
 
-		protected virtual WorkItem CreateWorkItem(WorkItemType type, TSummary summary)
+		protected virtual WorkItem CreateWorkItem(WorkItemType type, WorkItemSummary summary)
 		{
 			WorkItem item = new WorkItem(type);
 

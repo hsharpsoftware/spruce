@@ -7,7 +7,7 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
-	public class TaskManager : WorkItemManager<TaskSummary>
+	public class TaskManager : WorkItemManager
 	{
 		public override void Resolve(int id)
 		{
@@ -41,7 +41,7 @@ namespace Spruce.Templates.MSAgile
 			}
 		}
 
-		public override TaskSummary NewItem()
+		public override WorkItemSummary NewItem()
 		{
 			TaskSummary summary = new TaskSummary();
 			WorkItem item = CreateWorkItem(summary.WorkItemType, summary);

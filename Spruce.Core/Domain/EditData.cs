@@ -9,6 +9,7 @@ namespace Spruce.Core
 	public class EditData<TWorkItemSummary> where TWorkItemSummary : WorkItemSummary
 	{
 		public string PageTitle { get; set; }
+		public string FromUrl { get; set; }
 		public IEnumerable<string> Users
 		{
 			get

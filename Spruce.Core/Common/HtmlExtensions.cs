@@ -9,6 +9,7 @@ using Spruce.Core;
 using Microsoft.TeamFoundation.VersionControl.Client;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Collections.Specialized;
 
 namespace Spruce.Core
 {
@@ -21,27 +22,37 @@ namespace Spruce.Core
 			return MvcHtmlString.Create(markdown.Transform(text));
 		}
 
-		public static MvcHtmlString TableSortLink<T>(this HtmlHelper helper, string title, string column, ListData<T> model)
+		public static MvcHtmlString TableSortLink<T>(this HtmlHelper helper, string title, string column, ListData model)
 			where T: WorkItemSummary
 		{
-			bool descending = model.FilterValues.IsDescending;
 
-			string fullUrl = HttpContext.Current.Request.Url.ToString();
+			// Re-assemble the current querystring, with sortBy and desc removed.
+			NameValueCollection queryCollection = HttpUtility.ParseQueryString(HttpContext.Current.Request.Url.Query);
 
-			// Remove the querystrings if they exist already
-			Regex regex = new Regex("(sortBy=(.*?)&desc=(.*?)[&])");
-			fullUrl = regex.Replace(fullUrl, "");
+			string url = HttpContext.Current.Request.Url.LocalPath;
 
-			if (string.IsNullOrEmpty(HttpContext.Current.Request.Url.Query))
-			{	
-				fullUrl += "?";
-			}
-			else
+			if (queryCollection["sortBy"] != null)
+				queryCollection.Remove("sortBy");
+			
+			if (queryCollection["desc"] != null)
+				queryCollection.Remove("desc");
+
+			url += "?";
+			if (queryCollection.Count > 0)
 			{
-				fullUrl += "&";
+				// Url encoding for key/values?
+				List<string> keysAndValues = new List<string>();
+				foreach (string key in queryCollection)
+				{
+					keysAndValues.Add(string.Format("{0}={1}", key, queryCollection[key]));
+				}
+
+				url += string.Join("&",keysAndValues);
+				url += "&";
 			}
 
-			return MvcHtmlString.Create(string.Format(@"<a href=""{0}sortBy={1}&desc={2}"">{3}</a>", fullUrl, column, descending, title));
+			bool descending = model.FilterValues.IsDescending;
+			return MvcHtmlString.Create(string.Format(@"<a href=""{0}sortBy={1}&desc={2}"">{3}</a>", url, column, descending, title));
 		}
 
 		public static string GetFieldValueForRevision(this HtmlHelper helper, WorkItemSummary model, string fieldName, int revisionNumber)
@@ -112,7 +123,7 @@ namespace Spruce.Core
 			return MvcHtmlString.Create(result);
 		}
 
-		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IList<string> items, string selectedValue, int tabIndex)
+		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IEnumerable<string> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
 

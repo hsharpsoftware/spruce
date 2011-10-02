@@ -12,12 +12,6 @@ namespace Spruce.Core
 	public class Pager
 	{
 		/// <summary>
-		/// True if the list being paged is for a heatmap view. This adds a sort on a Priority column
-		/// (the type is assumed to be a WorkItem).
-		/// </summary>
-		public bool IsHeatMap { get; set; }
-
-		/// <summary>
 		/// Read only. The number of pages the list contains, based on the <see cref="PageSize"/> property and the number
 		/// of elements in the list.
 		/// </summary>
@@ -50,15 +44,14 @@ namespace Spruce.Core
 		/// <param name="sortBy">The column to sort by. If null, no sorting is performed.</param>
 		/// <param name="descending">if set to <c>true</c> the list is sorted in descending order.</param>
 		/// <param name="pageSize">The number of elements for each page.</param>
-		public Pager(bool isHeatMap, string sortBy, bool descending, int pageSize)
+		public Pager(string sortBy, bool descending, int pageSize)
 		{
-			IsHeatMap = isHeatMap;
 			SortBy = sortBy;
 			Descending = descending;
 			PageSize = pageSize;
 		}
 
-		public IEnumerable<T> Page<T>(IEnumerable<T> list, int pageNumber)
+		public virtual IEnumerable<T> Page<T>(IEnumerable<T> list, int pageNumber, string sortPrefix = "")
 		{
 			CurrentPageNumber = pageNumber;
 
@@ -66,10 +59,9 @@ namespace Spruce.Core
 			try
 			{
 				string sort = "";
-				if (IsHeatMap)
-				{
-					sort = "Priority asc, Severity asc";
-				}
+
+				if (!string.IsNullOrEmpty(sortPrefix))
+					sort = sortPrefix;
 
 				if (!string.IsNullOrEmpty(SortBy))
 				{
