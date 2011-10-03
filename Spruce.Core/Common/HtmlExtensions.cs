@@ -333,5 +333,21 @@ namespace Spruce.Core
 
 			return builder.AppendLine().ToString();
 		}
+
+		public static MvcHtmlString RenderHeader(this HtmlHelper helper)
+		{
+			StringBuilder builder = new StringBuilder();
+			using (StringWriter writer = new StringWriter(builder))
+			{
+				ControllerContext controllerContext = helper.ViewContext.Controller.ControllerContext;
+				ViewEngineResult engineResult = ViewEngines.Engines.FindPartialView(controllerContext, "NavigationHeader");
+				ViewContext context = new ViewContext(controllerContext, engineResult.View, helper.ViewData, helper.ViewContext.TempData, writer);
+
+				engineResult.View.Render(context, writer);
+				writer.Close();
+
+				return MvcHtmlString.Create(builder.ToString());
+			}
+		}
 	}
 }

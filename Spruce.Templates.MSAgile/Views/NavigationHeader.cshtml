@@ -1,0 +1,7 @@
+﻿<div class="left">
+	@Html.ActionLink("Stored queries", "StoredQueries", "Home")
+	&nbsp;|&nbsp;@Html.ActionLink("Bugs", UserContext.Current.Settings.GetDefaultAction("Bugs"), "Bugs")
+	&nbsp;|&nbsp;@Html.ActionLink("Tasks", "Index", "Tasks")
+	&nbsp;|&nbsp;@Html.ActionLink("New task", "New", "Tasks")
+	&nbsp;|&nbsp;@Html.ActionLink("New bug", "New", "Bugs")
+</div>

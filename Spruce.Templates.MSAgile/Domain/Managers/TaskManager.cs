@@ -49,8 +49,11 @@ namespace Spruce.Templates.MSAgile
 			summary.PopulateAllowedValues(item);
 			summary.Priority = int.Parse(summary.ValidPriorities[0]);
 
-			summary.EstimatedHours = item.Fields["Remaining Work"].Value.ToString().ToDoubleOrDefault();
-			summary.CompletedHours = item.Fields["Completed Work"].Value.ToString().ToDoubleOrDefault();
+			if (item.Fields.Contains("Remaining Work") && item.Fields["Remaining Work"].Value != null)
+				summary.EstimatedHours = item.Fields["Remaining Work"].Value.ToString().ToDoubleOrDefault();
+
+			if (item.Fields.Contains("Completed Work") && item.Fields["Completed Work"].Value != null)
+				summary.CompletedHours = item.Fields["Completed Work"].Value.ToString().ToDoubleOrDefault();
 
 			return summary;
 		}

@@ -8,9 +8,10 @@ using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Core
 {
-	public class QueryManager
+	public class QueryManager<T> where T : WorkItemSummary, new()
 	{
 		protected QueryBuilder _builder;
+		private string _constrainedQuery;
 
 		public QueryManager()
 		{
@@ -20,7 +21,9 @@ namespace Spruce.Core
 		protected void ContrainType(string workItemType)
 		{
 			if (!string.IsNullOrEmpty(workItemType))
+			{
 				_builder.And(string.Format("[Work Item Type]='{0}'", workItemType));
+			}
 		}
 
 		public T ItemById<T>(int id) where T: WorkItemSummary, new()
@@ -154,7 +157,7 @@ namespace Spruce.Core
 			return item.Fields[fieldName].AllowedValues.ToList();
 		}
 
-		public IEnumerable<WorkItemSummary> Execute<T>() where T : WorkItemSummary, new()
+		public IEnumerable<WorkItemSummary> Execute()
 		{
 			// Filter by a type for the query.
 			T summary = new T();
@@ -186,5 +189,9 @@ namespace Spruce.Core
 			WorkItemCollection collection = UserContext.Current.WorkItemStore.Query(query, parameters);
 			return collection.ToSummaries();
 		}
+	}
+
+	public class QueryManager :  QueryManager<WorkItemSummary>
+	{
 	}
 }

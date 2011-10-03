@@ -27,32 +27,25 @@ namespace Spruce.Templates.MSAgile
 		public ActionResult New(string id)
 		{
 			TaskManager manager = new TaskManager();
-			TaskSummary item = (TaskSummary) manager.NewItem();
+			TaskSummary summary = (TaskSummary)manager.NewItem();
 
 			if (!string.IsNullOrWhiteSpace(id))
-				item.Title = id;
+				summary.Title = id;
 
-			ViewData["PageName"] = "New task";
+			MSAgileEditData<TaskSummary> data = new MSAgileEditData<TaskSummary>();
+			data.PageTitle = "New task";
+			data.States = summary.ValidStates;
+			data.Reasons = summary.ValidReasons;
+			data.Priorities = summary.ValidPriorities;
+			data.Severities = summary.ValidSeverities;
+			data.WorkItem = summary;
 
-			//ViewData["PageName"] = "New bug";
-			//ViewData["States"] = item.ValidStates;
-			//ViewData["Reasons"] = item.ValidReasons;
-			//ViewData["Priorities"] = item.ValidPriorities;
-			//ViewData["Severities"] = item.ValidSeverities;
-
-			ViewData["PageName"] = "New bug";
-			ViewData["States"] = new List<string>();
-			ViewData["Reasons"] = new List<string>();
-			ViewData["Priorities"] = new List<string>();
-			ViewData["Severities"] = new List<string>();
-			ViewData["Users"] = UserContext.Current.Users;
-
-			return View("Edit", item);
+			return View("Edit", data);
 		}
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult New(WorkItemSummary item)
+		public ActionResult New(TaskSummary item)
 		{
 			TaskManager manager = new TaskManager();
 
@@ -60,7 +53,7 @@ namespace Spruce.Templates.MSAgile
 			{
 				item.CreatedBy = UserContext.Current.Name;
 				item.IsNew = true;
-				manager.Save(item);
+				manager.Save(item); // item.Id is updated
 
 				// Save the files once it's saved (as we can't add an AttachmentsCollection as it has no constructors)
 				if (Request.Files.Count > 0)
@@ -100,43 +93,63 @@ namespace Spruce.Templates.MSAgile
 			catch (SaveException e)
 			{
 				TempData["Error"] = e.Message;
-				return RedirectToAction("New", new { id = item.Title });
+
+				// Get the original back, to populate the valid reasons.
+				QueryManager queryManager = new QueryManager();
+				TaskSummary summary = queryManager.ItemById<TaskSummary>(item.Id);
+				summary.IsNew = false;
+
+				// Repopulate from the POST'd data
+				summary.Title = item.Title;
+				summary.State = item.State;
+				summary.Reason = item.Reason;
+				summary.Priority = item.Priority;
+				summary.Description = item.Description;
+				summary.AssignedTo = item.AssignedTo;
+				summary.AreaId = item.AreaId;
+				summary.AreaPath = item.AreaPath;
+				summary.IterationId = item.IterationId;
+				summary.IterationPath = item.IterationPath;
+
+				MSAgileEditData<TaskSummary> data = new MSAgileEditData<TaskSummary>();
+				data.WorkItem = summary;
+				data.PageTitle = "Bug " + item.Id;
+				data.States = summary.ValidStates;
+				data.Reasons = summary.ValidReasons;
+				data.Priorities = summary.ValidPriorities;
+				data.Severities = summary.ValidSeverities;
+
+				return View(data);
 			}
 		}
 
 		[HttpGet]
-		public ActionResult Edit(int id)
+		public ActionResult Edit(int id, string fromUrl)
 		{
 			QueryManager manager = new QueryManager();
 			TaskSummary item = manager.ItemById<TaskSummary>(id);
 			item.IsNew = false;
 
-			ViewData["PageName"] = "Task " + id;
+			MSAgileEditData<TaskSummary> data = new MSAgileEditData<TaskSummary>();
+			data.WorkItem = item;
+			data.PageTitle = "Task " + id;
+			data.FromUrl = fromUrl;
+			data.States = item.ValidStates;
+			data.Reasons = item.ValidReasons;
+			data.Priorities = item.ValidPriorities;
+			data.Severities = item.ValidSeverities;
 
-			//ViewData["PageName"] = "New bug";
-			//ViewData["States"] = item.ValidStates;
-			//ViewData["Reasons"] = item.ValidReasons;
-			//ViewData["Priorities"] = item.ValidPriorities;
-			//ViewData["Severities"] = item.ValidSeverities;
-
-			ViewData["PageName"] = "New bug";
-			ViewData["States"] = new List<string>();
-			ViewData["Reasons"] = new List<string>();
-			ViewData["Priorities"] = new List<string>();
-			ViewData["Severities"] = new List<string>();
-			ViewData["Users"] = UserContext.Current.Users;
-			ViewData["Error"] = TempData["Error"];
-
-			return View(item);
+			return View(data);
 		}
 
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Edit(WorkItemSummary item)
+		public ActionResult Edit(TaskSummary item, string fromUrl)
 		{
+			TaskManager manager = new TaskManager();
+
 			try
 			{
-				TaskManager manager = new TaskManager();
 				item.IsNew = false;
 				manager.Save(item);
 
@@ -173,12 +186,42 @@ namespace Spruce.Templates.MSAgile
 					}
 				}
 
-				return RedirectToAction("View", new { id = item.Id });
+				if (string.IsNullOrEmpty(fromUrl))
+					return RedirectToAction("View", new { id = item.Id });
+				else
+					return Redirect(fromUrl);
 			}
 			catch (SaveException e)
 			{
 				TempData["Error"] = e.Message;
-				return RedirectToAction("Edit", new { id = item.Id});
+
+				// Get the original back, to populate the valid reasons.
+				QueryManager queryManager = new QueryManager();
+				TaskSummary summary = queryManager.ItemById<TaskSummary>(item.Id);
+				summary.IsNew = false;
+
+				// Repopulate from the POST'd data
+				summary.Title = item.Title;
+				summary.State = item.State;
+				summary.Reason = item.Reason;
+				summary.Priority = item.Priority;
+				summary.Description = item.Description;
+				summary.AssignedTo = item.AssignedTo;
+				summary.AreaId = item.AreaId;
+				summary.AreaPath = item.AreaPath;
+				summary.IterationId = item.IterationId;
+				summary.IterationPath = item.IterationPath;
+
+				MSAgileEditData<TaskSummary> data = new MSAgileEditData<TaskSummary>();
+				data.WorkItem = summary;
+				data.PageTitle = "Task " + item.Id;
+				data.FromUrl = fromUrl;
+				data.States = summary.ValidStates;
+				data.Reasons = summary.ValidReasons;
+				data.Priorities = summary.ValidPriorities;
+				data.Severities = summary.ValidSeverities;
+
+				return View(data);
 			}
 		}
 

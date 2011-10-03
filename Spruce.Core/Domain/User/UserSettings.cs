@@ -10,6 +10,7 @@ namespace Spruce.Core
 	public class UserSettings
 	{
 		private static IUserSettingsProvider _persister;
+		private SerializableDictionary<string, string> _defaultActions;
 
 		/// <summary>
 		/// The unique id of the object (this property name is used by RavenDb)
@@ -31,7 +32,6 @@ namespace Spruce.Core
 		public string IterationPath { get; set; }
 		public string AreaName { get; set; }
 		public string AreaPath { get; set; }
-		public string BugView { get; set; }
 		public List<ProjectFilterOptions> ProjectFilterOptions { get; protected set; }
 		public int PageSize { get; set; }
 
@@ -45,6 +45,7 @@ namespace Spruce.Core
 		public UserSettings()
 		{
 			ProjectFilterOptions = new List<ProjectFilterOptions>();
+			_defaultActions = new SerializableDictionary<string, string>();
 		}
 
 		public UserSettings(Guid id) : this()
@@ -61,6 +62,27 @@ namespace Spruce.Core
 		public void Save()
 		{
 			_persister.Save(this);
+		}
+
+		/// <summary>
+		/// This is used to store the default action, if there are different types of views for work items lists.
+		/// For example the MSAgile bug list has both "default" and "heatmap". Settings the key "bugs" to "heatmap" 
+		/// will ensure that the heatmap view is shown when the the Index controller is called.
+		/// </summary>
+		public void SetDefaultAction(string workItemType, string actionName)
+		{
+			if (!_defaultActions.ContainsKey(workItemType))
+				_defaultActions.Add(workItemType, actionName);
+
+			_defaultActions[workItemType] = actionName;
+		}
+
+		public string GetDefaultAction(string workItemType)
+		{
+			if (!_defaultActions.ContainsKey(workItemType))
+				_defaultActions.Add(workItemType, "Index");
+
+			return _defaultActions[workItemType];
 		}
 
 		public ProjectFilterOptions GetFilterOptionsForProject(string projectName)

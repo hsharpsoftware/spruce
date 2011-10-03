@@ -13,17 +13,18 @@ namespace Spruce.Templates.MSAgile
 	{
 		public static DashboardSummary GetSummary()
 		{
-			QueryManager queryManager = new QueryManager();
+			QueryManager<BugSummary> bugQueryManager = new QueryManager<BugSummary>();
+			QueryManager<TaskSummary> taskQueryManager = new QueryManager<TaskSummary>();
 
-			IList<WorkItemSummary> allbugs = queryManager.Execute<BugSummary>().ToList();
-			IList<WorkItemSummary> allTasks = queryManager.Execute<TaskSummary>().ToList();
+			IList<WorkItemSummary> allbugs = bugQueryManager.Execute().ToList();
+			IList<WorkItemSummary> allTasks = taskQueryManager.Execute().ToList();
 
 			DashboardSummary summary = new DashboardSummary();
 			summary.RecentCheckins = RecentCheckins();
 			summary.RecentCheckinCount = summary.RecentCheckins.ToList().Count;
 
-			queryManager.SetActive();
-			summary.ActiveBugCount = queryManager.Execute<BugSummary>().Count();
+			bugQueryManager.SetActive();
+			summary.ActiveBugCount = bugQueryManager.Execute().Count();
 			summary.BugCount = allbugs.Count;
 			summary.MyActiveBugCount = allbugs.Where(b => b.State == "Active").ToList().Count;
 			summary.MyActiveBugs = allbugs.Where(b => b.State == "Active" && b.AssignedTo == UserContext.Current.Name)
@@ -31,7 +32,7 @@ namespace Spruce.Templates.MSAgile
 				.Take(5)
 				.ToList();
 
-			queryManager.SetActive();
+			taskQueryManager.SetActive();
 			summary.ActiveTaskCount = allTasks.Count;
 			summary.TaskCount = allTasks.Count;
 

@@ -4,5 +4,9 @@
 - Make sure the Site has authentication set to Windows and anonymous is disabled (can this be done in the web.config?)
 - Other troubleshooting here about separate server deployment
 
-For making it a little easier to edit views in the MSAgile project, without having to copy each time:
+For making it a little easier to edit views in the MSAgile project, without having to copy the View folder
+each time, run this command in a console inside the Site directory:
+
 mklink /d Template ..\Spruce.Templates.MSAgile\Views
+
+NOTE: Mercurial sees this as an actual directory, so delete the link before any commits.

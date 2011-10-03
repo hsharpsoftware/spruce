@@ -46,7 +46,7 @@ namespace Spruce.Core.Controllers
 		protected virtual WorkItemSummary GetItem(int id)
 		{
 			// We can get away with using the base class here, as no WorkItemType filter is used just an id.
-			QueryManager manager = GetQueryManager();
+			QueryManager manager = new QueryManager();
 			return manager.ItemById(id);
 		}
 
@@ -101,7 +101,7 @@ namespace Spruce.Core.Controllers
 		protected ListData FilterAndPage<T>(FilterOptions filterOptions, string projectName, string sortBy, bool? descending, int? page, int? pageSize)
 			where T : WorkItemSummary, new()
 		{
-			QueryManager manager = GetQueryManager();
+			QueryManager<T> manager = new QueryManager<T>();
 
 			if (!string.IsNullOrEmpty(projectName))
 			{
@@ -150,7 +150,7 @@ namespace Spruce.Core.Controllers
 				manager.WithEndingOnDate(filterOptions.EndDate);
 			}
 
-			IEnumerable<WorkItemSummary> list = manager.Execute<T>();
+			IEnumerable<WorkItemSummary> list = manager.Execute();
 
 			ListData data = new ListData();
 			data.FilterValues.Title = filterOptions.Title;
@@ -315,11 +315,6 @@ namespace Spruce.Core.Controllers
 		protected virtual WorkItemManager GetManager()
 		{
 			throw new NotImplementedException("GetManager should be implemented by controllers inheriting from SpruceControllerBase");
-		}
-
-		protected virtual QueryManager GetQueryManager()
-		{
-			return new QueryManager();
 		}
 
 		protected void UpdateUserFilterOptions(string key)

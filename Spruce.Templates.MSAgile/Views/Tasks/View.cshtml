@@ -1,13 +1,16 @@
-﻿@model WorkItemSummary
+﻿@model TaskSummary
 
 <div id="item-container">
 	<div id="item-header">
 		<div class="left" id="item-id">#@Model.Id</div>
 		<div class="left bold">@Model.Title</div>
-		<div class="right" id="item-menucontainer">
+		<div class="right" id="item-menucontainer" style="min-width:250px">
 			<div>
-				<a href="javascript:;" id="item-actionmenulink"><img id="item-arrowimg" src="@Url.Content("~/Assets/Images/black-arrow-down.png")" border="0" alt="menu" /></a>
 				@Model.State
+				@if (!string.IsNullOrEmpty(Model.Reason))
+				{
+					<div id="item-reason">(Reason:&nbsp;@Model.Reason)</div>
+				}
 			</div>
 			<div id="item-menu">
 				@Html.ActionLink("Close", "Close", new { id = Model.Id })
@@ -78,7 +81,7 @@
 				<table style="display:none;border:solid 1px #AAA;font-size:0.8em;margin:10px 0px;" id="revision@(revision.Index)">
 				@foreach(Field field in revision.Fields.Cast<Field>().OrderBy(f => f.Name))
 				{
-					if (Html.GetFieldValueForRevision(Model, field.Name, revision.Index) != field.Value.SafeToString())
+					if (Html.GetFieldValueForRevision(Model, field.Name, revision.Index) != field.Value)
 					{
 						<tr>
 							<td><b>@field.Name</b></td>

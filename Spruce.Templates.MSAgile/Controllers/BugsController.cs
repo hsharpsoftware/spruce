@@ -18,7 +18,7 @@ namespace Spruce.Templates.MSAgile
 		public override ActionResult Index(string id, string sortBy, bool? desc,int? page,int? pageSize,
 			string title,string assignedTo,string startDate,string endDate,string status)
 		{
-			SetBugView("Index");
+			StoreDefaultListAction("Index");
 			UpdateUserFilterOptions("bugs:default");
 
 			ListData data = FilterAndPage<BugSummary>(GetBugFilterOptions(), id, sortBy, desc, page, pageSize);
@@ -29,7 +29,7 @@ namespace Spruce.Templates.MSAgile
 		public ActionResult Heatmap(string id, string sortBy, bool? desc, int? page, int? pageSize,
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
-			SetBugView("Heatmap");
+			StoreDefaultListAction("Heatmap");
 			UpdateUserFilterOptions("bugs:heatmap");
 
 			ListData data = FilterAndPage<BugSummary>(GetBugHeatmapFilterOptions(), id, sortBy, desc, page, pageSize);
@@ -166,6 +166,7 @@ namespace Spruce.Templates.MSAgile
 
 			try
 			{
+				item.IsNew = false;
 				manager.Save(item);
 
 				// Save the files once it's saved (as we can't add an AttachmentsCollection as it has no constructors)
@@ -263,9 +264,9 @@ namespace Spruce.Templates.MSAgile
 		/// Sets the user settings for either heatmap or a normal list.
 		/// </summary>
 		/// <param name="actionName"></param>
-		private void SetBugView(string actionName)
+		private void StoreDefaultListAction(string actionName)
 		{
-			UserContext.Current.Settings.BugView = actionName;
+			UserContext.Current.Settings.SetDefaultAction("Bugs",actionName);
 		}
 
 		private FilterOptions GetBugFilterOptions()
@@ -285,6 +286,9 @@ namespace Spruce.Templates.MSAgile
 			return new BugManager();
 		}
 
+		/// <summary>
+		/// Overriden to cater for the Heatmap action, which always sorts by Priority and Severity first.
+		/// </summary>
 		protected override IEnumerable<WorkItemSummary> Page(Pager pager, IEnumerable<WorkItemSummary> items, int currentPage)
 		{
 			string action = ControllerContext.Controller.ValueProvider.GetValue("action").RawValue.ToString().ToLower();

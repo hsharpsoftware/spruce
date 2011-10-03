@@ -4,7 +4,7 @@
 	<div id="item-header">
 		<div class="left" id="item-id">#@Model.Id</div>
 		<div class="left bold">@Model.Title</div>
-		<div class="right" id="item-menucontainer">
+		<div class="right" id="item-menucontainer" style="min-width:250px">
 			<div>
 				@Model.State
 				@if (!string.IsNullOrEmpty(Model.Reason))

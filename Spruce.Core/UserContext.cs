@@ -192,7 +192,6 @@ namespace Spruce.Core
 			if (string.IsNullOrEmpty(Settings.ProjectName) || !WorkItemStore.Projects.Contains(Settings.ProjectName))
 			{
 				ChangeCurrentProject(SpruceSettings.DefaultProjectName);
-				Settings.BugView = "Index";
 			}
 			else
 			{

@@ -3,8 +3,8 @@
 <h3>Tasks</h3>
 
 <form action="" method="get" id="filterform">
-@Html.Hidden("sortBy",Request.QueryString["sortBy"])
-@Html.Hidden("desc",Request.QueryString["desc"])
+@Html.Hidden("sortBy",Model.FilterValues.SortBy)
+@Html.Hidden("desc", Model.FilterValues.IsDescending)
 <div style="width:100%">
 	<table id="list-table">
 		<thead>
@@ -44,8 +44,6 @@
 				@Html.DropDownList("status", new Dictionary<string, string>() { { "All", "All" }, { "Active", "Active" }, { "Closed", "Closed" } }, Model.FilterValues.Status)
 			</td>
 			<td></td>
-			<td></td>
-			<td style="width:10%"></td>
 		</tr>
 		<tbody>
 		@foreach (TaskSummary item in Model.WorkItems)

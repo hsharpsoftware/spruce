@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Represents a single WIQL query for a work item type. This class needs
+	/// to be refactored so that it is immutable.
+	/// </summary>
 	public class QueryBuilder
 	{
 		protected string _query;
@@ -37,6 +41,16 @@ namespace Spruce.Core
 		public void Or(string query)
 		{
 			_orFilters.Add(query);
+		}
+
+		public void RemoveOr(string query)
+		{
+			_orFilters.Remove(query);
+		}
+
+		public void RemoveAnd(string query)
+		{
+			_andFilters.Remove(query);
 		}
 
 		public void AddParameter(string name,object value)

@@ -29,6 +29,8 @@ namespace Spruce.Core
 			ExtendedRazorViewEngine engine = new ExtendedRazorViewEngine();
 			engine.AddViewLocationFormat("~/Template/{1}/{0}.cshtml");
 			engine.AddViewLocationFormat("~/Template/{1}/{0}.vbhtml");
+			engine.AddPartialViewLocationFormat("~/Template/{0}.cshtml");
+			engine.AddPartialViewLocationFormat("~/Template/{0}.vbhtml");
 			ViewEngines.Engines.Add(engine);
 
 			AreaRegistration.RegisterAllAreas();
