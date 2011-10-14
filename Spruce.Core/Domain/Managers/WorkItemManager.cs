@@ -14,8 +14,16 @@ using System.Text;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// The base class for all work item related tasks in Spruce. This class does not include searching, 
+	/// this is performed by the QueryManager class.
+	/// </summary>
 	public abstract class WorkItemManager
 	{
+		/// <summary>
+		/// Saves the specified <see cref="WorkItemSummary"/> to TFS, converting it to a <see cref="WorkItem"/> first.
+		/// </summary>
+		/// <exception cref="SaveException">Thrown if a TFS server-based error occurs with the save.</exception>
 		public void Save(WorkItemSummary summary)
 		{
 			WorkItem item = summary.ToWorkItem();
@@ -38,6 +46,12 @@ namespace Spruce.Core
 			}
 		}
 
+		/// <summary>
+		/// Saves the provided file attachments for a TFS work item.
+		/// </summary>
+		/// <param name="id">The id of the WorkItem these attachments are for.</param>
+		/// <param name="attachments">A collection of file attachments. These files should exist on disk first.</param>
+		/// <exception cref="SaveException">Thrown if a TFS server-based error occurs with the save.</exception>
 		public void SaveAttachments(int id, IEnumerable<Attachment> attachments)
 		{
 			WorkItem item = UserContext.Current.WorkItemStore.GetWorkItem(id);
@@ -56,6 +70,10 @@ namespace Spruce.Core
 			}
 		}
 
+		/// <summary>
+		/// Changes the state of a work item to 'resolved'.
+		/// </summary>
+		/// <param name="id">The id of the work item to change the state of.</param>
 		public virtual void Resolve(int id)
 		{
 			QueryManager queryManager = new QueryManager();
@@ -65,12 +83,16 @@ namespace Spruce.Core
 				summary.State = "Resolved";
 				Save(summary);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				// TODO: log invalid state
+				Log.Warn(ex, "An exception occured resolving the work item {0}", id);
 			}
 		}
 
+		/// <summary>
+		/// Changes the state of a work item to 'closed'.
+		/// </summary>
+		/// <param name="id">The id of the work item to change the state of.</param>
 		public virtual void Close(int id)
 		{
 			QueryManager manager = new QueryManager();
@@ -80,12 +102,18 @@ namespace Spruce.Core
 				summary.State = "Closed";
 				Save(summary);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				// TODO: log invalid state
+				Log.Warn(ex, "An exception occured closing the work item {0}", id);
 			}
 		}
 
+		/// <summary>
+		/// Deletes an attachment from a work item.
+		/// </summary>
+		/// <param name="id">The id of the work item to delete the attachment for.</param>
+		/// <param name="url">The attachment URL, which should contain the TFS protocol at the start of the string.</param>
+		/// <exception cref="SaveException">Thrown if a TFS server-based error occurs with the deletion.</exception>
 		public void DeleteAttachment(int id, string url)
 		{
 			WorkItem item = UserContext.Current.WorkItemStore.GetWorkItem(id);
@@ -118,13 +146,21 @@ namespace Spruce.Core
 				}
 				else
 				{
-					// TODO: warn
+					throw new SaveException(string.Format("Removing attachment {0} failed for id '{1}' - the attachment no longer exists.", url, id));
 				}
 			}
 		}
 
+		/// <summary>
+		/// Creates a new <see cref="WorkItemSummary"/> object. This method should be overridden by implementing classes.
+		/// </summary>
+		/// <returns>A <see cref="WorkItemSummary"/> object, which should be specialized for particular work item type the manager handles.</returns>
 		public abstract WorkItemSummary NewItem();
 
+		/// <summary>
+		/// Creates a new <see cref="WorkItem"/> from a <see cref="WorkItemSummary"/> instance, populating its core fields with 
+		/// the data from the <see cref="WorkItemSummary"/> object.
+		/// </summary>
 		protected virtual WorkItem CreateWorkItem(WorkItemType type, WorkItemSummary summary)
 		{
 			WorkItem item = new WorkItem(type);

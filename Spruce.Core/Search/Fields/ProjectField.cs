@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Spruce.Core.Search
 {
+	/// <summary>
+	/// A project name search, which supports '*' to represent all projects.
+	/// </summary>
 	public class ProjectField : Field
 	{
 		public override string ToString()

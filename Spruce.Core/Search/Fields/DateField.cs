@@ -5,6 +5,10 @@ using System.Text;
 
 namespace Spruce.Core.Search
 {
+	/// <summary>
+	/// A search for a date field. This class attempts to convert a string representation of 
+	/// the date into its DateTime counterpart, including human readable date names like "yesterday".
+	/// </summary>
 	public class DateField : Field
 	{
 		public override object Value

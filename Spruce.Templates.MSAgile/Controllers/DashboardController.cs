@@ -11,6 +11,9 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
+	/// <summary>
+	/// The controller for the project dashboard for the user's currently selected project.
+	/// </summary>
 	public class DashboardController : Controller
 	{
 		public ActionResult Index()

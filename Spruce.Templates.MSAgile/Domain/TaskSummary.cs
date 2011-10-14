@@ -7,8 +7,15 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
+	/// <summary>
+	/// This is the Model for a Task WorkItem in Microsoft Agile 4 and 5 templates. The priority field and various hour estimate fields
+	/// are the main additions from the <see cref="WorkItemSummary"/> it derives from.
+	/// </summary>
 	public class TaskSummary : WorkItemSummary
 	{
+		/// <summary>
+		/// Returns "Task".
+		/// </summary>
 		public override string WIQLTypeName
 		{
 			get
@@ -17,6 +24,9 @@ namespace Spruce.Templates.MSAgile
 			}
 		}
 
+		/// <summary>
+		/// Returns "Tasks".
+		/// </summary>
 		public override string Controller
 		{
 			get
@@ -34,31 +44,44 @@ namespace Spruce.Templates.MSAgile
 		public IList<string> ValidPriorities { get; set; }
 		public IList<string> ValidSeverities { get; set; }
 
+
+		/// <summary>
+		/// Fills this instance's fields using the values from the provided <see cref="WorkItem"/>.
+		/// This includes the Priority, Reason, Original Estimate, Remaining Work and Completed work fields.
+		/// </summary>
 		public override void FromWorkItem(WorkItem item)
 		{
 			base.FromWorkItem(item);
 
 			ResolvedBy = GetFieldValue(item, "Resolved By");
 
-			if (item.Fields.Contains("Priority"))
+			if (item.Fields.Contains("Priority") && item.Fields["Priority"].Value != null)
 				Priority = item.Fields["Priority"].Value.ToString().ToIntOrDefault();
 
-			if (item.Fields.Contains("Reason"))
+			if (item.Fields.Contains("Reason") && item.Fields["Reason"].Value != null)
 				Reason = item.Fields["Reason"].Value.ToString();
 
 			// Estimates
 			// Check this field exists. 4.2 Agile doesn't have this field
-			if (item.Fields.Contains("Original Estimate"))
+			if (item.Fields.Contains("Original Estimate") && item.Fields["Original Estimate"].Value != null)
 				EstimatedHours = item.Fields["Original Estimate"].Value.ToString().ToDoubleOrDefault();
 
-			RemainingHours = item.Fields["Remaining Work"].Value.ToString().ToDoubleOrDefault();
-			CompletedHours = item.Fields["Completed Work"].Value.ToString().ToDoubleOrDefault();
+			if (item.Fields.Contains("Remaining Work") && item.Fields["Remaining Work"].Value != null)
+				RemainingHours = item.Fields["Remaining Work"].Value.ToString().ToDoubleOrDefault();
+
+			if (item.Fields.Contains("Completed Work") && item.Fields["Completed Work"].Value != null)
+				CompletedHours = item.Fields["Completed Work"].Value.ToString().ToDoubleOrDefault();
 
 			// For updates only
-			if (item.Fields.Contains("Original Estimate"))
+			if (item.Fields.Contains("Original Estimate") && item.Fields["Original Estimate"].Value != null)
 				EstimatedHours = item.Fields["Original Estimate"].Value.ToString().ToDoubleOrDefault();
 		}
 
+
+		/// <summary>
+		/// Converts this <see cref="TaskSummary"/> instance to a new <see cref="WorkItem"/> using the
+		/// <see cref="WorkItemType"/> property to create the work item.
+		/// </summary>
 		public override WorkItem ToWorkItem()
 		{
 			WorkItem item;
@@ -100,6 +123,9 @@ namespace Spruce.Templates.MSAgile
 			return item;
 		}
 
+		/// <summary>
+		/// Overrides the base implementation to populate the <see cref="ValidPriorities"/> and <see cref="ValidSeverities"/> properties.
+		/// </summary>
 		public override void PopulateAllowedValues(WorkItem item)
 		{
 			ValidPriorities = new List<string>();

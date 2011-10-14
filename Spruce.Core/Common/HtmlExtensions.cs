@@ -13,8 +13,14 @@ using System.Collections.Specialized;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// A collection of extension methods for the HtmlHelper and UrlHelper classes, for producing HTML.
+	/// </summary>
 	public static class HtmlExtensions
 	{
+		/// <summary>
+		/// Parses the provided text and converts all Markdown syntax into HTML.
+		/// </summary>
 		public static MvcHtmlString ParseMarkdown(this HtmlHelper helper, string text)
 		{
 			text = text.Replace("\n","<br/>");
@@ -22,6 +28,13 @@ namespace Spruce.Core
 			return MvcHtmlString.Create(markdown.Transform(text));
 		}
 
+		/// <summary>
+		/// Generates the HTML anchor link for a sorting link for the table of work items.
+		/// </summary>
+		/// <typeparam name="T">The WorkItemSummary type the link is for</typeparam>
+		/// <param name="title">The title to display in the column.</param>
+		/// <param name="column">The column name the link is for.</param>
+		/// <param name="model">The model data for the page</param>
 		public static MvcHtmlString TableSortLink<T>(this HtmlHelper helper, string title, string column, ListData model)
 			where T: WorkItemSummary
 		{
@@ -55,6 +68,9 @@ namespace Spruce.Core
 			return MvcHtmlString.Create(string.Format(@"<a href=""{0}sortBy={1}&desc={2}"">{3}</a>", url, column, descending, title));
 		}
 
+		/// <summary>
+		/// Returns the previous value of the field for the revision number provided.
+		/// </summary>
 		public static string GetFieldValueForRevision(this HtmlHelper helper, WorkItemSummary model, string fieldName, int revisionNumber)
 		{
 			if (revisionNumber > 0 && model.Revisions[revisionNumber - 1].Fields[fieldName].Value != null)
@@ -63,6 +79,9 @@ namespace Spruce.Core
 			return "";
 		}
 
+		/// <summary>
+		/// Generate an anchor link for the RSS page using the current project, area and iteration.
+		/// </summary>
 		public static string RssLink(this UrlHelper helper)
 		{
 			return helper.Action("Rss", new
@@ -74,11 +93,17 @@ namespace Spruce.Core
 			});
 		}
 
+		/// <summary>
+		/// Get the filename for the provided changeset path.
+		/// </summary>
 		public static MvcHtmlString ParseChangesetFile(this HtmlHelper helper, string value)
 		{
 			return MvcHtmlString.Create(Path.GetFileName(value));
 		}
 
+		/// <summary>
+		/// Returns the relevant icon path for the provided change - add, delete, edit or unknown graphics.
+		/// </summary>
 		public static MvcHtmlString ChangesetIcon(this UrlHelper helper, Change change)
 		{
 			string icon = "";
@@ -103,26 +128,10 @@ namespace Spruce.Core
 			return MvcHtmlString.Create(string.Format("<img src=\"{0}\" alt=\"{1}\" border=\"0\">", icon, change.ChangeType));
 		}
 
-		public static MvcHtmlString FormatAreaAndIterationName(this HtmlHelper helper, object iteration, object area)
-		{
-			string iterationName = iteration.ToString();
-			string areaName = area.ToString();
-
-			string result = "";
-			if (!string.IsNullOrEmpty(iterationName) && iterationName != "None")
-				result = iterationName;
-
-			if (!string.IsNullOrEmpty(areaName) && areaName != "None")
-			{
-				if (!string.IsNullOrEmpty(result))
-					result += "&nbsp;|&nbsp;";
-
-				result += areaName;
-			}
-
-			return MvcHtmlString.Create(result);
-		}
-
+		/// <summary>
+		/// Creates a HTML drop down list from the provided <see cref="IEnumerable`string"/> of items, selects the value and 
+		/// sets the tab order and name of the list.
+		/// </summary>
 		public static MvcHtmlString DropDownBoxFromList(this HtmlHelper helper, string name, IEnumerable<string> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
@@ -140,13 +149,9 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// A shortcut for a dropdown list
+		/// Creates a HTML drop down list from the provided <see cref="IDictionary`string"/> of items, selects the value and name of the list.
 		/// </summary>
-		/// <param name="name">the select object's name</param>
-		/// <param name="items">Where key is the value, and the value is the text</param>
-		/// <param name="selectedValue"></param>
-		/// <returns></returns>
-		public static MvcHtmlString DropDownList(this HtmlHelper helper, string name, Dictionary<string,string> items,string selectedValue)
+		public static MvcHtmlString DropDownList(this HtmlHelper helper, string name, IDictionary<string,string> items,string selectedValue)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
 
@@ -162,6 +167,9 @@ namespace Spruce.Core
 			return helper.DropDownList(name, selectList);
 		}
 
+		/// <summary>
+		/// Generates the drop down list of project names.
+		/// </summary>
 		public static MvcHtmlString DropDownBoxForProjects(this HtmlHelper helper, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
@@ -180,6 +188,9 @@ namespace Spruce.Core
 			return helper.DropDownList("project", selectList, new { tabindex = tabIndex });
 		}
 
+		/// <summary>
+		/// Generates a drop down list for the number of items on a page.
+		/// </summary>
 		public static MvcHtmlString DropDownBoxForPageSize(this HtmlHelper helper)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
@@ -191,6 +202,9 @@ namespace Spruce.Core
 			return helper.DropDownList("pageSize", selectList);
 		}
 
+		/// <summary>
+		/// Generates the drop down list of area names for the current project and selects the current area. The value of each item is the area path.
+		/// </summary>
 		public static MvcHtmlString DropDownBoxForAreas(this HtmlHelper helper, string name, IList<AreaSummary> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
@@ -209,6 +223,9 @@ namespace Spruce.Core
 			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
+		/// <summary>
+		/// Generates the drop down list of iteration names for the current project and selects the current iteration. The value of each item is the iteration path.
+		/// </summary>
 		public static MvcHtmlString DropDownBoxForIterations(this HtmlHelper helper, string name, IList<IterationSummary> items, string selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
@@ -227,6 +244,9 @@ namespace Spruce.Core
 			return helper.DropDownList(name, selectList, new { tabindex = tabIndex });
 		}
 
+		/// <summary>
+		/// Generates the drop down list of stored queries for the current project.
+		/// </summary>
 		public static MvcHtmlString DropDownBoxForStoredQueries(this HtmlHelper helper, string name, IList<StoredQuerySummary> items, Guid selectedValue, int tabIndex)
 		{
 			List<SelectListItem> selectList = new List<SelectListItem>();
@@ -246,9 +266,6 @@ namespace Spruce.Core
 		/// <summary>
 		/// Limits the length of string by the provided maximum length, returning the string with "..." if it's longer.
 		/// </summary>
-		/// <param name="input"></param>
-		/// <param name="maxLength"></param>
-		/// <returns></returns>
 		public static string Shorten(this string input, int maxLength)
 		{
 			if (input.Length > maxLength)
@@ -258,7 +275,7 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// Attempts to add 'page=1' to the querystring of a url.
+		/// Attempts to append a value to the querystring (used primarily for paging).
 		/// </summary>
 		public static string AppendQueryString(this Uri url, string name, object value)
 		{
@@ -295,45 +312,10 @@ namespace Spruce.Core
 			return newUrl;
 		}
 
-		public static string ToCsv(this WorkItemSummary summary)
-		{
-			StringBuilder builder = new StringBuilder();
-
-			// Title
-			if (summary.Title.IndexOf(",") > -1)
-				builder.Append("\"" + summary.Title + "\"");
-			else
-				builder.Append(summary.Title);
-
-			builder.Append(",");
-
-			// ID
-			builder.Append(summary.Id);
-			builder.Append(",");
-
-			// Assigned to
-			if (summary.AssignedTo.IndexOf(",") > -1)
-				builder.Append("\"" + summary.AssignedTo + "\"");
-			else
-				builder.Append(summary.AssignedTo);
-
-			builder.Append(",");
-
-			// Created on
-			builder.Append(summary.CreatedDate.ToString("ddd dd MMM yyyy"));
-			builder.Append(",");
-
-			// State
-			if (summary.State.IndexOf(",") > -1)
-				builder.Append("\"" + summary.State + "\"");
-			else
-				builder.Append(summary.State);
-
-			builder.Append(",");
-
-			return builder.AppendLine().ToString();
-		}
-
+		/// <summary>
+		/// Renders the header for the current template, by searching for a NavigationHeader.cshtml file and rendering this as HTML using
+		/// the current ViewEngine.
+		/// </summary>
 		public static MvcHtmlString RenderHeader(this HtmlHelper helper)
 		{
 			StringBuilder builder = new StringBuilder();

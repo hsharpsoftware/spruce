@@ -7,14 +7,13 @@ using System.Threading;
 namespace Spruce.Core.Search
 {
 	/// <summary>
-	/// 
+	/// Stores search information for a field.
 	/// </summary>
 	public class Field
 	{
 		/// <summary>
 		/// Used for the @name in the parameters
 		/// </summary>
-
 		public virtual string ParameterName { get; set; }
 
 		/// <summary>
@@ -33,7 +32,7 @@ namespace Spruce.Core.Search
 		public virtual bool IsNot { get; set; }
 
 		/// <summary>
-		/// Returns a <see cref="System.String"/> that represents this instance.
+		/// Returns a <see cref="System.String"/> that represents this field as a WIQL fragment.
 		/// </summary>
 		/// <returns>
 		/// A <see cref="System.String"/> that represents this instance.

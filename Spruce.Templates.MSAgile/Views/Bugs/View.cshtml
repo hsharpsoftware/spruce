@@ -68,6 +68,7 @@
 		<ul>
 		@foreach(Revision revision in Model.Revisions.Cast<Revision>().Reverse())
 		{
+			<div>@revision.WorkItem.History</div>
 			<li>
 					@if (revision.Index == 0)
 					{

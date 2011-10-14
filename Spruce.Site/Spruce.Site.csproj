@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Esent.Interop, Version=1.7.0.0, Culture=neutral, PublicKeyToken=8dd49bbdae3f61af, processorArchitecture=MSIL">
+      <HintPath>..\lib\ravendb\Esent.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -181,7 +184,11 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /Y "$(SolutionDir)lib\microsoft*.dll" "$(TargetDir)"
-xcopy /Y "$(SolutionDir)lib\ravendb\async*.dll" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>xcopy /Y "$(SolutionDir)lib\microsoft*.dll" "$(TargetDir)"
+xcopy /Y "$(SolutionDir)lib\ravendb\*.dll" "$(TargetDir)"</PreBuildEvent>
   </PropertyGroup>
 </Project>

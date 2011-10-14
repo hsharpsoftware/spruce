@@ -11,22 +11,27 @@ using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Contains all settings for the current logged in user.
+	/// </summary>
 	public class UserContext
 	{
 		private static readonly string CONTEXT_KEY = "SPRUCE_USER_CONTEXT";
 		private static UserContext _contextForNoneWeb;
 		private string _projectName;
-		private List<string> _users;		
+		private List<string> _users;
 
+		public Guid Id { get; private set; }
 		public TfsTeamProjectCollection TfsCollection { get; private set; }
 		public WorkItemStore WorkItemStore { get; private set; }
 		public VersionControlServer VersionControlServer { get; private set; }
 		public RegisteredLinkTypeCollection RegisteredLinkTypes { get; private set; }
-
 		public ProjectDetails CurrentProject { get; private set; }
 		public List<string> ProjectNames { get; private set; }
 		public string Name { get; private set; }
-		public Guid Id { get; private set; }
+		public UserSettings Settings { get; set; }
+		public static bool IsWeb { get; set; }
+
 		public IEnumerable<string> Users
 		{
 			get
@@ -38,9 +43,7 @@ namespace Spruce.Core
 				_users = new List<string>(value);
 			}
 		}
-		public UserSettings Settings { get; set; }
 		
-		public static bool IsWeb { get; set; }
 
 		public bool IsMobileBrowser
 		{
@@ -60,7 +63,8 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// The current singleton instance of the UserContext.
+		/// The current singleton instance of the UserContext, which if in a web context, is stored 
+		/// inside the Session using the CONTEXT_KEY.
 		/// </summary>
 		public static UserContext Current
 		{
@@ -94,69 +98,6 @@ namespace Spruce.Core
 					return _contextForNoneWeb;
 				}
 			}
-		}
-
-		/// <summary>
-		/// Change's the current project for the user.
-		/// </summary>
-		/// <param name="projectName"></param>
-		public void ChangeCurrentProject(string projectName)
-		{
-			if (string.IsNullOrWhiteSpace(projectName))
-				throw new ArgumentNullException("The project name was null or empty");
-
-			if (!WorkItemStore.Projects.Contains(projectName))
-				throw new InvalidOperationException(string.Format("The project {0} doesn't exist.", projectName));
-
-			_projectName = projectName;
-			CurrentProject = new ProjectDetails(WorkItemStore.Projects[projectName]);
-
-			Settings.ProjectName = projectName;
-			Settings.IterationName = CurrentProject.Iterations[0].Name;
-			Settings.IterationPath = CurrentProject.Iterations[0].Path;
-			Settings.AreaName = CurrentProject.Areas[0].Name;
-			Settings.AreaPath = CurrentProject.Areas[0].Path;
-		}
-
-		/// <summary>
-		/// Populates the <see cref="ProjectNames"/> property with a list of the current TFS projects.
-		/// </summary>
-		private void PopulateProjectNames()
-		{
-			ProjectNames = new List<string>();
-			foreach (Project project in WorkItemStore.Projects)
-			{
-				ProjectNames.Add(project.Name);
-			}
-		}
-
-		/// <summary>
-		/// Retrieves all users that TFS uses.
-		/// </summary>
-		private void PopulateUsers()
-		{
-			Users = new List<string>();
-
-			// These must use QueryMembership.Expanded otherwise additional information doesn't get returned
-			IGroupSecurityService service = TfsCollection.GetService<IGroupSecurityService>();
-
-			Identity usersInCollection = service.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
-			Identity[] members = service.ReadIdentities(SearchFactor.Sid, usersInCollection.Members, QueryMembership.Expanded);
-
-			for (int i = 0; i < members.Length; i++)
-			{
-				// Basic filtering
-				if (!members[i].SecurityGroup )//&& !usernames.Contains(username))
-				{
-					string name = members[i].DisplayName;
-					if (string.IsNullOrEmpty(name))
-						name = members[i].AccountName;
-
-					_users.Add(name);
-				}
-			}
-
-			_users.Sort();
 		}
 
 		static UserContext()
@@ -203,6 +144,68 @@ namespace Spruce.Core
 			// than per application, so new project names don't require an app restart.
 			PopulateProjectNames();
 			PopulateUsers();
+		}
+
+		/// <summary>
+		/// Change's the current project for the logged user, and updates the persisted user settings.
+		/// </summary>
+		public void ChangeCurrentProject(string projectName)
+		{
+			if (string.IsNullOrWhiteSpace(projectName))
+				throw new ArgumentNullException("The project name was null or empty");
+
+			if (!WorkItemStore.Projects.Contains(projectName))
+				throw new InvalidOperationException(string.Format("The project {0} doesn't exist.", projectName));
+
+			_projectName = projectName;
+			CurrentProject = new ProjectDetails(WorkItemStore.Projects[projectName]);
+
+			Settings.ProjectName = projectName;
+			Settings.IterationName = CurrentProject.Iterations[0].Name;
+			Settings.IterationPath = CurrentProject.Iterations[0].Path;
+			Settings.AreaName = CurrentProject.Areas[0].Name;
+			Settings.AreaPath = CurrentProject.Areas[0].Path;
+		}
+
+		/// <summary>
+		/// Populates the <see cref="ProjectNames"/> property with a list of the current TFS projects.
+		/// </summary>
+		private void PopulateProjectNames()
+		{
+			ProjectNames = new List<string>();
+			foreach (Project project in WorkItemStore.Projects)
+			{
+				ProjectNames.Add(project.Name);
+			}
+		}
+
+		/// <summary>
+		/// Retrieves all TFS users and populates the Users property.
+		/// </summary>
+		private void PopulateUsers()
+		{
+			Users = new List<string>();
+
+			// These must use QueryMembership.Expanded otherwise additional information doesn't get returned
+			IGroupSecurityService service = TfsCollection.GetService<IGroupSecurityService>();
+
+			Identity usersInCollection = service.ReadIdentity(SearchFactor.AccountName, "Project Collection Valid Users", QueryMembership.Expanded);
+			Identity[] members = service.ReadIdentities(SearchFactor.Sid, usersInCollection.Members, QueryMembership.Expanded);
+
+			for (int i = 0; i < members.Length; i++)
+			{
+				// Basic filtering
+				if (!members[i].SecurityGroup )//&& !usernames.Contains(username))
+				{
+					string name = members[i].DisplayName;
+					if (string.IsNullOrEmpty(name))
+						name = members[i].AccountName;
+
+					_users.Add(name);
+				}
+			}
+
+			_users.Sort();
 		}
 	}
 }

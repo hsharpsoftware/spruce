@@ -7,6 +7,9 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
+	/// <summary>
+	/// This is the Model for the project dashboard, and includes information about current bugs, tasks and checkins.
+	/// </summary>
 	public class DashboardSummary
 	{
 		public int BugCount { get; set; }

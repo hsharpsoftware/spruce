@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Spruce.Core.Search
 {
+	/// <summary>
+	/// A user search field. User names can be comma separated.
+	/// </summary>
 	public class UserField : Field
 	{
 		public override object Value

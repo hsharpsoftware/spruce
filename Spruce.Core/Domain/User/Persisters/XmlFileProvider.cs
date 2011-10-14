@@ -7,6 +7,10 @@ using System.Xml.Serialization;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// An file based user settings provider, where each users's settings are stored in an individual XML file,
+	/// using the user's id for the filename.
+	/// </summary>
 	internal class XmlFileProvider : IUserSettingsProvider
 	{
 		static XmlFileProvider()
@@ -66,6 +70,10 @@ namespace Spruce.Core
 			}
 		}
 
+		/// <summary>
+		/// Persists the provided <see cref="UserSettings"/> object to disk.
+		/// </summary>
+		/// <param name="settings"></param>
 		public void Save(UserSettings settings)
 		{
 			string filename = string.Format(@"{0}\{1}.xml", SpruceSettings.UserSettingsDirectory, settings.UserId);

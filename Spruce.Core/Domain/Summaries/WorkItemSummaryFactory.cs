@@ -7,6 +7,10 @@ using System.Reflection;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Scans all assemblies in the current appdomain, looking for classes that derive from <see cref="WorkItemSummary"/>.
+	/// When found, these are cached so that they can be used actions for the <see cref="WorkItemType"/> they represent.
+	/// </summary>
 	public class WorkItemSummaryFactory
 	{
 		private static bool _hasScanned;
@@ -17,6 +21,9 @@ namespace Spruce.Core
 			return _hasScanned;
 		}
 
+		/// <summary>
+		/// Scans all assemblies for <see cref="WorkItemSummary"/> derived classes. This should be called once at app startup.
+		/// </summary>
 		public static void Scan()
 		{
 			_hasScanned = true; // avoid a StackOverflow: instance.WorkItemType (below) calls Scan() via the UserContext
@@ -42,10 +49,16 @@ namespace Spruce.Core
 			}
 		}
 
+		/// <summary>
+		/// Retrieves the <see cref="WorkItemSummary"/> derived class that is used for the <see cref="WorkItemType"/>.
+		/// </summary>
 		public static WorkItemSummary GetForType(WorkItemType workItemType)
 		{
 			if (!_types.ContainsKey(workItemType.Name))
-				throw new InvalidOperationException(string.Format("{0} has no equivalent WorkItemSummary. This is typically because its WIQLTypeName does not match the name assigned in TFS.",workItemType.Name));
+			{
+				Log.Warn("{0} has no equivalent WorkItemSummary. This is typically because its WIQLTypeName does not match the name assigned in TFS.", workItemType.Name);
+				return new WorkItemSummary();
+			}
 
 			Type type = _types[workItemType.Name];	
 			return Activator.CreateInstance(type, false) as WorkItemSummary;

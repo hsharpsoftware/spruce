@@ -105,6 +105,12 @@ $(document).ready(function ()
 		},
 		showURL: false
 	});
+
+	// Show/hide the search help box on the search page
+	$("#search-help a").click(function()
+	{
+		$("#search-help div").toggle();
+	});
 });
 
 function filterFormKeyPress(e)

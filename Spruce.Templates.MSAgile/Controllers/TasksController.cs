@@ -12,8 +12,14 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
+	/// <summary>
+	/// The controller for all <see cref="TaskSummary"/> based actions.
+	/// </summary>
 	public class TasksController : SpruceControllerBase
     {
+		/// <summary>
+		/// Displays a filterable, pageable and sortable list of <see cref="TaskSummary"/> objects.
+		/// </summary>
 		public override ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize,
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
@@ -23,6 +29,9 @@ namespace Spruce.Templates.MSAgile
 			return View(data);
 		}
 
+		/// <summary>
+		/// Displays the form to enter a new Task work item.
+		/// </summary>
 		[HttpGet]
 		public ActionResult New(string id)
 		{
@@ -43,6 +52,9 @@ namespace Spruce.Templates.MSAgile
 			return View("Edit", data);
 		}
 
+		/// <summary>
+		/// Creates a new bug work item from the POST'd <see cref="TaskSummary"/>.
+		/// </summary>
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult New(TaskSummary item)
@@ -123,6 +135,9 @@ namespace Spruce.Templates.MSAgile
 			}
 		}
 
+		/// <summary>
+		/// Edits an existing Task work item, displaying a form to edit it.
+		/// </summary>
 		[HttpGet]
 		public ActionResult Edit(int id, string fromUrl)
 		{
@@ -142,6 +157,9 @@ namespace Spruce.Templates.MSAgile
 			return View(data);
 		}
 
+		/// <summary>
+		/// Updates an existing Task work item using the POST'd <see cref="BugSummary"/>.
+		/// </summary>
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult Edit(TaskSummary item, string fromUrl)
@@ -225,24 +243,36 @@ namespace Spruce.Templates.MSAgile
 			}
 		}
 
+		/// <summary>
+		/// Downloads an Excel filename containing the current tasks for the user's currently selected project.
+		/// </summary>
 		public ActionResult Excel()
 		{
 			ListData data = FilterAndPage<TaskSummary>(GetTaskFilterOptions(), "", "CreatedDate", true, 1, 10000);
 			return Excel(data.WorkItems);
 		}
 
+		/// <summary>
+		/// Displays an RSS feed containing the current tasks for the user's currently selected project.
+		/// </summary>
 		public ActionResult Rss(string projectName, string areaPath, string iterationPath, string filter)
 		{
 			ListData data = FilterAndPage<TaskSummary>(new FilterOptions(), projectName, "CreatedDate", true, 1, 10000);
 			return Rss(data.WorkItems, "Tasks", projectName, areaPath, iterationPath, filter);
 		}
 
+		/// <summary>
+		/// Retrieves the filter options for the task view.
+		/// </summary>
 		private FilterOptions GetTaskFilterOptions()
 		{
 			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name)
 				.GetByKey("tasks:default");
 		}
 
+		/// <summary>
+		/// Gets a new <see cref="TaskManager"/>
+		/// </summary>
 		protected override WorkItemManager GetManager()
 		{
 			return new TaskManager();

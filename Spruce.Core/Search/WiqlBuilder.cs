@@ -6,6 +6,9 @@ using System.Diagnostics;
 
 namespace Spruce.Core.Search
 {
+	/// <summary>
+	/// Generates a WIQL query.
+	/// </summary>
 	public class WiqlBuilder
 	{
 		/// <summary>

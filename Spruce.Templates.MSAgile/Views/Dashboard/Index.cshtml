@@ -66,7 +66,7 @@
 		foreach (Spruce.Core.ChangesetSummary summary in Model.RecentCheckins)
 		{
 		<div class="dashbord-checkintem">
-			<div class="left changesetid">@Html.ActionLink(summary.Id.ToString(), "Changeset", "Home", new { id = summary.Id }, null)</div>
+			<div class="left changesetid">@Html.ActionLink(summary.Id.ToString(), "Changeset", "Dashboard", new { id = summary.Id }, null)</div>
 			<div class="left changesetdetails">
 				@(!string.IsNullOrEmpty(summary.Message) ? summary.Message : "(No message)")
 				<br/>

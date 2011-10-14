@@ -37,6 +37,9 @@
     <Reference Include="CalithaLib">
       <HintPath>..\lib\CalithaLib.dll</HintPath>
     </Reference>
+    <Reference Include="Esent.Interop, Version=1.7.0.0, Culture=neutral, PublicKeyToken=8dd49bbdae3f61af, processorArchitecture=MSIL">
+      <HintPath>..\lib\ravendb\Esent.Interop.dll</HintPath>
+    </Reference>
     <Reference Include="GoldParserEngine">
       <HintPath>..\lib\GoldParserEngine.dll</HintPath>
     </Reference>
@@ -111,6 +114,7 @@
     <Compile Include="Domain\Summaries\ChangesetSummary.cs" />
     <Compile Include="Domain\Summaries\StoredQuerySummary.cs" />
     <Compile Include="Domain\Summaries\WorkItemSummaryFactory.cs" />
+    <Compile Include="Domain\User\FilterValues.cs" />
     <Compile Include="Domain\User\FilterOptions.cs" />
     <Compile Include="Domain\Pager.cs" />
     <Compile Include="Domain\User\Persisters\IUserSettingsProvider.cs" />

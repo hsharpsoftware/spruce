@@ -4,9 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Raven.Storage.Esent;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// The default entry point (the global.asax) for the web appliction.
+	/// </summary>
 	public class SpruceApplication : HttpApplication
 	{
 		public static void RegisterRoutes(RouteCollection routes)

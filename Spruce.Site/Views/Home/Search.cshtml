@@ -1,6 +1,9 @@
 ﻿@model ListData
 
+@if (ViewData["search"] != null)
+{
 <span class="searchresults">Search result(s) for <b>@ViewData["search"]</b></span>
+}
 
 <div id="searchagain-box">
 @using (Html.BeginForm("Search", "Home", FormMethod.Get))
@@ -12,7 +15,47 @@
 }
 </div>
 
-@if (Model.WorkItems.Count() > 0)
+<div id="search-help">
+	<a href="javascript:;">Help</a>
+	<div>
+		<h3>Search Help</h3>
+		<p>
+		Searching in Spruce will search every project using just the title field only. If you want to search
+		using other fields, you can do so using the qualifiers listed below. Use double quotes if the
+		value you're searching for contains spaces.
+		</p>
+		
+		<p>
+		For example to search for all bugs assigned to Brian inside the project 'MyProject' you would use:
+		</p>
+		
+		<pre>project:MyProject assigned-to:Brian type:Bug</pre>
+
+		<ul>
+			<li>project</li>
+			<li>description</li>
+			<li>state</li>
+			<li>type</li>
+			<li>area</li>
+			<li>iteration</li>
+			<li>assigned-to</li>
+			<li>resolved-by</li>
+			<li>created-on</li>
+			<li>resolved-on</li>
+		</ul>
+
+		<p>Dates should be in the format 'mm/dd/yyyy' (or UK format depending on your .NET installation). Shortcuts
+		constants for common dates can also be used, these are:</p>
+
+		<p>yesterday, today, thisweek, lastweek, thismonth, lastmonth.</p>
+	</div>
+</div>
+
+@if (Model.WorkItems.Count() < 1 && ViewData["search"] != null)
+{
+	<p>No results were found.</p>
+}
+else if (ViewData["search"] != null)
 {
 <div style="width:100%">
 	<div class="left" style="width:75%">
@@ -20,7 +63,7 @@
 			<thead>
 				<tr id="list-table-header">
 					<th>
-						<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = Model.FilterValues.IsDescending})</div>
+						<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:8%;">
 						<div>@Html.ActionLink("ID", "Index", new { sortBy = "Id", desc = Model.FilterValues.IsDescending })</div>
@@ -41,13 +84,13 @@
 			</thead>
 			<tbody>
 			@foreach (WorkItemSummary item in Model.WorkItems)
-			{
+   {
 				<tr id="list-table-row">
 					<td>
 						<div>@item.Title</div>
 					</td>
 					<td>
-						<div>@Html.ActionLink(item.Id.ToString(), "View", item.Controller, new { id = item.Id })</div>
+						<div>@Html.ActionLink(item.Id.ToString(), "View", item.Controller, new { id = item.Id }, null)</div>
 					</td>
 					<td style="width:15%">
 						<div>@item.AssignedTo</div>
@@ -60,11 +103,11 @@
 					</td>
 					<td style="width:10%">
 						<div class="list-table-noborder">
-							@Html.ActionLink("Edit", "Edit", item.Controller, new { id = item.Id, fromUrl = Request.Url.PathAndQuery })
+							@Html.ActionLink("Edit", "Edit", item.Controller, new { id = item.Id, fromUrl = Request.Url.PathAndQuery }, null)
 						</div>
 					</td>
 				</tr>
-			}
+   }
 			</tbody>
 		</table>
 	</div>

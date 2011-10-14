@@ -6,6 +6,9 @@ using System.Web;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Contains all filter options for lists of <see cref="WorkItemSummarys"/>
+	/// </summary>
 	public class FilterOptions
 	{
 		public bool Active { get; set; }
@@ -17,12 +20,24 @@ namespace Spruce.Core
 		public DateTime StartDate { get; set; }
 		public DateTime EndDate { get; set; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="FilterOptions"/> class.
+		/// </summary>
 		public FilterOptions()
 		{
 			StartDate = DateTime.MinValue;
 			EndDate = DateTime.MinValue;
 		}
 
+		/// <summary>
+		/// Creates a new <see cref="FilterOptions"/> object using the parameters passed.
+		/// </summary>
+		/// <param name="title">The title to filter by.</param>
+		/// <param name="assignedTo">The assigned user to filter by.</param>
+		/// <param name="startDate">The start date to filter by.</param>
+		/// <param name="endDate">The end date to filter by.</param>
+		/// <param name="status">The status to filter by.</param>
+		/// <returns></returns>
 		public static FilterOptions Parse(string title, string assignedTo, string startDate, string endDate, string status)
 		{
 			FilterOptions filterOptions = new FilterOptions();
@@ -70,6 +85,10 @@ namespace Spruce.Core
 			return filterOptions;
 		}
 
+		/// <summary>
+		/// Returns the current object instance's status as a string.
+		/// </summary>
+		/// <returns></returns>
 		public string ConvertStatusToString()
 		{
 			if (Active)

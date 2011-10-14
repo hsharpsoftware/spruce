@@ -13,8 +13,14 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
+	/// <summary>
+	/// The controller for all <see cref="BugSummary"/> based actions.
+	/// </summary>
 	public class BugsController : SpruceControllerBase
     {
+		/// <summary>
+		/// Displays a filterable, pageable and sortable list of <see cref="BugSummary"/> objects.
+		/// </summary>
 		public override ActionResult Index(string id, string sortBy, bool? desc,int? page,int? pageSize,
 			string title,string assignedTo,string startDate,string endDate,string status)
 		{
@@ -26,6 +32,9 @@ namespace Spruce.Templates.MSAgile
 			return View(data);
 		}
 
+		/// <summary>
+		/// Displays a list of <see cref="BugSummary"/> objects, where the higher priority items are displayed differently to the lower priority.
+		/// </summary>
 		public ActionResult Heatmap(string id, string sortBy, bool? desc, int? page, int? pageSize,
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
@@ -37,7 +46,21 @@ namespace Spruce.Templates.MSAgile
 			return View(data);
 		}
 
+		/// <summary>
+		/// Displays the history of a <see cref="BugSummary"/> This returns plain text using <c>WorkItem.History</c>.
+		/// </summary>
+		[HttpGet]
+		public ActionResult GetRevisionHistory(int workItemId, int revisionId)
+		{
+			QueryManager manager = new QueryManager();
+			BugSummary summary = manager.ItemByIdForRevision<BugSummary>(workItemId, revisionId);
 
+			return Content(summary.History);
+		}
+
+		/// <summary>
+		/// Displays the form to enter a new Bug work item.
+		/// </summary>
 		[HttpGet]
 		public ActionResult New(string id)
 		{
@@ -58,6 +81,9 @@ namespace Spruce.Templates.MSAgile
 			return View("Edit", data);
 		}
 
+		/// <summary>
+		/// Creates a new bug work item from the POST'd <see cref="BugSummary"/>.
+		/// </summary>
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult New(BugSummary item)
@@ -139,6 +165,9 @@ namespace Spruce.Templates.MSAgile
 			}
 		}
 
+		/// <summary>
+		/// Edits an existing Bug work item, displaying a form to edit it.
+		/// </summary>
 		[HttpGet]
 		public ActionResult Edit(int id,string fromUrl)
 		{
@@ -158,6 +187,9 @@ namespace Spruce.Templates.MSAgile
 			return View(data);
 		}
 
+		/// <summary>
+		/// Updates an existing Bug work item using the POST'd <see cref="BugSummary"/>.
+		/// </summary>
 		[HttpPost]
 		[ValidateInput(false)]
 		public ActionResult Edit(BugSummary item,string fromUrl)
@@ -242,18 +274,27 @@ namespace Spruce.Templates.MSAgile
 			}
 		}
 
+		/// <summary>
+		/// Downloads an Excel filename containing the current bugs for the user's currently selected project.
+		/// </summary>
 		public ActionResult Excel()
 		{
 			ListData data = FilterAndPage<BugSummary>(GetBugFilterOptions(), "", "CreatedDate", true, 1, 10000);
 			return Excel(data.WorkItems);
 		}
 
+		/// <summary>
+		/// Displays an RSS feed containing the current bugs for the user's currently selected project.
+		/// </summary>
 		public ActionResult Rss(string projectName, string areaPath,string iterationPath,string filter)
 		{
 			ListData data = FilterAndPage<BugSummary>(new FilterOptions(), projectName, "CreatedDate", true, 1, 10000);
 			return Rss(data.WorkItems, "Bugs", projectName, areaPath, iterationPath, filter);
 		}
 
+		/// <summary>
+		/// Returns a JSON string containing all Reasons for provided state.
+		/// </summary>
 		public ActionResult GetReasonsForState(string state)
 		{
 			QueryManager manager = new QueryManager();
@@ -263,24 +304,32 @@ namespace Spruce.Templates.MSAgile
 		/// <summary>
 		/// Sets the user settings for either heatmap or a normal list.
 		/// </summary>
-		/// <param name="actionName"></param>
 		private void StoreDefaultListAction(string actionName)
 		{
 			UserContext.Current.Settings.SetDefaultAction("Bugs",actionName);
 		}
 
+		/// <summary>
+		/// Retrieves the filter options for the bug view.
+		/// </summary>
 		private FilterOptions GetBugFilterOptions()
 		{
 			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name)
 				.GetByKey("bugs:default");
 		}
 
+		/// <summary>
+		/// Retrieves the filter options for the heatmap view.
+		/// </summary>
 		private FilterOptions GetBugHeatmapFilterOptions()
 		{
 			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name)
 				.GetByKey("bugs:heatmap");
 		}
 
+		/// <summary>
+		/// Gets a new <see cref="BugManager"/>
+		/// </summary>
 		protected override WorkItemManager GetManager()
 		{
 			return new BugManager();

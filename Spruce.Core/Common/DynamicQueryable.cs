@@ -9,7 +9,8 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
-// Used by Spruce for paging, these extension methods add SQL style querying to linq-to-objects
+// Used by Spruce for paging, these extension methods add SQL style querying to linq-to-objects,
+// e.g. list.AsQueryable().OrderBy("FirstName DESC, LastName DESC")
 namespace System.Linq.Dynamic
 {
 	public static class DynamicQueryable

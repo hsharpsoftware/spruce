@@ -7,7 +7,7 @@ using System.Threading;
 namespace Spruce.Core
 {
 	/// <summary>
-	/// 
+	/// A collection of extension methods for <see cref="DateTime"/> objects.
 	/// </summary>
 	public static class DateTimeExtensions
 	{

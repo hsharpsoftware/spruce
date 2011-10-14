@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Spruce.Core.Search
 {
+	/// <summary>
+	/// Changes the Field class to use a CONTAINS search.
+	/// </summary>
 	public class ContainsField : Field
 	{
 		public override string ToString()

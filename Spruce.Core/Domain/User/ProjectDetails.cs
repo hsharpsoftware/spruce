@@ -8,7 +8,7 @@ using Microsoft.TeamFoundation.Server;
 namespace Spruce.Core
 {
 	/// <summary>
-	/// Summary or meta information for a project that is cached (per user - but should be global for the app domain).
+	/// Contains information for a project, including its id, name and its valid areas and iterations.
 	/// </summary>
 	public class ProjectDetails
 	{
@@ -20,12 +20,6 @@ namespace Spruce.Core
 		public string TemplateName { get; private set; }
 		public List<WorkItemType> WorkItemTypes { get; private set; }
 		public List<string> WorkItemTypesAsStrings { get; private set; }
-		public List<string> ReasonsForBug { get; private set; }
-		public List<string> ReasonsForTask { get; private set; }
-		public List<string> AllowedTriageTypes { get; private set; }
-		public List<string> AllowedPriorities { get; private set; }
-		public List<string> AllowedSeverities { get; private set; }
-		public List<string> AllowedStates { get; private set; }
 		public List<string> Users { get; private set; }
 		public IList<AreaSummary> Areas { get; internal set; }
 		public IList<IterationSummary> Iterations { get; private set; }
@@ -41,11 +35,6 @@ namespace Spruce.Core
 
 			WorkItemTypes = new List<WorkItemType>();
 			WorkItemTypesAsStrings = new List<string>();
-			ReasonsForBug = new List<string>();
-			ReasonsForTask = new List<string>();
-			AllowedTriageTypes = new List<string>();
-			AllowedPriorities = new List<string>();
-			AllowedSeverities = new List<string>();
 			Users = new List<string>();
 			Areas = new List<AreaSummary>();
 			Iterations = new List<IterationSummary>();
@@ -53,12 +42,6 @@ namespace Spruce.Core
 
 			AddWorkItemTypes();
 			AddWorkItemTypesAsStrings();
-
-			AllowedTriageTypes = GetAllowedValues("Triage");
-			AllowedPriorities = GetAllowedValues("Priority");
-			AllowedSeverities = GetAllowedValues("Severity");
-			AllowedStates = GetAllowedValues("State");
-
 			AddAreas();
 			AddIterations();
 			AddStoredQueries();
@@ -102,7 +85,6 @@ namespace Spruce.Core
 			}
 		}
 
-
 		private void AddWorkItemTypes()
 		{
 			foreach (WorkItemType workItemType in _project.WorkItemTypes)
@@ -117,24 +99,6 @@ namespace Spruce.Core
 			{
 				WorkItemTypesAsStrings.Add(workItemType.Name);
 			}
-		}
-
-		private List<string> GetAllowedValues(string fieldName)
-		{
-			List<string> list = new List<string>();
-
-			foreach (FieldDefinition definition in _project.Store.FieldDefinitions)
-			{
-				if (definition.Name == fieldName)
-				{
-					foreach (string value in definition.AllowedValues)
-					{
-						list.Add(value);
-					}
-				}
-			}
-
-			return list;
 		}
 
 		private void AddStoredQueries()

@@ -9,10 +9,13 @@ using System.Text.RegularExpressions;
 namespace Spruce.Core.Search
 {
 	/// <summary>
-	/// 
+	/// The entry point for all TFS searches in Spruce.
 	/// </summary>
 	public class SearchManager
 	{
+		/// <summary>
+		/// Returns true if the provided query is a work item ID.
+		/// </summary>
 		public bool IsId(string query)
 		{
 			int i;
@@ -20,10 +23,9 @@ namespace Spruce.Core.Search
 		}
 
 		/// <summary>
-		/// 
+		/// Performs a TFS search for the given query. If the query is a numerical work item ID, 
+		/// then the list returned is this single work item and the search is skipped.
 		/// </summary>
-		/// <param name="query"></param>
-		/// <returns></returns>
 		public IEnumerable<WorkItemSummary> Search(string query)
 		{
 			IEnumerable<WorkItemSummary> summaries = new List<WorkItemSummary>();

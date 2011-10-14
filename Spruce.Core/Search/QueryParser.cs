@@ -8,10 +8,15 @@ using System.IO;
 namespace Spruce.Core.Search
 {
 	/// <summary>
-	/// 
+	/// A class that walks through the GoldParser search tree, building up a WIQL query from a text query.
 	/// </summary>
 	public class QueryParser
 	{
+		private static CGTReader _grammarReader;
+		private WiqlBuilder _wiqlBuilder;
+		private string _fieldName;
+		private FieldComparison _comparisonType;
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -39,11 +44,6 @@ namespace Spruce.Core.Search
 			get { return _wiqlBuilder; }
 		}
 
-		private static CGTReader _grammarReader;
-		private WiqlBuilder _wiqlBuilder;
-		private string _fieldName;
-		private FieldComparison _comparisonType;
-
 		public static void InitializeReader()
 		{
 			using (Stream stream = typeof(QueryParser).Assembly.GetManifestResourceStream("Spruce.Core.Search.Grammar.spruce.cgt"))
@@ -68,11 +68,13 @@ namespace Spruce.Core.Search
 
 		private void lalrParser_OnTokenError(LALRParser parser, TokenErrorEventArgs e)
 		{
+			// Ignore token errors
 			OnParseComplete(EventArgs.Empty);
 		}
 
 		private void lalrParser_OnParseError(LALRParser parser, ParseErrorEventArgs e)
 		{
+			// Ignore global parse errors
 			OnParseComplete(EventArgs.Empty);
 		}
 

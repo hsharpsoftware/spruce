@@ -7,6 +7,9 @@ using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Contains information about a TFS changeset, for use in an MVC view or controller (this is the 'Model').
+	/// </summary>
 	public class ChangesetSummary
 	{
 		public int Id { get; set; }

@@ -10,6 +10,9 @@ using Raven.Http;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// An embedded RavenDB user settings provider. The database is stored inside the App_Data\UserSettings directory
+	/// </summary>
 	internal class RavenDbProvider : IUserSettingsProvider
 	{
 		private static EmbeddableDocumentStore _documentStore;
@@ -40,11 +43,10 @@ namespace Spruce.Core
 			// Access RavenDb using http://localhost:8081. Make sure the XAP file from the lib/ravendb folder is in the Spruce.Site root.
 		}
 
+
 		/// <summary>
-		/// 
+		/// Loads a <see cref="UserSettings"/> object for the user id provided from the RavenDB store.
 		/// </summary>
-		/// <param name="userId">The userid provided by TFS for the current user</param>
-		/// <returns></returns>
 		public UserSettings Load(Guid userId)
 		{
 			using (IDocumentSession session = _documentStore.OpenSession())
@@ -58,6 +60,10 @@ namespace Spruce.Core
 			}
 		}
 
+		/// <summary>
+		/// Persists the provided <see cref="UserSettings"/> object to the RavenDB store.
+		/// </summary>
+		/// <param name="settings"></param>
 		public void Save(UserSettings settings)
 		{
 			using (IDocumentSession session = _documentStore.OpenSession())

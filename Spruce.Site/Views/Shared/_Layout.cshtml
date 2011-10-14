@@ -23,7 +23,7 @@
 		<div class="left">		
 			
 				@Html.Hidden("fromUrl",Request.Url)	
-				@Html.ActionLink("Home", "Index", "Home")
+				@Html.ActionLink("Home", "Index", SpruceSection.Current.DefaultController)
 				&nbsp;|&nbsp;@Html.DropDownBoxForProjects(1)
 				&nbsp;|&nbsp;@Html.DropDownBoxForAreas("area",UserContext.Current.CurrentProject.Areas,UserContext.Current.Settings.AreaPath,2)
 				&nbsp;|&nbsp;@Html.DropDownBoxForIterations("iteration", UserContext.Current.CurrentProject.Iterations, UserContext.Current.Settings.IterationPath, 3)

@@ -6,12 +6,6 @@
 
 <div id="changeset">
 	<h2>Changeset @Model.Id</h2>
-	<div class="smaller dimmed">
-		<span class="timeago" title="@Model.Date.ToString("U")">@Model.Date.ToString("U")</span>
-		by @Model.User
-	</div>
-	
-
 
 	@if (!string.IsNullOrEmpty(Model.Message))
 	{
@@ -21,6 +15,11 @@
 	{
 	<p>(No checkin message)</p>
 	}
+
+	<div class="smallest dimmed">
+		<span class="timeago" title="@Model.Date.ToString("U")">@Model.Date.ToString("U")</span>
+		by @Model.User
+	</div>
 
 	<h3>Changes</h3>
 	@foreach (Change change in Model.Changes)

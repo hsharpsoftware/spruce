@@ -6,11 +6,17 @@ using System.Configuration;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Holds all settings for the Spruce application, including settings from the configuration file.
+	/// </summary>
 	public class SpruceSettings
 	{
 		private static string _uploadDirectory;
 		private static string _userSettingsDirectory;
 
+		/// <summary>
+		/// The TFS server url, from the configuration file.
+		/// </summary>
 		public static string TfsServer
 		{
 			get
@@ -19,6 +25,9 @@ namespace Spruce.Core
 			}
 		}
 
+		/// <summary>
+		/// The project name to default to. This is read from the configuration file.
+		/// </summary>
 		public static string DefaultProjectName
 		{
 			get
@@ -27,6 +36,9 @@ namespace Spruce.Core
 			}
 		}
 
+		/// <summary>
+		/// The URL path for the Spruce installation, e.g. http://localhost/spruce/. This is read from the configuration file.
+		/// </summary>
 		public static string SiteUrl
 		{
 			get
@@ -36,7 +48,8 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// The directory for all attachments to be uploaded prior to being saved on TFS. Includes a trailing slash.
+		/// The directory for all attachments to be uploaded prior to being saved on TFS.
+		/// This is the 'App_Data\Attachments' folder, and includes a trailing slash.
 		/// </summary>
 		public static string UploadDirectory
 		{
@@ -50,7 +63,8 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// The directory for user settings databases or XML files.
+		/// The directory for the user settings RavenDB database/XML files.
+		/// This is the 'App_Data\UserSettings' folder, and includes a trailing slash.
 		/// </summary>
 		public static string UserSettingsDirectory
 		{

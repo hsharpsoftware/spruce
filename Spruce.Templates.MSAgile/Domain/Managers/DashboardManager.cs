@@ -9,8 +9,14 @@ using ChangesetSummary = Spruce.Core.ChangesetSummary;
 
 namespace Spruce.Templates.MSAgile
 {
+	/// <summary>
+	/// Contains methods for the project dashboard page.
+	/// </summary>
 	public class DashboardManager
 	{
+		/// <summary>
+		/// Retrieves a new <see cref="DashboardSummary"/> containing information about current bugs, tasks and checkins.
+		/// </summary>
 		public static DashboardSummary GetSummary()
 		{
 			QueryManager<BugSummary> bugQueryManager = new QueryManager<BugSummary>();
@@ -23,7 +29,7 @@ namespace Spruce.Templates.MSAgile
 			summary.RecentCheckins = RecentCheckins();
 			summary.RecentCheckinCount = summary.RecentCheckins.ToList().Count;
 
-			bugQueryManager.SetActive();
+			bugQueryManager.WhereActive();
 			summary.ActiveBugCount = bugQueryManager.Execute().Count();
 			summary.BugCount = allbugs.Count;
 			summary.MyActiveBugCount = allbugs.Where(b => b.State == "Active").ToList().Count;
@@ -32,7 +38,7 @@ namespace Spruce.Templates.MSAgile
 				.Take(5)
 				.ToList();
 
-			taskQueryManager.SetActive();
+			taskQueryManager.WhereActive();
 			summary.ActiveTaskCount = allTasks.Count;
 			summary.TaskCount = allTasks.Count;
 
@@ -45,6 +51,10 @@ namespace Spruce.Templates.MSAgile
 			return summary;
 		}
 
+		/// <summary>
+		/// Retrieves a list of all checkins for the past 7 days, for the user's currently selected project.
+		/// </summary>
+		/// <returns></returns>
 		public static List<ChangesetSummary> RecentCheckins()
 		{
 			string path = UserContext.Current.CurrentProject.Path;
@@ -84,6 +94,9 @@ namespace Spruce.Templates.MSAgile
 			return list;
 		}
 
+		/// <summary>
+		/// Retrieves a TFS <see cref="Changeset"/> using the id provided and convert it to a <see cref="ChangesetSummary"/>.
+		/// </summary>
 		public static ChangesetSummary GetChangeSet(int id)
 		{
 			Changeset changeset = UserContext.Current.VersionControlServer.GetChangeset(id);

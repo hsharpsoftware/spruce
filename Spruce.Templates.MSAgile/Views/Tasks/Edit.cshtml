@@ -10,6 +10,7 @@
 @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "editform", enctype = "multipart/form-data" }))
 {
 	@(Html.Hidden("Id", Model.WorkItem.Id))
+	@(Html.Hidden("fromUrl",Model.FromUrl))
 
 	<h3>@ViewData["PageName"]</h3>
 	
@@ -19,7 +20,7 @@
 			<div class="errorbox">
 				<h4>There was a problem saving the bug</h4>
 				<b>The error TFS returned was:</b><br />
-				@MvcHtmlString.Create(TempData.SafeToString("Error").Replace("\n","<br/>"))
+				@MvcHtmlString.Create(TempData.GetValue("Error").Replace("\n", "<br/>"))
 			</div>
 		}
 

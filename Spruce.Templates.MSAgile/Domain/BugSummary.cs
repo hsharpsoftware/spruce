@@ -7,8 +7,15 @@ using Spruce.Core;
 
 namespace Spruce.Templates.MSAgile
 {
+	/// <summary>
+	/// This is the Model for a Bug WorkItem in Microsoft Agile 4 and 5 templates. The priority, resolved by and severity fields are the main 
+	/// additions from the <see cref="WorkItemSummary"/> it derives from.
+	/// </summary>
 	public class BugSummary : WorkItemSummary
 	{
+		/// <summary>
+		/// Returns "Bug".
+		/// </summary>
 		public override string WIQLTypeName
 		{
 			get
@@ -17,6 +24,9 @@ namespace Spruce.Templates.MSAgile
 			}
 		}
 
+		/// <summary>
+		/// Returns "Bugs".
+		/// </summary>
 		public override string Controller
 		{
 			get
@@ -26,14 +36,16 @@ namespace Spruce.Templates.MSAgile
 		}
 
 		public string ResolvedBy { get; set; }
-
-		// For bugs
 		public int? Priority { get; set; }
 		public string Severity { get; set; }
 
 		public IList<string> ValidPriorities { get; set; }
 		public IList<string> ValidSeverities { get; set; }
 
+		/// <summary>
+		/// Fills this instance's fields using the values from the provided <see cref="WorkItem"/>.
+		/// This includes the Priority, Reason, Original Estimate, Remaining Work and Completed work fields.
+		/// </summary>
 		public override void FromWorkItem(WorkItem item)
 		{
 			base.FromWorkItem(item);
@@ -53,6 +65,10 @@ namespace Spruce.Templates.MSAgile
 				Description = GetFieldValue(item, "Repro Steps");
 		}
 
+		/// <summary>
+		/// Converts this <see cref="BugSummary"/> instance to a new <see cref="WorkItem"/> using the
+		/// <see cref="WorkItemType"/> property to create the work item.
+		/// </summary>
 		public override WorkItem ToWorkItem()
 		{
 			WorkItem item;
@@ -60,7 +76,6 @@ namespace Spruce.Templates.MSAgile
 			if (IsNew)
 			{
 				UserContext.Current.WorkItemStore.RefreshCache();
-				// This knows which project to save in using the WorkItemType.
 				item = new WorkItem(WorkItemType);
 			}
 			else
@@ -79,6 +94,9 @@ namespace Spruce.Templates.MSAgile
 			return item;
 		}
 
+		/// <summary>
+		/// Overrides the base implementation to populate the <see cref="ValidPriorities"/> and <see cref="ValidSeverities"/> properties.
+		/// </summary>
 		public override void PopulateAllowedValues(WorkItem item)
 		{
 			ValidPriorities = new List<string>();

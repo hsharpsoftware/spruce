@@ -6,6 +6,9 @@ using System.Configuration;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Represents a Spruce section within a configuration file.
+	/// </summary>
 	public class SpruceSection : ConfigurationSection
 	{
 		private static SpruceSection _section;
@@ -55,7 +58,7 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// The default controller.
+		/// The default controller used as the wbe root.
 		/// </summary>
 		[ConfigurationProperty("defaultController", IsRequired = true)]
 		public string DefaultController

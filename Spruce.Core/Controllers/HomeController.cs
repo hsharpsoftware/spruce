@@ -9,13 +9,15 @@ using Spruce.Core.Search;
 
 namespace Spruce.Core.Controllers
 {
+	/// <summary>
+	/// The default controller in Spruce. This contains the actions for the build in functionality 
+	/// such as search, the drop down list of projects/areas/iterations and stored queries.
+	/// </summary>
 	public class HomeController : SpruceControllerBase
 	{
-		public ActionResult Index()
-		{
-			return View();
-		}
-
+		/// <summary>
+		/// Searches TFS using the query provided by the 'q' parameter.
+		/// </summary>
 		public ActionResult Search(string q)
 		{
 			IList<WorkItemSummary> summaries = new List<WorkItemSummary>();
@@ -49,6 +51,10 @@ namespace Spruce.Core.Controllers
 			return View(data);
 		}
 
+		/// <summary>
+		/// Changes the user's current project to value provided, also updating the area and iteration and 
+		/// redirecting to a new url.
+		/// </summary>
 		public ActionResult ChangeProject(string project, string area, string iteration, string fromUrl)
 		{
 			if (!string.IsNullOrEmpty(project) && project != UserContext.Current.CurrentProject.Name)
@@ -83,6 +89,10 @@ namespace Spruce.Core.Controllers
 				return RedirectToAction("Index");
 		}
 
+		/// <summary>
+		/// Displays all stored queries for the user's currently selected project.
+		/// </summary>
+		/// <returns></returns>
 		public ActionResult StoredQueries()
 		{
 			ListData data = new ListData();
@@ -91,6 +101,10 @@ namespace Spruce.Core.Controllers
 			return View(data);
 		}
 
+		/// <summary>
+		/// Displays a list of <see cref="WorkItemSummary"/> objects for the stored query with the given id. This 
+		/// action also pages and sorts an existing list.
+		/// </summary>
 		public ActionResult StoredQuery(Guid? id, string sortBy, bool? desc, int? page, int? pageSize)
 		{
 			if (!id.HasValue)

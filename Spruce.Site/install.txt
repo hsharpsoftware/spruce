@@ -10,3 +10,7 @@ each time, run this command in a console inside the Site directory:
 mklink /d Template ..\Spruce.Templates.MSAgile\Views
 
 NOTE: Mercurial sees this as an actual directory, so delete the link before any commits.
+
+[Building]
+Publishing using Visual Studio will usually fail - you will need to copy the output of the bin folder AND the Template folder for
+Spruce to work correctly.

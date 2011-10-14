@@ -6,7 +6,11 @@ using System.Linq;
 
 namespace Spruce.Core
 {
-	//[DebuggerDisplay("Type={GetType()},Title={Title}")]
+	/// <summary>
+	/// This is the Model for a WorkItem. As WorkItem is an abstract class it cannot be used inside MVC. It is 
+	/// intended that the WorkItemManager/QueryManager is used for TFS actions, so this class provides a thin 
+	/// wrapper over the TFS <see cref="WorkItem"/> class.
+	/// </summary>
 	public class WorkItemSummary
 	{
 		private WorkItemType _workItemType;
@@ -16,7 +20,7 @@ namespace Spruce.Core
 		public bool IsNew { get; set; }
 
 		/// <summary>
-		/// The name used for WIQL Querying, which is required to be overriden by inheriting classes.
+		/// The WorkItem name in TFS, used for WIQL Querying. This is required to be overriden by inheriting classes.
 		/// </summary>
 		public virtual string WIQLTypeName { get; protected set; }
 
@@ -49,6 +53,8 @@ namespace Spruce.Core
 		public IList<string> ValidStates { get; set; }
 		public IList<string> ValidReasons { get; set; }
 
+		public string History { get; set; }
+
 		public WorkItemType WorkItemType
 		{
 			get
@@ -66,6 +72,10 @@ namespace Spruce.Core
 			}
 		}
 
+		/// <summary>
+		/// Fills this instance's fields using the values from the provided <see cref="WorkItem"/>.
+		/// </summary>
+		/// <param name="item"></param>
 		public virtual void FromWorkItem(WorkItem item)
 		{
 			Id = item.Id;
@@ -84,6 +94,7 @@ namespace Spruce.Core
 			Attachments = item.Attachments;
 			Links = item.Links;
 			Revisions = item.Revisions;
+			History = item.History;
 
 			if (item.Fields.Contains("Reason"))
 				Reason = item.Fields["Reason"].Value.ToString();
@@ -93,11 +104,20 @@ namespace Spruce.Core
 				Description = GetFieldValue(item, "Repro Steps");
 		}
 
+		/// <summary>
+		/// Converts this <see cref="WorkItemSummary"/> instance to a new <see cref="WorkItem"/> using the
+		/// <see cref="WorkItemType"/> property to create the work item.
+		/// </summary>
+		/// <exception cref="NotImplementedException">This method shoud be implemented by derived classes.</exception>
 		public virtual WorkItem ToWorkItem()
 		{
 			throw new NotImplementedException("ToWorkItem must be overridden by an inheriting class");
 		}
 
+		/// <summary>
+		/// Populates the provided <see cref="WorkItem"/>'s core field properties using the values from this object.
+		/// </summary>
+		/// <param name="item"></param>
 		protected void FillCoreFieldsFromSummary(WorkItem item)
 		{
 			item.Title = Title;
@@ -113,7 +133,7 @@ namespace Spruce.Core
 				item.Fields["Reason"].Value = Reason;
 			}
 
-			// For CMMI projects (redundant?)
+			// For CMMI projects (kept for reference, should probably be moved/removed.)
 			if (item.Fields.Contains("Repro Steps"))
 				item.Fields["Repro Steps"].Value = Description;
 
@@ -122,11 +142,9 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// Accomodates fields that won't necessarily exist (such as resolved by) until a later stage of the work item.
+		/// Accomodates fields that won't necessarily exist (such as resolved by) until a later stage of the work item, 
+		/// by checking if the field exists and simply returning an empty string if it doesn't.
 		/// </summary>
-		/// <param name="item"></param>
-		/// <param name="fieldName"></param>
-		/// <returns></returns>
 		protected string GetFieldValue(WorkItem item, string fieldName)
 		{
 			if (item.Fields.Contains(fieldName))
@@ -135,6 +153,9 @@ namespace Spruce.Core
 				return "";
 		}
 
+		/// <summary>
+		/// Generates the allowed field values (ValidStates,ValidReasons) for the core fields using the provided <see cref="WorkItem"/>
+		/// </summary>
 		public virtual void PopulateAllowedValues(WorkItem item)
 		{
 			ValidStates = new List<string>();

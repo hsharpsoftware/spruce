@@ -64,13 +64,14 @@
 	<!-- History -->
 	<div id="item-revisions">	
 		<b>History</b>
+		@Model.History
 		<ul>
 		@foreach(Revision revision in Model.Revisions.Cast<Revision>().Reverse())
 		{
 			<li>
 					@if (revision.Index == 0)
 					{
-						<a href="javascript:;" title="revision@(revision.Index)">Created on @revision.Fields["Changed Date"].Value by @revision.Fields["Changed By"].Value</a>
+						<a href="javascript:;" title="revision@(revision.Index)">Created on @revision.Fields["Changed Date"].Value by @revision.Fields["Changed By"].Value</a>					
 					}
 					else
 					{

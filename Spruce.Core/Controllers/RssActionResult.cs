@@ -6,13 +6,19 @@ using System.Web.Mvc;
 using System.ServiceModel.Syndication;
 using System.Xml;
 
-
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Provides an RSS feed using the data provided by the <see cref="Feed"/> property. This 
+	/// <c>ActionResult</c> returns its data with the 'application/rss+xml' content type.
+	/// </summary>
 	public class RssActionResult : ActionResult
 	{
 		public SyndicationFeed Feed { get; set; }
 
+		/// <summary>
+		/// Initializes a new instance of the <see cref="RssActionResult"/> class.
+		/// </summary>
 		public RssActionResult()
 		{
 		}

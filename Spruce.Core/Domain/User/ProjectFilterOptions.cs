@@ -7,12 +7,21 @@ using System.Web;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Contains a set of <see cref="FilterOptions"/> for all views for a specific project.
+	/// </summary>
 	public class ProjectFilterOptions
 	{
 		/// <summary>
 		/// The project name these filter options are for.
 		/// </summary>
 		public string Name { get; set; }
+
+		/// <summary>
+		/// A dictionary of <see cref="FilterOptions"/> where the key is the view name (e.g. bugs).
+		/// This contains the filter options for a particular view - do not use this property for retrieving 
+		/// the filter options, use <see cref="GetByKey"/> instead, as this property is for serialization only.
+		/// </summary>
 		public SerializableDictionary<string,FilterOptions> FilterOptions { get; set; }
 
 		/// <summary>
@@ -29,20 +38,26 @@ namespace Spruce.Core
 			Name = projectName;		
 		}
 
-		public FilterOptions GetByKey(string key)
+		/// <summary>
+		/// Retrieves the <see cref="FilterOptions"/> for the named view
+		/// </summary>
+		public FilterOptions GetByKey(string viewName)
 		{
-			if (!FilterOptions.ContainsKey(key))
-				FilterOptions.Add(key, new FilterOptions());
+			if (!FilterOptions.ContainsKey(viewName))
+				FilterOptions.Add(viewName, new FilterOptions());
 
-			return FilterOptions[key];
+			return FilterOptions[viewName];
 		}
 
-		public void UpdateFilterOption(string key, FilterOptions options)
+		/// <summary>
+		/// Updates the filter options for the view.
+		/// </summary>
+		public void UpdateFilterOption(string viewName, FilterOptions options)
 		{
-			if (!FilterOptions.ContainsKey(key))
-				FilterOptions.Add(key, new FilterOptions());
+			if (!FilterOptions.ContainsKey(viewName))
+				FilterOptions.Add(viewName, new FilterOptions());
 
-			FilterOptions[key] = options;
+			FilterOptions[viewName] = options;
 
 			UserContext.Current.Settings.Save();
 		}

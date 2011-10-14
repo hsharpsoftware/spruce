@@ -10,8 +10,14 @@ using System.Web.Mvc;
 
 namespace Spruce.Core
 {
+	/// <summary>
+	/// Extension methods for the Spruce domain and core.
+	/// </summary>
 	public static class CoreExtensions
 	{
+		/// <summary>
+		/// Reports the index of the first occurrence of the specified project name in the list of <c>ProjectFilterOptions</c>
+		/// </summary>
 		public static int IndexOf(this IList<ProjectFilterOptions> options, string projectName)
 		{
 			for (int i = 0; i < options.Count; i++)
@@ -24,10 +30,8 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// Attempts to parse the object as a string value and convert to an integer. If this fails, zero is returned.
+		/// Attempts to parse the string value and convert to an integer. If this fails, zero is returned.
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
 		public static int ToIntOrDefault(this string value)
 		{
 			if (value == null)
@@ -40,6 +44,9 @@ namespace Spruce.Core
 				return 0;
 		}
 
+		/// <summary>
+		/// Attempts to parse the string value and convert to a double. If this fails, zero is returned.
+		/// </summary>
 		public static double ToDoubleOrDefault(this string value)
 		{
 			if (value == null)
@@ -52,6 +59,10 @@ namespace Spruce.Core
 				return 0;
 		}
 
+		/// <summary>
+		/// Converts the string value to its base 64 representation. If the string is null or 
+		/// empty then an empty string is returned.
+		/// </summary>
 		public static string ToBase64(this string value)
 		{
 			if (!string.IsNullOrWhiteSpace(value))
@@ -60,6 +71,10 @@ namespace Spruce.Core
 				return "";
 		}
 
+		/// <summary>
+		/// Converts the base 64 string back to its original value. If the string is null or 
+		/// empty then an empty string is returned.
+		/// </summary>
 		public static string FromBase64(this string value)
 		{
 			if (!string.IsNullOrWhiteSpace(value))
@@ -69,11 +84,9 @@ namespace Spruce.Core
 		}
 
 		/// <summary>
-		/// Converts the object value to a string, or if it's null returns an empty string.
+		/// Attempts to get the object value from the ViewDataDictionary as a string, or if it's null returns an empty string.
 		/// </summary>
-		/// <param name="value"></param>
-		/// <returns></returns>
-		public static string SafeToString(this ViewDataDictionary dictionary,string key)
+		public static string GetValue(this ViewDataDictionary dictionary, string key)
 		{
 			object value = dictionary[key];
 			if (value != null)
@@ -82,7 +95,10 @@ namespace Spruce.Core
 				return "";
 		}
 
-		public static string SafeToString(this TempDataDictionary dictionary, string key)
+		/// <summary>
+		/// Attempts to get the object value from the ViewDataDictionary as a string, or if it's null returns an empty string.
+		/// </summary>
+		public static string GetValue(this TempDataDictionary dictionary, string key)
 		{
 			object value = dictionary[key];
 			if (value != null)
@@ -91,12 +107,18 @@ namespace Spruce.Core
 				return "";
 		}
 
+		/// <summary>
+		/// Removes any instance of 'vstfs:///VersionControl/Changeset/' from the string.
+		/// </summary>
 		public static string ParseChangesetLink(this string value)
 		{
 			// vstfs:///VersionControl/Changeset/28
 			return value.Replace("vstfs:///VersionControl/Changeset/", "");
 		}
 
+		/// <summary>
+		/// Retrieves the value of a [Description] attribute that decorates a property.
+		/// </summary>
 		public static string GetDescription(this Enum value)
 		{
 			Type type = value.GetType();
@@ -109,6 +131,9 @@ namespace Spruce.Core
 			return (attribs.Length > 0) ? attribs[0].Description : Enum.GetName(value.GetType(),value);
 		}
 
+		/// <summary>
+		/// Creates a new <see cref="List`AllowedValuesCollection"/> from a <see cref="AllowedValuesCollection"/>.
+		/// </summary>
 		public static IList<string> ToList(this AllowedValuesCollection collection)
 		{
 			List<string> list = new List<string>();
@@ -121,7 +146,12 @@ namespace Spruce.Core
 			return list;
 		}
 
-		public static IEnumerable<WorkItemSummary> ToSummaries(this WorkItemCollection collection)// where T : WorkItemSummary, new()
+		/// <summary>
+		/// Converts a <see cref="WorkItemCollection"/> to an <see cref="IEnuermable`WorkItemSummary"/>
+		/// </summary>
+		/// <param name="collection"></param>
+		/// <returns></returns>
+		public static IEnumerable<WorkItemSummary> ToSummaries(this WorkItemCollection collection)
 		{
 			List<WorkItemSummary> list = new List<WorkItemSummary>();
 
@@ -135,6 +165,9 @@ namespace Spruce.Core
 			return list;
 		}
 
+		/// <summary>
+		/// Populates the core fields of a <see cref="WorkItem"/> from the values of the provided <see cref="WorkItemSummary"/>
+		/// </summary>
 		public static void FillCoreFields(this WorkItem item, WorkItemSummary summary)
 		{
 			item.Title = summary.Title;
@@ -148,6 +181,56 @@ namespace Spruce.Core
 			{
 				item.Fields["Reason"].Value = summary.Reason;
 			}
+		}
+
+		/// <summary>
+		/// Creates a CSV string (including escaping for commas) from the provided <see cref="WorkItemSummary"/>
+		/// </summary>
+		public static string ToCsv(this WorkItemSummary summary)
+		{
+			StringBuilder builder = new StringBuilder();
+
+			// Title
+			string title = EscapeQuotes(summary.Title);
+			if (title.IndexOf(",") > -1)
+				builder.Append("\"" + title + "\"");
+			else
+				builder.Append(title);
+
+			builder.Append(",");
+
+			// ID
+			builder.Append(summary.Id);
+			builder.Append(",");
+
+			// Assigned to
+			string assignedTo = EscapeQuotes(summary.AssignedTo);
+			if (assignedTo.IndexOf(",") > -1)
+				builder.Append("\"" + assignedTo + "\"");
+			else
+				builder.Append(assignedTo);
+
+			builder.Append(",");
+
+			// Created on
+			builder.Append(summary.CreatedDate.ToString("ddd dd MMM yyyy"));
+			builder.Append(",");
+
+			// State
+			string state = EscapeQuotes(summary.State);
+			if (state.IndexOf(",") > -1)
+				builder.Append("\"" + state + "\"");
+			else
+				builder.Append(state);
+
+			builder.Append(",");
+
+			return builder.AppendLine().ToString();
+		}
+
+		public static string EscapeQuotes(string text)
+		{
+			return text.Replace("\"", "\"\"");
 		}
 	}
 }
