@@ -39,7 +39,12 @@ namespace Spruce.Core
 				foreach (Field field in item.Fields)
 				{
 					if (field.Status != FieldStatus.Valid)
+					{
 						builder.AppendLine(string.Format("The '{0}' field has the status {1}", field.Name, field.Status));
+
+						if (field.Status == FieldStatus.InvalidNotOldValue)
+							builder.Append(" (this usually means the field is now read only)");
+					}
 				}
 
 				throw new SaveException(string.Format("Save failed for '{0}' ({1}).\nFields: {2}", item.Title,e.Message,builder), e);

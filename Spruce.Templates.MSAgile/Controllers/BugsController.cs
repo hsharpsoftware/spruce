@@ -293,15 +293,6 @@ namespace Spruce.Templates.MSAgile
 		}
 
 		/// <summary>
-		/// Returns a JSON string containing all Reasons for provided state.
-		/// </summary>
-		public ActionResult GetReasonsForState(string state)
-		{
-			QueryManager manager = new QueryManager();
-			return Json(manager.GetAllowedValuesForState<BugSummary>(state, "Reason"), JsonRequestBehavior.AllowGet);
-		}
-
-		/// <summary>
 		/// Sets the user settings for either heatmap or a normal list.
 		/// </summary>
 		private void StoreDefaultListAction(string actionName)

@@ -275,6 +275,26 @@ namespace Spruce.Core.Controllers
 		}
 
 		/// <summary>
+		/// Returns a JSON string containing all Reasons for provided state.
+		/// </summary>
+		public ActionResult GetReasonsForNewItem(string workItemType)
+		{
+			WorkItemType type = UserContext.Current.CurrentProject.WorkItemTypes.FirstOrDefault(w => w.Name.ToLower() == workItemType);
+
+			QueryManager manager = new QueryManager();
+			return Json(manager.GetAllowedValuesForState("Reason", type), JsonRequestBehavior.AllowGet);
+		}
+
+		/// <summary>
+		/// Returns a JSON string containing all Reasons for provided state.
+		/// </summary>
+		public ActionResult GetReasonsForExistingItem(int id, string state)
+		{
+			QueryManager manager = new QueryManager();
+			return Json(manager.GetAllowedValuesForState("Reason", null, id, state), JsonRequestBehavior.AllowGet);
+		}
+
+		/// <summary>
 		/// Saves the HTML field name (which should be a file field) to the work item with the provided id.
 		/// </summary>
 		protected string SaveFile(string fieldName, int id)
@@ -349,27 +369,36 @@ namespace Spruce.Core.Controllers
 		}
 
 		/// <summary>
+		/// Retrieves a <see cref="WorkItemManager"/> for the work item type (a <see cref="WorkItemSummary"/> derived class) 
+		/// that this controller is responsible for. By default, this method throws a <see cref="NotImplementedException"/>.
+		/// </summary>
+		protected virtual WorkItemManager GetManager()
+		{
+			throw new NotImplementedException("GetManager should be implemented by controllers inheriting from SpruceControllerBase");
+		}
+
+		/// <summary>
 		/// A helper action that creates a new (dummy) work item using the <see cref="GetManager()"/> method and displays 
 		/// all the fields for this work item and the allowed values. This action returns plain text.
 		/// </summary>
 		/// <returns></returns>
-		public ActionResult DumpFields()
+		public ActionResult ShowFields()
 		{
-			// This should possibly be moved into a view
 			WorkItemSummary summary = GetManager().NewItem();
 			IEnumerable<Field> list = summary.Fields.Cast<Field>().OrderBy(f => f.Name);
 
+			// This HTML should be moved into a view
 			StringBuilder builder = new StringBuilder();
-			builder.AppendLine("<html><style>body { font-family:Segoe UI, helvetica, } .border { font-size:8pt;border:solid #CCC 1px; margin:5px;padding:5px; } ");
+			builder.AppendLine("<html><style>body { font-family:Segoe UI, helvetica } .border { font-size:8pt;border:solid #CCC 1px; margin:5px;padding:5px; } ");
 			builder.AppendLine(".name { font-weight:bold; }");
 			builder.AppendLine("</style><body>");
 
-			builder.AppendFormat("<h1>{0}</h1>",summary.Fields[0].WorkItem.Type.Name);
+			builder.AppendFormat("<h1>{0}</h1>", summary.Fields[0].WorkItem.Type.Name);
 
 			foreach (Field field in list)
 			{
 				builder.AppendLine("<div class=\"border\">");
-				builder.AppendLine(string.Format("<div class=\"name\">{0}</div><div>[{1}]</div>",field.Name, field.ReferenceName));
+				builder.AppendLine(string.Format("<div class=\"name\">{0}</div><div>[{1}]</div>", field.Name, field.ReferenceName));
 				builder.AppendLine(string.Format("<div>IsRequired: {0}</div>", field.IsRequired));
 
 				if (field.HasAllowedValuesList)
@@ -388,16 +417,7 @@ namespace Spruce.Core.Controllers
 
 			builder.AppendLine("</body></html>");
 
-			return Content(builder.ToString(), "text/plain");
-		}
-
-		/// <summary>
-		/// Retrieves a <see cref="WorkItemManager"/> for the work item type (a <see cref="WorkItemSummary"/> derived class) 
-		/// that this controller is responsible for. By default, this method throws a <see cref="NotImplementedException"/>.
-		/// </summary>
-		protected virtual WorkItemManager GetManager()
-		{
-			throw new NotImplementedException("GetManager should be implemented by controllers inheriting from SpruceControllerBase");
+			return Content(builder.ToString(), "text/html");
 		}
 
 		/// <summary>

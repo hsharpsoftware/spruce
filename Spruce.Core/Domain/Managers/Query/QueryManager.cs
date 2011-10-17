@@ -5,6 +5,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using System.Collections;
 
 namespace Spruce.Core
 {
@@ -210,6 +211,49 @@ namespace Spruce.Core
 			}
 
 			return list;
+		}
+
+		/// <summary>
+		/// Returns all allowed values for the provided work item type's field.
+		/// </summary>
+		/// <param name="type">The work item type create. Use null for an existing work item.</param>
+		/// <param name="id">An id of an existing work item. Use 0 for a new work item.</param>
+		/// <param name="fieldName">The field name to retrieve the allowed values for.</param>
+		public virtual IEnumerable<string> GetAllowedValuesForState(string fieldName, WorkItemType type, int id = 0, string newState = "")
+		{
+			// This doesn't work as you can't create a new work item with a resolved state
+			WorkItem item;
+			if (id == 0)
+			{
+				item = type.NewWorkItem();
+				item.Title = "temp";
+			}
+			else
+			{
+				item = ItemById(id).ToWorkItem();
+				item.State = newState;
+			}
+			
+			ArrayList results = item.Validate();
+
+			if (results.Count == 0)
+			{
+				return item.Fields[fieldName].AllowedValues.ToList();
+			}
+			else
+			{
+				List<string> resultsList = new List<string>();
+				foreach (object result in results)
+				{
+					Field field = result as Field;
+					if (field != null)
+						resultsList.Add(field.Name + " is invalid");
+					else
+						resultsList.Add(result.ToString());
+				}
+
+				return resultsList;
+			}
 		}
 
 		/// <summary>

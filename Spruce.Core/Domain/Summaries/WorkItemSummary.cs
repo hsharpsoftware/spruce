@@ -172,6 +172,8 @@ namespace Spruce.Core
 			ValidReasons = new List<string>();
 			if (item.Fields.Contains("Reason"))
 			{
+				var def = item.Type.FieldDefinitions[CoreField.Reason];
+
 				// Use FieldDefinitions.AllowedValues not the AllowedValues as they're always empty.
 				if (item.IsNew)
 					ValidReasons = item.Fields["Reason"].AllowedValues.ToList();
