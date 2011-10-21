@@ -111,9 +111,9 @@
     <Compile Include="Domain\User\FilterOptions.cs" />
     <Compile Include="Domain\Summaries\DashboardSummary.cs" />
     <Compile Include="Domain\Summaries\Pager.cs" />
-    <Compile Include="Domain\User\Persisters\XmlFilePersister.cs" />
-    <Compile Include="Domain\User\Persisters\IUserSettingsPersister.cs" />
-    <Compile Include="Domain\User\Persisters\RavenDbPersister.cs" />
+    <Compile Include="Domain\User\Persisters\XmlFileProvider.cs" />
+    <Compile Include="Domain\User\Persisters\IUserSettingsProvider.cs" />
+    <Compile Include="Domain\User\Persisters\RavenDbProvider.cs" />
     <Compile Include="Domain\User\ProjectDetails.cs" />
     <Compile Include="Domain\User\ProjectFilterOptions.cs" />
     <Compile Include="Domain\User\UserSettings.cs" />
