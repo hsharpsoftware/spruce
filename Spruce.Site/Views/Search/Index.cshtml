@@ -6,7 +6,7 @@
 }
 
 <div id="searchagain-box">
-@using (Html.BeginForm("Search", "Home", FormMethod.Get))
+@using (Html.BeginForm("Index", "Search", FormMethod.Get))
 {
 	<div>
 		@Html.TextBox("q", ViewData["search"], new { @class = "searchbox" })
@@ -29,7 +29,7 @@
 		For example to search for all bugs assigned to Brian inside the project 'MyProject' you would use:
 		</p>
 		
-		<pre>project:MyProject assigned-to:Brian type:Bug</pre>
+		<pre>project:MyProject assigned-to:"Brian From Family Guy" type:Bug</pre>
 
 		<ul>
 			<li>project</li>
@@ -44,10 +44,14 @@
 			<li>resolved-on</li>
 		</ul>
 
-		<p>Dates should be in the format 'mm/dd/yyyy' (or UK format depending on your .NET installation). Shortcuts
-		constants for common dates can also be used, these are:</p>
+		<p>Dates should be in the format 'mm/dd/yyyy' (or UK format depending on your .NET installation). You can also
+		use a number of shortcuts for common dates, these are:</p>
 
 		<p>yesterday, today, thisweek, lastweek, thismonth, lastmonth.</p>
+
+		<p>For example:</p>
+
+		<pre>project:MyProject type:Bug created-on:thismonth</pre>
 	</div>
 </div>
 
@@ -63,19 +67,19 @@ else if (ViewData["search"] != null)
 			<thead>
 				<tr id="list-table-header">
 					<th>
-						<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("Title", "Index", new { q = ViewData["search"], sortBy = "Title", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:8%;">
-						<div>@Html.ActionLink("ID", "Index", new { sortBy = "Id", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("ID", "Index", new { q = ViewData["search"], sortBy = "Id", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:15%">
-						<div>@Html.ActionLink("Assigned to", "Index", new { sortBy = "AssignedTo", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("Assigned to", "Index", new { q = ViewData["search"], sortBy = "AssignedTo", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:15%">
-						<div>@Html.ActionLink("Created on", "Index", new { sortBy = "CreatedDate", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("Created on", "Index", new { q = ViewData["search"], sortBy = "CreatedDate", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:12%">
-						<div>@Html.ActionLink("Status", "Index", new { sortBy = "State", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("Status", "Index", new { q = ViewData["search"], sortBy = "State", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:10%">
 						<div class="list-table-noborder"></div>
