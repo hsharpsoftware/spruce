@@ -16,42 +16,6 @@ namespace Spruce.Core.Controllers
 	public class HomeController : SpruceControllerBase
 	{
 		/// <summary>
-		/// Searches TFS using the query provided by the 'q' parameter.
-		/// </summary>
-		public ActionResult Search(string q)
-		{
-			IList<WorkItemSummary> summaries = new List<WorkItemSummary>();
-			ListData data = new ListData();
-
-			if (!string.IsNullOrEmpty(q))
-			{
-				SearchManager manager = new SearchManager();
-
-				if (manager.IsId(q))
-				{
-					// For single work item ids (that exist), redirect straight to their view page
-					int id = int.Parse(q);
-					QueryManager queryManager = new QueryManager();
-					WorkItemSummary summary = queryManager.ItemById(id);
-
-					if (summary != null)
-					{
-						return Redirect(SpruceSettings.SiteUrl + "/" + summary.Controller + "/View/" + id);
-					}
-				}
-				else
-				{
-					summaries = manager.Search(q).ToList();
-					data.WorkItems = summaries;
-
-					ViewData["search"] = q;
-				}
-			}
-
-			return View(data);
-		}
-
-		/// <summary>
 		/// Changes the user's current project to value provided, also updating the area and iteration and 
 		/// redirecting to a new url.
 		/// </summary>

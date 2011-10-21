@@ -52,7 +52,7 @@ a:visted	{ color:#1173a6; }
 .searchresults		{ color:Green;font-size:1.1em; }
 .searchbox			{ width:400px; }
 #searchagain-box	{ margin-bottom:20px; }
-#search-help		{ font-size:8pt; }
+#search-help		{ font-size:8pt;margin-bottom:5px; }
 #search-help pre	{ margin:0px;padding:5px;border:1px solid #CCC;background-color:#EEE; }
 #search-help div	{ display:none;width:500px;border:1px solid #BBB;padding:5px;border-radius:3px;margin-top:5px; }
 #search-help ul		{ margin:15px;padding:5px;list-style-type:square; }

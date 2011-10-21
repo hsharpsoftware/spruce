@@ -102,6 +102,7 @@
   <ItemGroup>
     <Compile Include="Common\DynamicQueryable.cs" />
     <Compile Include="Common\DateTimeExtensions.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\ExtendedRazorViewEngine.cs" />
     <Compile Include="Domain\ListData.cs" />
     <Compile Include="Domain\EditData.cs" />

@@ -29,7 +29,7 @@
 				&nbsp;|&nbsp;@Html.DropDownBoxForIterations("iteration", UserContext.Current.CurrentProject.Iterations, UserContext.Current.Settings.IterationPath, 3)
 		</div>
 		}
-		@using (Html.BeginForm("Search", "Home", FormMethod.Get))
+		@using (Html.BeginForm("Index", "Search", FormMethod.Get))
 		{
 		<div class="right">
 			Logged in as @UserContext.Current.Name

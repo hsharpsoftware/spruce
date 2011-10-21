@@ -92,7 +92,7 @@
     <Content Include="Global.asax" />
     <Content Include="install.txt" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\Search.cshtml" />
+    <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Assets\Scripts\jquery-1.4.1-vsdoc.js" />
   </ItemGroup>
   <ItemGroup>
