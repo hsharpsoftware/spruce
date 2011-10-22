@@ -78,6 +78,7 @@
     <Content Include="Assets\Scripts\jquery.tooltip.min.js" />
     <Content Include="Assets\Scripts\spruce.js" />
     <Content Include="Assets\CSS\spruce.print.css" />
+    <None Include="install.txt" />
     <Content Include="Global.asax" />
     <None Include="build-readme.txt" />
     <Content Include="Views\Home\Index.cshtml" />
