@@ -76,13 +76,13 @@ $(document).ready(function ()
 	});
 
 	// Format XML inside <pre> tags so that it displays
-	$("pre").each(function (index)
-	{
-		var current = $(this);
-		var html = current.html();
-		html = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
-		current.html(html);
-	});
+//	$("pre").each(function (index)
+//	{
+//		var current = $(this);
+//		var html = current.html();
+//		html = html.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+//		current.html(html);
+//	});
 
 	// Areas/iterations/filter checkbox/radioboxes automatically postback
 	$("#areas input,#iterations input,#filters input").change(function ()

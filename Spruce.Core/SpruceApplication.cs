@@ -15,6 +15,7 @@ namespace Spruce.Core
 	{
 		public static void RegisterRoutes(RouteCollection routes)
 		{
+			routes.IgnoreRoute("{*template}", new { template = @"(.*/)?template.css(/.*)?" });
 			routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
 			routes.MapRoute(
@@ -31,10 +32,10 @@ namespace Spruce.Core
 			// Register the new view engine which adds extra view paths to search
 			ViewEngines.Engines.Clear();
 			ExtendedRazorViewEngine engine = new ExtendedRazorViewEngine();
-			engine.AddViewLocationFormat("~/Template/{1}/{0}.cshtml");
-			engine.AddViewLocationFormat("~/Template/{1}/{0}.vbhtml");
-			engine.AddPartialViewLocationFormat("~/Template/{0}.cshtml");
-			engine.AddPartialViewLocationFormat("~/Template/{0}.vbhtml");
+			engine.AddViewLocationFormat("~/Template/Views/{1}/{0}.cshtml");
+			engine.AddViewLocationFormat("~/Template/Views/{1}/{0}.vbhtml");
+			engine.AddPartialViewLocationFormat("~/Template/Views/{0}.cshtml");
+			engine.AddPartialViewLocationFormat("~/Template/Views/{0}.vbhtml");
 			ViewEngines.Engines.Add(engine);
 
 			AreaRegistration.RegisterAllAreas();

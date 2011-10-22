@@ -1,0 +1,1 @@
+All Microsoft.TeamFoundation.*.dll files in this folder are the 32bit versions. Make sure you have enabled 32 bit applications for your app pool.

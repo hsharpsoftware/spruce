@@ -280,7 +280,7 @@ namespace Spruce.Templates.MSAgile
 		public ActionResult Excel()
 		{
 			ListData data = FilterAndPage<BugSummary>(GetBugFilterOptions(), "", "CreatedDate", true, 1, 10000);
-			return Excel(data.WorkItems);
+			return Excel(data.WorkItems, "bugs.xml");
 		}
 
 		/// <summary>

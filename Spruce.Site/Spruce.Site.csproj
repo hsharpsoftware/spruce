@@ -66,23 +66,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\CSS\spruce.css" />
-    <Content Include="Assets\Images\arrow-down.png" />
-    <Content Include="Assets\Images\arrow-up.png" />
-    <Content Include="Assets\Images\black-arrow-down.png" />
-    <Content Include="Assets\Images\black-arrow-up.png" />
     <Content Include="Assets\Images\changeset_add.png" />
     <Content Include="Assets\Images\changeset_delete.png" />
     <Content Include="Assets\Images\changeset_edit.png" />
-    <Content Include="Assets\Images\csv_icon.png" />
-    <Content Include="Assets\Images\csv_icon_disabled.png" />
-    <Content Include="Assets\Images\excel_icon.png" />
-    <Content Include="Assets\Images\excel_icon_disabled.png" />
-    <Content Include="Assets\Images\favicon.png" />
-    <Content Include="Assets\Images\rss_icon.png" />
-    <Content Include="Assets\Images\rss_icon_disabled.png" />
-    <Content Include="Assets\Images\star_off.png" />
-    <Content Include="Assets\Images\star_on.png" />
-    <Content Include="Assets\Images\top-dropshadow.png" />
+    <Content Include="Assets\Images\favicon.ico" />
+    <Content Include="Assets\Images\favicon48.png" />
+    <Content Include="Assets\Images\favicon32.png" />
     <Content Include="Assets\Scripts\jquery-1.5.1.min.js" />
     <Content Include="Assets\Scripts\jquery.form-extensions.min.js" />
     <Content Include="Assets\Scripts\jquery.timeago.js" />
@@ -90,7 +79,7 @@
     <Content Include="Assets\Scripts\spruce.js" />
     <Content Include="Assets\CSS\spruce.print.css" />
     <Content Include="Global.asax" />
-    <Content Include="install.txt" />
+    <None Include="build-readme.txt" />
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Search\Index.cshtml" />
     <Content Include="Assets\Scripts\jquery-1.4.1-vsdoc.js" />

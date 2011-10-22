@@ -1,16 +1,33 @@
-﻿Checklist:
+﻿8""""8                              
+8      eeeee eeeee  e   e eeee eeee 
+8eeeee 8   8 8   8  8   8 8  8 8    
+    88 8eee8 8eee8e 8e  8 8e   8eee 
+e   88 88    88   8 88  8 88   88   
+8eee88 88    88   8 88ee8 88e8 88ee
 
-- Create an App pool that runs with .NET 4
-- Make sure the Site has authentication set to Windows and anonymous is disabled (can this be done in the web.config?)
-- Other troubleshooting here about separate server deployment
+ASP.NET MVC front end for Team Foundation Server
 
-For making it a little easier to edit views in the MSAgile project, without having to copy the View folder
-each time, run this command in a console inside the Site directory:
+http://bitbucket.org/mrshrinkray/spruce
+http://spruce.codeplex.com/
+http://sprucetfs.wordpress.com/
 
-mklink /d Template ..\Spruce.Templates.MSAgile\Views
+=========Requirements=========
+Spruce has the following requirements:
 
-NOTE: Mercurial sees this as an actual directory, so delete the link before any commits.
+	- IIS7+
+	- TFS 2010 (it hasn't been tested on 2008)
+	- ASP.NET MVC 3
 
-[Building]
-Publishing using Visual Studio will usually fail - you will need to copy the output of the bin folder AND the Template folder for
-Spruce to work correctly.
+Make sure you have these in place before starting.
+
+=========Getting started=========
+1. Create a new website, or application.
+2. Give this website/application its own .NET 4.0 application pool.
+3. Configure the application pool to allow 32 bit applications.
+4. Copy the ZIP file contents to the root of this website.
+5. Edit the web.config file and change <spruce..> and <add key="WorkItemTrackingCacheRoot" ...> elements
+   to the settings that match your TFS settings.
+6. Navigate to your website.
+
+=========Bugs/support=========
+Please report any bugs or ask for help at www.bitbucket.org/mrshrinkray/spruce

@@ -14,7 +14,7 @@ namespace Spruce.Core.Controllers
 	/// The base controller for all templates in Spruce. This controller contains a set of helper actions for 
 	/// common work item related views/actions.
 	/// </summary>
-	public class SpruceControllerBase: Controller
+	public class SpruceControllerBase : Controller
 	{
 		/// <summary>
 		/// This serves as the root page for a work item, and contains the list of work items,
@@ -133,13 +133,15 @@ namespace Spruce.Core.Controllers
 			feed.Title = new TextSyndicationContent(title);
 
 			List<SyndicationItem> items = new List<SyndicationItem>();
+			Markdown markdown = new Markdown();
+
 			foreach (WorkItemSummary summary in list)
 			{
 				SyndicationItem item = new SyndicationItem();
 				item.Title = new TextSyndicationContent(string.Format("#{0} - {1}", summary.Id, summary.Title));
 				item.PublishDate = summary.CreatedDate;
-				item.Summary = new TextSyndicationContent(summary.Description);
-				item.Content = new TextSyndicationContent(summary.Description);
+				item.Summary = new TextSyndicationContent(markdown.Transform(summary.Description));
+				item.Content = new TextSyndicationContent(markdown.Transform(summary.Description));
 				item.Authors.Add(new SyndicationPerson(summary.CreatedBy));
 
 				string url = string.Format("{0}/{1}/view/{2}", SpruceSection.Current.SiteUrl, RouteData.Values["Controller"], summary.Id);
@@ -306,6 +308,7 @@ namespace Spruce.Core.Controllers
 				if (!Directory.Exists(directory))
 					Directory.CreateDirectory(directory);
 
+				filename = Path.GetFileName(filename);
 				string filePath = string.Format(@"{0}\{1}", directory, filename);
 				HttpPostedFileBase postedFile = Request.Files[fieldName] as HttpPostedFileBase;
 				postedFile.SaveAs(filePath);
@@ -349,7 +352,7 @@ namespace Spruce.Core.Controllers
 		/// the Excel view, and dynamically generates XML using the default view engine and this view. The action returns a 
 		/// file download of the Excel spreadsheet.
 		/// </summary>
-		protected ActionResult Excel(IEnumerable<WorkItemSummary> list)
+		protected ActionResult Excel(IEnumerable<WorkItemSummary> list, string filename)
 		{
 			StringBuilder builder = new StringBuilder();
 			using (StringWriter writer = new StringWriter(builder))
@@ -362,7 +365,7 @@ namespace Spruce.Core.Controllers
 				writer.Close();
 
 				FileContentResult result = new FileContentResult(Encoding.Default.GetBytes(builder.ToString()), "application/ms-excel");
-				result.FileDownloadName = "bugs.xml";
+				result.FileDownloadName = filename;
 
 				return result;
 			}

@@ -23,7 +23,6 @@ namespace Spruce.Core
 		/// </summary>
 		public static MvcHtmlString ParseMarkdown(this HtmlHelper helper, string text)
 		{
-			text = text.Replace("\n","<br/>");
 			Markdown markdown = new Markdown();
 			return MvcHtmlString.Create(markdown.Transform(text));
 		}

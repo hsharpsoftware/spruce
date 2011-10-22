@@ -249,7 +249,7 @@ namespace Spruce.Templates.MSAgile
 		public ActionResult Excel()
 		{
 			ListData data = FilterAndPage<TaskSummary>(GetTaskFilterOptions(), "", "CreatedDate", true, 1, 10000);
-			return Excel(data.WorkItems);
+			return Excel(data.WorkItems, "tasks.xml");
 		}
 
 		/// <summary>
