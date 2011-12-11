@@ -66,6 +66,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\CSS\spruce.css" />
+    <Content Include="Assets\Images\arrow-down.png" />
+    <Content Include="Assets\Images\arrow-up.png" />
+    <Content Include="Assets\Images\black-arrow-down.png" />
+    <Content Include="Assets\Images\black-arrow-up.png" />
     <Content Include="Assets\Images\changeset_add.png" />
     <Content Include="Assets\Images\changeset_delete.png" />
     <Content Include="Assets\Images\changeset_edit.png" />

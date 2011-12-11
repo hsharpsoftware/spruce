@@ -226,6 +226,9 @@ namespace Spruce.Core.Search
 				case "assignedto":
 					return "[Assigned To]";
 
+				case "createdby":
+					return "[Created By]";
+
 				case "resolvedby":
 					return "[Resolved By]";
 

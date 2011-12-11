@@ -95,6 +95,7 @@ namespace Spruce.Core.Search
 					_fieldName = e.Token.Symbol.Name;
 					break;
 
+				case "CreatedBy":
 				case "AssignedTo":
 				case "ResolvedBy":
 					_comparisonType = FieldComparison.User;

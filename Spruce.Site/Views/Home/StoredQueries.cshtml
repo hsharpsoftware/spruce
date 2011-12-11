@@ -17,19 +17,19 @@
 			<thead>
 				<tr id="list-table-header">
 					<th>
-						<div>@Html.ActionLink("Title", "Index", new { sortBy = "Title", desc = Model.FilterValues.IsDescending})</div>
+						<div>@Html.ActionLink("Title", "StoredQuery", new { id = ViewData["CurrentQueryId"], sortBy = "Title", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:8%;">
-						<div>@Html.ActionLink("ID", "Index", new { sortBy = "Id", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("ID", "StoredQuery", new { id = ViewData["CurrentQueryId"], sortBy = "Id", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:15%">
-						<div>@Html.ActionLink("Assigned to", "Index", new { sortBy = "AssignedTo", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("Assigned to", "StoredQuery", new { id = ViewData["CurrentQueryId"], sortBy = "AssignedTo", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:15%">
-						<div>@Html.ActionLink("Created on", "Index", new { sortBy = "CreatedDate", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("Created on", "StoredQuery", new { id = ViewData["CurrentQueryId"], sortBy = "CreatedDate", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:12%">
-						<div>@Html.ActionLink("Status", "Index", new { sortBy = "State", desc = Model.FilterValues.IsDescending })</div>
+						<div>@Html.ActionLink("Status", "StoredQuery", new { id = ViewData["CurrentQueryId"], sortBy = "State", desc = Model.FilterValues.IsDescending })</div>
 					</th>
 					<th style="width:10%">
 						<div class="list-table-noborder"></div>

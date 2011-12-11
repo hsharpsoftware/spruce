@@ -1,0 +1,133 @@
+﻿@model MSAgileEditData<IssueSummary>
+
+<script type="text/javascript">
+	$(document).ready(function () {
+		setupEditPage();
+	});
+</script>
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "editform", enctype = "multipart/form-data" }))
+{
+	@(Html.Hidden("Id", Model.WorkItem.Id))
+	@(Html.Hidden("fromUrl",Model.FromUrl))
+
+	<h3>@ViewData["PageName"]</h3>
+	
+	<div id="edit-container">
+		@if (TempData["Error"] != null)
+		{
+			<div class="errorbox">
+				<h4>There was a problem saving the bug</h4>
+				<b>The error TFS returned was:</b><br />
+				@MvcHtmlString.Create(TempData.GetValue("Error").Replace("\n", "<br/>"))
+			</div>
+		}
+
+		<div id="edit-title">
+			@(Html.TextBox("Title",Model.WorkItem.Title, 
+													new { tabindex = 1, 
+													maxlength = 150,
+													title = "Enter your title",
+													placeholder="Enter your title" }))
+		</div>
+
+		<div id="edit-options" class="lightbg">
+			<div class="left edit-field">
+				<div class="left label">Assigned to:</div>
+				<div class="left value">@Html.DropDownBoxFromList("AssignedTo", Model.Users, Model.WorkItem.AssignedTo, 2)</div>
+			</div>
+		
+			<div class="left edit-field">
+				<div class="left label">State:</div>
+				<div class="left value">@Html.DropDownBoxFromList("State", Model.States, Model.WorkItem.State, 3)</div>
+			</div>
+
+			<div class="left edit-field">
+				<div class="left label">Area:</div>
+				<div class="left value">@Html.DropDownBoxForAreas("AreaPath", UserContext.Current.CurrentProject.Areas, Model.WorkItem.AreaPath, 6)</div>
+			</div>
+
+			<div class="left edit-field">
+				<div class="left label">Reason:</div>
+				<div class="left value">@Html.DropDownBoxFromList("Reason", Model.Reasons, Model.WorkItem.Reason, 5)</div>
+			</div>
+			<br style="clear:both"/>
+
+			<div class="left edit-field">
+				<div class="left label">Iteration:</div>
+				<div class="left value">@Html.DropDownBoxForIterations("IterationPath", UserContext.Current.CurrentProject.Iterations, Model.WorkItem.IterationPath, 6)</div>
+			</div>
+
+			@if (Model.WorkItem.Priority != null)
+			{
+			<div class="left edit-field">
+				<div class="left label">Priority:</div>
+				<div class="left value">@Html.DropDownBoxFromList("Priority", Model.Priorities, Model.WorkItem.Priority.Value.ToString(), 7)</div>
+			</div>
+			<br style="clear:both"/>
+			}
+		</div>
+
+		<div id="edit-description">
+			@(Html.TextArea("Description",Model.WorkItem.Description, 
+											new { tabindex = 11,
+											title = "Enter a brief description. See your project template for guidance", 
+											placeholder = "Enter a brief description. See your project template for guidance" }))
+		</div>
+
+		<div class="edit-attachmentsbar">
+			<a href="javascript:;" id="attachments-link"><img style="margin-right:5px;margin-bottom:2px;" src="@Url.Content("~/Assets/Images/black-arrow-down.png")" border="0" alt="toggle" />Attachments</a>
+		</div>
+		<div id="edit-attachments" class="hidden">
+			<div>
+			@if (Model.WorkItem.Attachments != null)
+			{
+					<b>Current attachments</b>
+				if (Model.WorkItem.Attachments.Count > 0)
+				{
+					<ul>
+					@foreach(Attachment attachment in Model.WorkItem.Attachments)
+					{
+						<li>
+							<a href="@attachment.Uri.ToString()" target="_blank">@attachment.Name</a>&nbsp;&nbsp;&nbsp;
+							@Html.ActionLink("delete", "DeleteAttachment", new { id = Model.WorkItem.Id, Url = attachment.Uri.ToString().ToBase64() })
+						</li>
+					}
+					</ul>
+				}
+				else
+				{
+						<br /><i>No attachments.</i>
+				}
+			}
+			</div><br />
+
+			<div>
+				<b>Upload</b><br />
+				<div class="left">
+					<input type="file" name="uploadFile1" id="uploadFile1" tabindex="10" />
+					Comments: <input type="text" name="uploadFile1Comments" id="uploadFile1Comments" tabindex="11" />
+				</div>
+				<br class="clear"/>
+				
+				<div class="left">
+					<input type="file" name="uploadFile2" id="uploadFile2" tabindex="12" />
+					Comments: <input type="text" name="uploadFile2Comments" id="uploadFile2Comments" tabindex="13" />
+				</div>
+				<br class="clear"/>
+
+				<div class="left">
+					<input type="file" name="uploadFile3" id="uploadFile3" tabindex="14" />
+					Comments: <input type="text" name="uploadFile3Comments" id="uploadFile3Comments" tabindex="15" />
+				</div>
+			</div>
+			<br class="clear" />
+		</div>
+
+		<div id="edit-buttons">
+			<input type="submit" value="Save" tabindex="10" />
+			<input type="button" value="Cancel" onclick="history.go(-1);" tabindex="16"  />
+		</div>
+	</div>
+}

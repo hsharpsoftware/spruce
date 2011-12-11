@@ -175,6 +175,11 @@ namespace Spruce.Templates.MSAgile
 			BugSummary item = manager.ItemById<BugSummary>(id);
 			item.IsNew = false;
 
+			// Change the user's current project if this work item is different.
+			// The project can be different if they've come from the stored queries page.
+			if (item.ProjectName != UserContext.Current.CurrentProject.Name)
+				UserContext.Current.ChangeCurrentProject(item.ProjectName);
+
 			MSAgileEditData<BugSummary> data = new MSAgileEditData<BugSummary>();
 			data.WorkItem = item;
 			data.PageTitle = "Bug " + id;

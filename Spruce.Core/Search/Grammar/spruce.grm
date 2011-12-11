@@ -1,7 +1,7 @@
-"Name"     = 'Enter the name of the grammar'
-"Author"   = 'Enter your name'
-"Version"  = 'The version of the grammar and/or language'
-"About"    = 'A short description of the grammar'
+"Name"     = 'Spruce Search Grammar'
+"Author"   = 'C SMALL'
+"Version"  = '1.1'
+"About"    = 'The search grammar for Spruce TFS MVC frontend'
 
 "Start Symbol" = <Query>
 
@@ -23,9 +23,10 @@ StringLiteral   = '' {Quoted}+ '' | '"' {Quoted}+ '"'
 Project     = 'project' ':'
 Description = 'description' ':'
 State       = 'state' ':'
-Type        = 'type' ':' !-- bug|task
+Type        = 'type' ':' !-- bug|task|issue
 Area        = 'area' ':'
 Iteration   = 'iteration' ':'
+CreatedBy   = 'created-by' ':'                        
 AssignedTo  = 'assigned-to' ':'
 ResolvedBy  = 'resolved-by' ':'
 CreatedOn   = 'created-on' ':'
@@ -67,6 +68,7 @@ ResolvedOn  = 'resolved-on' ':'
                 | Type 
                 | Area 
                 | Iteration 
+                | CreatedBy
                 | AssignedTo 
                 | ResolvedBy
                 | CreatedOn

@@ -13,53 +13,52 @@ using Spruce.Core;
 namespace Spruce.Templates.MSAgile
 {
 	/// <summary>
-	/// The controller for all <see cref="TaskSummary"/> based actions.
+	/// The controller for all <see cref="IssueSummary"/> based actions.
 	/// </summary>
-	public class TasksController : SpruceControllerBase
+	public class IssuesController : SpruceControllerBase
     {
 		/// <summary>
-		/// Displays a filterable, pageable and sortable list of <see cref="TaskSummary"/> objects.
+		/// Displays a filterable, pageable and sortable list of <see cref="IssueSummary"/> objects.
 		/// </summary>
 		public override ActionResult Index(string id, string sortBy, bool? desc, int? page, int? pageSize,
 			string title, string assignedTo, string startDate, string endDate, string status)
 		{
-			UpdateUserFilterOptions("tasks:default");
+			UpdateUserFilterOptions("issues:default");
 
-			ListData data = FilterAndPage<TaskSummary>(GetTaskFilterOptions(), id, sortBy, desc, page, pageSize);
+			ListData data = FilterAndPage<IssueSummary>(GetIssueFilterOptions(), id, sortBy, desc, page, pageSize);
 			return View(data);
 		}
 
 		/// <summary>
-		/// Displays the form to enter a new Task work item.
+		/// Displays the form to enter a new Issue work item.
 		/// </summary>
 		[HttpGet]
 		public ActionResult New(string id)
 		{
-			TaskManager manager = new TaskManager();
-			TaskSummary summary = (TaskSummary)manager.NewItem();
+			IssueManager manager = new IssueManager();
+			IssueSummary summary = (IssueSummary)manager.NewItem();
 
 			if (!string.IsNullOrWhiteSpace(id))
 				summary.Title = id;
 
-			MSAgileEditData<TaskSummary> data = new MSAgileEditData<TaskSummary>();
-			data.PageTitle = "New task";
+			MSAgileEditData<IssueSummary> data = new MSAgileEditData<IssueSummary>();
+			data.PageTitle = "New issue";
 			data.States = summary.ValidStates;
 			data.Reasons = summary.ValidReasons;
 			data.Priorities = summary.ValidPriorities;
-			data.Severities = summary.ValidSeverities;
 			data.WorkItem = summary;
 
 			return View("Edit", data);
 		}
 
 		/// <summary>
-		/// Creates a new bug work item from the POST'd <see cref="TaskSummary"/>.
+		/// Creates a new bug work item from the POST'd <see cref="IssueSummary"/>.
 		/// </summary>
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult New(TaskSummary item)
+		public ActionResult New(IssueSummary item)
 		{
-			TaskManager manager = new TaskManager();
+			IssueManager manager = new IssueManager();
 
 			try
 			{
@@ -108,7 +107,7 @@ namespace Spruce.Templates.MSAgile
 
 				// Get the original back, to populate the valid reasons.
 				QueryManager queryManager = new QueryManager();
-				TaskSummary summary = queryManager.ItemById<TaskSummary>(item.Id);
+				IssueSummary summary = queryManager.ItemById<IssueSummary>(item.Id);
 				summary.IsNew = false;
 
 				// Repopulate from the POST'd data
@@ -123,26 +122,25 @@ namespace Spruce.Templates.MSAgile
 				summary.IterationId = item.IterationId;
 				summary.IterationPath = item.IterationPath;
 
-				MSAgileEditData<TaskSummary> data = new MSAgileEditData<TaskSummary>();
+				MSAgileEditData<IssueSummary> data = new MSAgileEditData<IssueSummary>();
 				data.WorkItem = summary;
-				data.PageTitle = "Task " + item.Id;
+				data.PageTitle = "Issue " + item.Id;
 				data.States = summary.ValidStates;
 				data.Reasons = summary.ValidReasons;
 				data.Priorities = summary.ValidPriorities;
-				data.Severities = summary.ValidSeverities;
 
 				return View(data);
 			}
 		}
 
 		/// <summary>
-		/// Edits an existing Task work item, displaying a form to edit it.
+		/// Edits an existing Issue work item, displaying a form to edit it.
 		/// </summary>
 		[HttpGet]
 		public ActionResult Edit(int id, string fromUrl)
 		{
 			QueryManager manager = new QueryManager();
-			TaskSummary item = manager.ItemById<TaskSummary>(id);
+			IssueSummary item = manager.ItemById<IssueSummary>(id);
 			item.IsNew = false;
 
 			// Change the user's current project if this work item is different.
@@ -150,26 +148,25 @@ namespace Spruce.Templates.MSAgile
 			if (item.ProjectName != UserContext.Current.CurrentProject.Name)
 				UserContext.Current.ChangeCurrentProject(item.ProjectName);
 
-			MSAgileEditData<TaskSummary> data = new MSAgileEditData<TaskSummary>();
+			MSAgileEditData<IssueSummary> data = new MSAgileEditData<IssueSummary>();
 			data.WorkItem = item;
-			data.PageTitle = "Task " + id;
+			data.PageTitle = "Issue " + id;
 			data.FromUrl = fromUrl;
 			data.States = item.ValidStates;
 			data.Reasons = item.ValidReasons;
 			data.Priorities = item.ValidPriorities;
-			data.Severities = item.ValidSeverities;
 
 			return View(data);
 		}
 
 		/// <summary>
-		/// Updates an existing Task work item using the POST'd <see cref="BugSummary"/>.
+		/// Updates an existing Issue work item using the POST'd <see cref="BugSummary"/>.
 		/// </summary>
 		[HttpPost]
 		[ValidateInput(false)]
-		public ActionResult Edit(TaskSummary item, string fromUrl)
+		public ActionResult Edit(IssueSummary item, string fromUrl)
 		{
-			TaskManager manager = new TaskManager();
+			IssueManager manager = new IssueManager();
 
 			try
 			{
@@ -220,7 +217,7 @@ namespace Spruce.Templates.MSAgile
 
 				// Get the original back, to populate the valid reasons.
 				QueryManager queryManager = new QueryManager();
-				TaskSummary summary = queryManager.ItemById<TaskSummary>(item.Id);
+				IssueSummary summary = queryManager.ItemById<IssueSummary>(item.Id);
 				summary.IsNew = false;
 
 				// Repopulate from the POST'd data
@@ -235,52 +232,51 @@ namespace Spruce.Templates.MSAgile
 				summary.IterationId = item.IterationId;
 				summary.IterationPath = item.IterationPath;
 
-				MSAgileEditData<TaskSummary> data = new MSAgileEditData<TaskSummary>();
+				MSAgileEditData<IssueSummary> data = new MSAgileEditData<IssueSummary>();
 				data.WorkItem = summary;
-				data.PageTitle = "Task " + item.Id;
+				data.PageTitle = "Issue " + item.Id;
 				data.FromUrl = fromUrl;
 				data.States = summary.ValidStates;
 				data.Reasons = summary.ValidReasons;
 				data.Priorities = summary.ValidPriorities;
-				data.Severities = summary.ValidSeverities;
 
 				return View(data);
 			}
 		}
 
 		/// <summary>
-		/// Downloads an Excel filename containing the current tasks for the user's currently selected project.
+		/// Downloads an Excel filename containing the current issues for the user's currently selected project.
 		/// </summary>
 		public ActionResult Excel()
 		{
-			ListData data = FilterAndPage<TaskSummary>(GetTaskFilterOptions(), "", "CreatedDate", true, 1, 10000);
-			return Excel(data.WorkItems, "tasks.xml");
+			ListData data = FilterAndPage<IssueSummary>(GetIssueFilterOptions(), "", "CreatedDate", true, 1, 10000);
+			return Excel(data.WorkItems, "issues.xml");
 		}
 
 		/// <summary>
-		/// Displays an RSS feed containing the current tasks for the user's currently selected project.
+		/// Displays an RSS feed containing the current issues for the user's currently selected project.
 		/// </summary>
 		public ActionResult Rss(string projectName, string areaPath, string iterationPath, string filter)
 		{
-			ListData data = FilterAndPage<TaskSummary>(new FilterOptions(), projectName, "CreatedDate", true, 1, 10000);
-			return Rss(data.WorkItems, "Tasks", projectName, areaPath, iterationPath, filter);
+			ListData data = FilterAndPage<IssueSummary>(new FilterOptions(), projectName, "CreatedDate", true, 1, 10000);
+			return Rss(data.WorkItems, "Issues", projectName, areaPath, iterationPath, filter);
 		}
 
 		/// <summary>
-		/// Retrieves the filter options for the task view.
+		/// Retrieves the filter options for the issue view.
 		/// </summary>
-		private FilterOptions GetTaskFilterOptions()
+		private FilterOptions GetIssueFilterOptions()
 		{
 			return UserContext.Current.Settings.GetFilterOptionsForProject(UserContext.Current.CurrentProject.Name)
-				.GetByKey("tasks:default");
+				.GetByKey("issues:default");
 		}
 
 		/// <summary>
-		/// Gets a new <see cref="TaskManager"/>
+		/// Gets a new <see cref="IssueManager"/>
 		/// </summary>
 		protected override WorkItemManager GetManager()
 		{
-			return new TaskManager();
+			return new IssueManager();
 		}
     }
 }
