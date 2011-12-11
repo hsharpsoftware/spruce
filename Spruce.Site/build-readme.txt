@@ -19,7 +19,6 @@ After building, delete the follow files from your bin folder:
 
 Microsoft.TeamFoundation.WorkItemTracking.Client.Cache.dll
 Microsoft.TeamFoundation.WorkItemTracking.Client.DataStore.dll
-Microsoft.TeamFoundation.WorkItemTracking.Client.dll
 Microsoft.TeamFoundation.WorkItemTracking.Client.RuleEngine.dll
 
 One (or more) of the TFS assemblies copies these files automatically, but they can cause issues on x64 machines.
