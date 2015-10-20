@@ -1,4 +1,3 @@
-# Spruce
 ![](https://github.com/yetanotherchris/spruce/blob/master/logo.png)
 
 Spruce is an ASP.NET MVC 3 frontend for managing work items in Team Foundation Server 2010. It is influenced by Bitbucket, Fogbugz and other simple to use bug tracking systems.
