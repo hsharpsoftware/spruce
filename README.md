@@ -1,6 +1,9 @@
+# Spruce
+![](https://github.com/yetanotherchris/spruce/blob/master/logo.png)
+
 Spruce is an ASP.NET MVC 3 frontend for managing work items in Team Foundation Server 2010. It is influenced by Bitbucket, Fogbugz and other simple to use bug tracking systems.
 
-!! Features:
+## Features:
 
 * Web based, simple UI
 * Powerful search
@@ -16,23 +19,16 @@ By default Spruce comes with a plugin for the MS Agile project template. This wo
 
 Ramblings on the project can be found on the blog at [url:http://www.yetanotherchris.me/home/tag/tfs/]
 
-!! Download
+### Download
 
-[url:Download version 1.1|http://spruce.codeplex.com/releases/view/78576]
+[Releases](https://github.com/yetanotherchris/spruce/releases)
 
-!! Screenshots
+### Screenshots
 
-[image:dashboard.png]
-
-[image:markdown.png]
-
-[image:search.png]
-
-[image:edit.png]
-
-[image:bugs.png]
-
-[image:rss.png]
+![](https://github.com/yetanotherchris/spruce/blob/master/screenshot1.png)
+![](https://github.com/yetanotherchris/spruce/blob/master/screenshot2.png)
+![](https://github.com/yetanotherchris/spruce/blob/master/screenshot3.png)
+![](https://github.com/yetanotherchris/spruce/blob/master/screenshot4.png)
 
 You will need the .NET Framework 3.5 and TFS 2010 in order for it to work. Codeplex is a holding page for the source, the main repository lives at Bitbucket.
 
