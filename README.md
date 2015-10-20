@@ -16,6 +16,8 @@ Spruce is an ASP.NET MVC 3 frontend for managing work items in Team Foundation S
 
 By default Spruce comes with a plugin for the MS Agile project template. This works with with Bug and Task work item types, which also work with the CMMI project type. Future versions may have full support for all work item types, as well as CMMI and Scrum TFS project types.
 
+You will need the .NET Framework 3.5 and TFS 2010 in order for it to work.
+
 Ramblings on the project can be found on the [blog](http://www.anotherchris.net/spruce/).
 
 ### Download
@@ -28,6 +30,3 @@ Ramblings on the project can be found on the [blog](http://www.anotherchris.net/
 ![](https://github.com/yetanotherchris/spruce/blob/master/screenshot2.png)
 ![](https://github.com/yetanotherchris/spruce/blob/master/screenshot3.png)
 ![](https://github.com/yetanotherchris/spruce/blob/master/screenshot4.png)
-
-You will need the .NET Framework 3.5 and TFS 2010 in order for it to work. Codeplex is a holding page for the source, the main repository lives at Bitbucket.
-
