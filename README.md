@@ -20,7 +20,7 @@ Ramblings on the project can be found on the [blog](http://www.anotherchris.net/
 
 ### Download
 
-[Releases](https://github.com/yetanotherchris/spruce/releases)
+[These can be found under releases](https://github.com/yetanotherchris/spruce/releases)
 
 ### Screenshots
 
