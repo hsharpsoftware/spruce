@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using System.ComponentModel;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Web.Mvc;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Core
 {

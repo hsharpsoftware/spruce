@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Mvc.Html;
 using System.Text;
 using Spruce.Core;
-using Microsoft.TeamFoundation.VersionControl.Client;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Collections.Specialized;
+using Microsoft.TeamFoundation.VersionControl.Client;
 
 namespace Spruce.Core
 {
-	/// <summary>
-	/// A collection of extension methods for the HtmlHelper and UrlHelper classes, for producing HTML.
-	/// </summary>
-	public static class HtmlExtensions
+    /// <summary>
+    /// A collection of extension methods for the HtmlHelper and UrlHelper classes, for producing HTML.
+    /// </summary>
+    public static class HtmlExtensions
 	{
 		/// <summary>
 		/// Parses the provided text and converts all Markdown syntax into HTML.

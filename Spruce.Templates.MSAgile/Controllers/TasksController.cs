@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
+
 using System.Text;
 using System.IO;
 using System.ServiceModel.Syndication;
 using Spruce.Core.Controllers;
 using Spruce.Core;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Templates.MSAgile
 {

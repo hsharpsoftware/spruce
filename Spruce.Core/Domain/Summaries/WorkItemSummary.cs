@@ -1,7 +1,8 @@
-﻿using System;
+﻿
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Linq;
 
 namespace Spruce.Core

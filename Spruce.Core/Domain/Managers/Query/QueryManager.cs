@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Collections;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Core
 {

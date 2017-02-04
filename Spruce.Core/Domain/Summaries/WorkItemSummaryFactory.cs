@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Reflection;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Core
 {

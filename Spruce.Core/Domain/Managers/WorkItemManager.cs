@@ -1,24 +1,17 @@
-﻿using System;
+﻿
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using Microsoft.TeamFoundation.Client;
-using System.Net;
-using System.Security.Principal;
-using Microsoft.TeamFoundation.Server;
-using System.Xml;
-using Microsoft.TeamFoundation;
-using System.Web.Mvc;
 using System.Text;
 
 namespace Spruce.Core
 {
-	/// <summary>
-	/// The base class for all work item related tasks in Spruce. This class does not include searching, 
-	/// this is performed by the QueryManager class.
-	/// </summary>
-	public abstract class WorkItemManager
+    /// <summary>
+    /// The base class for all work item related tasks in Spruce. This class does not include searching, 
+    /// this is performed by the QueryManager class.
+    /// </summary>
+    public abstract class WorkItemManager
 	{
 		/// <summary>
 		/// Saves the specified <see cref="WorkItemSummary"/> to TFS, converting it to a <see cref="WorkItem"/> first.

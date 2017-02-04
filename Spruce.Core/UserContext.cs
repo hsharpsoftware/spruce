@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Microsoft.TeamFoundation.Client;
-using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using Microsoft.TeamFoundation.Server;
-using System.Xml;
-using System.Web.Mvc;
 using Microsoft.TeamFoundation.VersionControl.Client;
+using System.Net;
+using Microsoft.TeamFoundation.WorkItemTracking.Client;
 
 namespace Spruce.Core
 {
-	/// <summary>
-	/// Contains all settings for the current logged in user.
-	/// </summary>
-	public class UserContext
+    /// <summary>
+    /// Contains all settings for the current logged in user.
+    /// </summary>
+    public class UserContext
 	{
 		private static readonly string CONTEXT_KEY = "SPRUCE_USER_CONTEXT";
 		private static UserContext _contextForNoneWeb;
@@ -113,9 +112,16 @@ namespace Spruce.Core
 			if (string.IsNullOrEmpty(SpruceSettings.DefaultProjectName))
 				throw new ArgumentNullException("The DefaultProjectName settings is empty, please set it in the web.config");
 
-			// Connect to TFS
-			_users = new List<string>();
-			TfsCollection = new TfsTeamProjectCollection(new Uri(SpruceSettings.TfsServer));
+            NetworkCredential netCred = new NetworkCredential(
+    "username",
+    "password");
+            BasicAuthCredential basicCred = new BasicAuthCredential(netCred);
+            TfsClientCredentials tfsCred = new TfsClientCredentials(basicCred);
+            tfsCred.AllowInteractive = false;
+
+            // Connect to TFS
+            _users = new List<string>();
+			TfsCollection = new TfsTeamProjectCollection(new Uri(SpruceSettings.TfsServer), tfsCred);
 			TfsCollection.Authenticate();
 			WorkItemStore = new WorkItemStore(TfsCollection);
 			VersionControlServer = TfsCollection.GetService<VersionControlServer>();

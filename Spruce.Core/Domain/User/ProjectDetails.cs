@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
-using Microsoft.TeamFoundation.Server;
+using System.Collections.Generic;
 
 namespace Spruce.Core
 {
-	/// <summary>
-	/// Contains information for a project, including its id, name and its valid areas and iterations.
-	/// </summary>
-	public class ProjectDetails
+    /// <summary>
+    /// Contains information for a project, including its id, name and its valid areas and iterations.
+    /// </summary>
+    public class ProjectDetails
 	{
 		private Project _project;
 
