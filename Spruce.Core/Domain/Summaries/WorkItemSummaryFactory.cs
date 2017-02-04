@@ -34,7 +34,12 @@ namespace Spruce.Core
 
 			foreach (Assembly assembly in assemblies)
 			{
-				foreach (Type type in assembly.GetTypes())
+                Type[] assemblyTypes = new Type[] { };
+                try
+                {
+                    assemblyTypes = assembly.GetTypes();
+                } catch (Exception) { }
+				foreach (Type type in assemblyTypes)
 				{
 					if (type.IsSubclassOf(summaryType))
 					{

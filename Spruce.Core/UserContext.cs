@@ -201,7 +201,7 @@ namespace Spruce.Core
 			for (int i = 0; i < members.Length; i++)
 			{
 				// Basic filtering
-				if (!members[i].SecurityGroup )//&& !usernames.Contains(username))
+				if (members[i] != null && !members[i].SecurityGroup )//&& !usernames.Contains(username))
 				{
 					string name = members[i].DisplayName;
 					if (string.IsNullOrEmpty(name))
