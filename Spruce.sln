@@ -1,11 +1,13 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D9791D01-184A-44AE-9CDE-42E8C411026D}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spruce.Site", "Spruce.Site\Spruce.Site.csproj", "{CD29D34E-4F1A-4D43-B150-08BA76EC9DA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spruce.Core", "Spruce.Core\Spruce.Core.csproj", "{9C86C475-F3BD-44D1-942A-78BF19158C3A}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D9791D01-184A-44AE-9CDE-42E8C411026D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Spruce.Templates.MSAgile", "Spruce.Templates.MSAgile\Spruce.Templates.MSAgile.csproj", "{D455891A-1830-44AE-8B64-1A6D3310EBB6}"
 EndProject

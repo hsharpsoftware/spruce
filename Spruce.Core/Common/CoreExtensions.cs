@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Reflection;
 using System.ComponentModel;
-using System.IO;
 using Microsoft.TeamFoundation.WorkItemTracking.Client;
 using System.Web.Mvc;
 
 namespace Spruce.Core
 {
-	/// <summary>
-	/// Extension methods for the Spruce domain and core.
-	/// </summary>
-	public static class CoreExtensions
+    /// <summary>
+    /// Extension methods for the Spruce domain and core.
+    /// </summary>
+    public static class CoreExtensions
 	{
 		/// <summary>
 		/// Reports the index of the first occurrence of the specified project name in the list of <c>ProjectFilterOptions</c>
